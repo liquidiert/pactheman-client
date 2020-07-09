@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-07-09T12:59:30.423Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36 OPR/69.0.3686.57" etag="5NDXkqj2uEOOKzjyRN2k" version="13.4.1" type="github">
+<mxfile host="app.diagrams.net" modified="2020-07-09T13:00:48.885Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36 OPR/69.0.3686.57" etag="nm3KBjCoG4p8SApOWjwl" version="13.4.1" type="github">
   <diagram id="UWcSsT2YMSZQi7kCAKOP" name="Page-1">
     <mxGraphModel dx="1382" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -130,6 +130,19 @@
         </mxCell>
         <mxCell id="Yu6WJNriL2oocuGPw2fy-24" value="clients connect to server, telling it which AI algorithm it should use. Custom implementations should also be possible.&lt;br&gt;Also offline VS. matches against other humans are allowed.&lt;br&gt;Server answers with initial game settings (map, player pos, etc....)." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;spacingLeft=4;spacingRight=2;" vertex="1" parent="1">
           <mxGeometry x="610" y="40" width="190" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="Yu6WJNriL2oocuGPw2fy-26" style="edgeStyle=orthogonalEdgeStyle;curved=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.15;exitY=0.05;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.85;entryY=0.05;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="1" source="Yu6WJNriL2oocuGPw2fy-1" target="Yu6WJNriL2oocuGPw2fy-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="382" y="110" />
+              <mxPoint x="469" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Yu6WJNriL2oocuGPw2fy-27" value="AI control" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Yu6WJNriL2oocuGPw2fy-26">
+          <mxGeometry x="-0.1135" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
