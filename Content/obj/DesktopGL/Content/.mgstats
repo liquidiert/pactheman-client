@@ -1,0 +1,2 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/pactheman_map.xnb","TiledMapProcessor","TiledMapContentItem",9728,11945,0.1700517
