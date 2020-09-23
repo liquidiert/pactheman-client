@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/home/secretone/.dotnet/store/|arch|/|tfm|",
+      "/home/secretone/.nuget/packages"
+    ]
+  }
+}
