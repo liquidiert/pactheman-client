@@ -31,6 +31,9 @@ namespace pactheman_client
         {
             base.Initialize();
 
+            HumanPlayer player = new HumanPlayer();
+            player.Move();
+            player.Describe();
         }
 
         protected override void LoadContent()
