@@ -5,8 +5,12 @@
   <Config />
   <SourceFiles>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/pactheman.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

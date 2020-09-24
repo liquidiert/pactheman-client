@@ -1,9 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using MonoGame.Extended.Animations;
 using MonoGame.Extended.Sprites;
-using MonoGame.Extended.TextureAtlases;
 
 namespace pactheman_client {
 
@@ -11,53 +9,47 @@ namespace pactheman_client {
         Up,
         Down,
         Left,
-        Right,
-        Idle,
+        Right
     }
 
     abstract class Player {
 
-        AnimatedSprite Sprite;
-        Vector2 Position { get; set; }
-        float DirectionX { get; set; }
-        float DirectionY { get; set; }
-        float MovementSpeed { get; set; }
+        public AnimatedSprite Sprite;
+        public Vector2 Position { get; set; }
+        public float MovementSpeed { get; set; }
 
-        Transform2 transform;
-        RectangleF BoundingBox => Sprite.GetBoundingRectangle(transform.Position, transform.Rotation, transform.Scale);
+        public Transform2 transform;
+        public RectangleF BoundingBox => Sprite.GetBoundingRectangle(transform.Position, transform.Rotation, transform.Scale);
 
         MovingStates movingState;
         // once updated animation will play
-        public MovingStates CurrentMovingState { get; 
+        public MovingStates CurrentMovingState { 
+            get { return movingState; } 
             protected set {
-                if (state != value) {
-                    state = value;
-                    switch(state) {
-                        // TODO: add sprite animations
+                if (movingState != value) {
+                    movingState = value;
+                    switch(movingState) {
                         case MovingStates.Up:
-                            sprite.Play("WalkUp", () => State = PlayerStates.Idle);
+                            Sprite.Play("up");
                             break;
                         case MovingStates.Down:
-                            sprite.Play("WalkDown", () => State = PlayerStates.Idle);
+                            Sprite.Play("down");
                             break;
                         case MovingStates.Left:
-                            sprite.Play("WalkLeft", () => State = PlayerStates.Idle);
+                            Sprite.Play("left");
                             break;
                         case MovingStates.Right:
-                            sprite.Play("WalkRight", () => State = PlayerStates.Idle);
-                            break;
-                        case MovingStates.Idle:
-                            Sprite.Play("Idle");
+                            Sprite.Play("right");
                             break;
                     }
                 }
             }
         }
-        public abstract void Move();
+        public abstract void Move(GameTime t);
 
         public void Describe() {
             Console.WriteLine("------------------------------");
-            Console.WriteLine($"pos: {this.Position}\ndirectionX: {this.DirectionX}, directionY: {this.DirectionY}\nspeed: {this.MovementSpeed}");
+            Console.WriteLine($"pos: {this.Position}\nspeed: {this.MovementSpeed}");
             Console.WriteLine("------------------------------");
         }
     }
