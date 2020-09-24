@@ -1,8 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Serialization;
+using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 
@@ -18,19 +22,23 @@ namespace pactheman_client
         private TiledMap map;
         private TiledMapRenderer mapRenderer;
 
+        // characters
+        private HumanPlayer player;
+
         public PacTheManClient()
         {
             _graphics = new GraphicsDeviceManager(this);
-            GameState.CurrentState = UIState.Menu;
+            GameState.CurrentState = UIState.Game;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-
+            player = new HumanPlayer(Content);
         }
 
         protected override void LoadContent()
@@ -54,8 +62,13 @@ namespace pactheman_client
 
             if (GameState.CurrentState == UIState.Game)
             {
+                // update map
                 mapRenderer.Update(gameTime);
-                camera.LookAt(new Vector2(0, 0));
+                camera.LookAt(new Vector2(992, 1120));
+
+                // update player
+                player.Move(gameTime);
+                player.Sprite.Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -70,7 +83,16 @@ namespace pactheman_client
                 transformMatrix: camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
-            mapRenderer.Draw(camera.GetViewMatrix());
+            switch (GameState.CurrentState) {
+                case UIState.Menu:
+                    break;
+                case UIState.Settings:
+                    break;
+                case UIState.Game:
+                    mapRenderer.Draw(camera.GetViewMatrix());
+                    _spriteBatch.Draw(player.Sprite, player.Position);
+                    break;
+            }
             _spriteBatch.End();
 
 

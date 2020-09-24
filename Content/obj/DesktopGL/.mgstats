@@ -1,1 +1,5 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/pactheman_map.xnb","TiledMapProcessor","TiledMapContentItem",9728,11945,0.1736387
+"/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/pactheman.png","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/sprites/player/pactheman.xnb","TextureProcessor","Texture2DContent",23458,524373,0.0126323
+"/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/sprites/player/spriteFactory.xnb","SpriteFactoryContentProcessor","JsonContentProcessorResult",399,533,0.0005509
+"/home/secretone/git_repos/uni/pactheman-client/Content/tiles/pac_the_man_tile_set.png","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/tiles/pac_the_man_tile_set_0.xnb","TextureProcessor","Texture2DContent",1114,98389,0.104965
