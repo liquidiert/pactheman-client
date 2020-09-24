@@ -7,15 +7,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>PacTheMan.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Icon.ico"/>
-    <None Remove="Icon.bmp"/>
+    <None Remove="PacTheMan.ico"/>
+    <None Remove="PacTheMan.bmp"/>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icon.ico"/>
-    <EmbeddedResource Include="Icon.bmp"/>
+    <EmbeddedResource Include="PacTheMan.ico"/>
+    <EmbeddedResource Include="PacTheMan.bmp"/>
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb"/>
