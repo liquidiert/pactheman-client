@@ -20,6 +20,24 @@
 /processor:TiledMapProcessor
 /build:pactheman_map.tmx
 
+#begin sprites/ghosts/ghost_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/ghosts/ghost_base.png
+
+#begin sprites/ghosts/spriteFactory.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:sprites/ghosts/spriteFactory.sf
+
 #begin sprites/player/pactheman.png
 /importer:TextureImporter
 /processor:TextureProcessor

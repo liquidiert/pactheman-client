@@ -1,8 +1,8 @@
 {
   "textureAtlas": {
     "texture": "pactheman.png",
-    "regionWidth": 128,
-    "regionHeight": 128
+    "regionWidth": 64,
+    "regionHeight": 64
   },
   "cycles": {
     "up": {

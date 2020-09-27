@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
+using System;
+using System.Collections.Generic;
 
 namespace pactheman_client
 {
@@ -21,9 +22,16 @@ namespace pactheman_client
         // environment
         private TiledMap map;
         private TiledMapRenderer mapRenderer;
+        private Environment environment;
 
         // characters
         private HumanPlayer player;
+        private Ghost pinky;
+        private Ghost blinky;
+        private Ghost inky;
+        private Ghost clyde;
+
+        private List<Actor> actors = new List<Actor>();
 
         public PacTheManClient()
         {
@@ -38,7 +46,7 @@ namespace pactheman_client
         protected override void Initialize()
         {
             base.Initialize();
-            player = new HumanPlayer(Content);
+
         }
 
         protected override void LoadContent()
@@ -49,8 +57,18 @@ namespace pactheman_client
             map = Content.Load<TiledMap>("pactheman_map");
             mapRenderer = new TiledMapRenderer(GraphicsDevice, map);
 
+            environment = new Environment(map);
+
+            player = new HumanPlayer(Content, environment, map);
+            pinky = new Ghost(Content, environment, "pinky");
+            blinky = new Ghost(Content, environment, "blinky");
+            inky = new Ghost(Content, environment, "inky");
+            clyde = new Ghost(Content, environment, "clyde");
+
+            actors.AddMany(pinky, blinky, inky, clyde, player);
+
             // camera
-            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1984, 2240);
+            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1216, 1408);
             camera = new OrthographicCamera(viewportadapter);
 
         }
@@ -58,17 +76,20 @@ namespace pactheman_client
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+                Exit(); // TODO: rather open menu
 
             if (GameState.CurrentState == UIState.Game)
             {
                 // update map
                 mapRenderer.Update(gameTime);
-                camera.LookAt(new Vector2(992, 1120));
+                camera.LookAt(new Vector2(608, 704));
 
-                // update player
-                player.Move(gameTime);
-                player.Sprite.Update(gameTime);
+                // update actors
+                foreach (var actor in actors) {
+                    actor.Move(gameTime, _graphics);
+                    actor.Sprite.Update(gameTime);
+                }
+
             }
 
             base.Update(gameTime);
@@ -90,7 +111,9 @@ namespace pactheman_client
                     break;
                 case UIState.Game:
                     mapRenderer.Draw(camera.GetViewMatrix());
-                    _spriteBatch.Draw(player.Sprite, player.Position);
+                    foreach (var actor in actors) {
+                        actor.Draw(_spriteBatch);
+                    }
                     break;
             }
             _spriteBatch.End();
