@@ -30,28 +30,28 @@
 </data>
  </layer>
  <objectgroup id="5" name="positions">
-  <object id="52" name="ghost4" type="ghost_start" x="671" y="692">
+  <object id="52" name="ghost4" type="ghost_start" x="640" y="640">
    <point/>
   </object>
-  <object id="51" name="ghost3" type="ghost_start" x="605" y="690">
+  <object id="51" name="ghost3" type="ghost_start" x="576" y="640">
    <point/>
   </object>
-  <object id="49" name="ghost2" type="ghost_start" x="540" y="689">
+  <object id="49" name="ghost2" type="ghost_start" x="512" y="640">
    <point/>
   </object>
-  <object id="50" name="ghost1" type="ghost_start" x="606" y="564">
+  <object id="50" name="ghost1" type="ghost_start" x="576" y="512">
    <point/>
   </object>
-  <object id="213" name="player4" type="player_start" x="1117" y="112">
+  <object id="213" name="player4" type="player_start" x="1118" y="90">
    <point/>
   </object>
-  <object id="47" name="player3" type="player_start" x="97.5" y="111">
+  <object id="47" name="player3" type="player_start" x="90" y="90">
    <point/>
   </object>
-  <object id="214" name="player2" type="player_start" x="1112" y="1321">
+  <object id="214" name="player2" type="player_start" x="1118" y="1310">
    <point/>
   </object>
-  <object id="215" name="player1" type="player_start" x="95" y="1325">
+  <object id="215" name="player1" type="player_start" x="90" y="1310">
    <point/>
   </object>
  </objectgroup>

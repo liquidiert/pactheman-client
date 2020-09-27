@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,6 +13,8 @@ namespace pactheman_client {
     class Ghost : Actor {
 
         public string Name;
+
+        protected List<Vector2> MovesToMake;
         protected GhostStates CurrentGhostState = GhostStates.Chase;
 
         protected MovingStates CurrentMovingState {

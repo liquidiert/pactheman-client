@@ -58,20 +58,17 @@ namespace pactheman_client
             mapRenderer = new TiledMapRenderer(GraphicsDevice, map);
 
             environment = Environment.Instance.Init(map);
-            var start = DateTime.UtcNow;
-            var path = AStar.Instance.GetPath(environment.MapAsTiles, new Vector2(1, 1), new Vector2(17, 1));
-            Console.WriteLine(DateTime.UtcNow.Subtract(start).TotalSeconds);
 
             // actors
-            player = new HumanPlayer(Content, environment, map);
-            pinky = new Pinky(Content, environment, "pinky");
-            blinky = new Blinky(Content, environment, "blinky");
-            inky = new Inky(Content, environment, "inky");
-            clyde = new Clyde(Content, environment, "clyde");
+            player = new HumanPlayer(Content, map);
+            environment.PacMan = player; // ensure player is set before ghosts
 
-            actors.AddMany(player, pinky, blinky, inky, clyde);
+            //pinky = new Pinky(Content, "pinky");
+            blinky = new Blinky(Content, "blinky");
+            /* inky = new Inky(Content, "inky");
+            clyde = new Clyde(Content, "clyde"); */
 
-            environment.PacMan = player;
+            actors.AddMany(player, blinky);
 
             // camera
             var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1216, 1408);

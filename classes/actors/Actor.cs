@@ -26,8 +26,13 @@ namespace pactheman_client {
             get { return _transform.Position; }
             set { _transform.Position = value; }
         }
-
-        protected Environment _environment;
+        /**
+        * summary: returns position scaled down by tile size
+        * returns: scaled position
+        **/
+        public Vector2 ScaledPosition {
+            get { return new Vector2((float) Math.Round(Position.X / 64), (float) Math.Round(Position.Y / 64)); }
+        }
 
         protected MovingStates movingState;
 

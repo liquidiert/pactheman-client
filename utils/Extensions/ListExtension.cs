@@ -4,19 +4,28 @@ using System.Collections.Generic;
 
 namespace pactheman_client {
     static class ListExtension {
-        public static T PopAt<T>(this List<T> list, int index) {
-            T r = list[index];
-            list.RemoveAt(index);
+
+        public static bool IsEmpty<T>(this List<T> list) {
+            return list.Count == 0;
+        }
+        public static void Print<T>(this List<T> list) {
+            foreach (var el in list.Select((entry, ind) => new { entry = entry, ind = ind }).ToList()) {
+                Console.WriteLine($"{el.ind} {el.entry}");
+            }
+            Console.WriteLine("-------------------");
+        }
+        public static T Pop<T>(this List<T> list, int? index = null) {
+            index ??= list.Count - 1;
+            T r = list[(int) index];
+            list.RemoveAt((int) index);
             return r;
         }
-
         public static List<T> AddMany<T>(this List<T> list, params T[] toAdd) {
             foreach(var obj in toAdd) {
                 list.Add(obj);
             }
             return list;
         }
- 
         /** 
         * returns: Index of the minimal member
         **/
@@ -31,5 +40,6 @@ namespace pactheman_client {
             }
             return res;
         }
+
     }
 }

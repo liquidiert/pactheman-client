@@ -15,7 +15,9 @@ namespace pactheman_client {
             return Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);
         }
 
-        public List<Vector2> GetPath(int[,] maze, Vector2 start, Vector2 end) {
+        public List<Vector2> GetPath(Vector2 start, Vector2 end, int iterDepth = -1) {
+
+            var maze = Environment.Instance.MapAsTiles;
             var startNode = new Node(null, start);
             var endNode = new Node(null, end);
 
@@ -24,19 +26,23 @@ namespace pactheman_client {
 
             openList.Add(startNode);
 
+            var iteration = 0;
+
             while (openList.Count > 0) {
 
                 var currentIndex = openList.Select(node => node.f).ToList().MinIndex();
-                var currentNode = openList.PopAt(currentIndex);
+                var currentNode = openList.Pop(currentIndex);
                 closedList.Add(currentNode);
 
-                if (currentNode == endNode) {
+                if (iteration == iterDepth || currentNode == endNode) {
                     var path = new List<Vector2>();
                     var current = currentNode;
                     while (current != null) {
                         path.Add(current.Position);
                         current = current.Parent;
                     }
+                    // return without start point
+                    path.RemoveAt(path.Count - 1);
                     return path;
                 }
 
@@ -71,6 +77,8 @@ namespace pactheman_client {
 
                     openList.Add(child);
                 }
+
+                iteration++;
             }
             return null;
         }

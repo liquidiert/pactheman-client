@@ -10,12 +10,11 @@ namespace pactheman_client {
 
     class Clyde : Ghost {
 
-        public Clyde(ContentManager content, Environment env, string name) {
+        public Clyde(ContentManager content, string name) {
             // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
             var ghostSprite = content.Load<SpriteSheet>("sprites/ghosts/spriteFactory.sf", new JsonContentLoader());
             this.Sprite = new AnimatedSprite(ghostSprite, "moving");
-            this._environment = env;
-            this.Position = env.GhostStartPoints.PopAt(new Random().Next(env.GhostStartPoints.Count)).Position;
+            this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.Name = name;
         }
 

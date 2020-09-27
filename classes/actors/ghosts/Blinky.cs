@@ -10,13 +10,20 @@ namespace pactheman_client {
 
     class Blinky : Ghost {
 
-        public Blinky(ContentManager content, Environment env, string name) {
+        private Vector2 _lastTarget;
+        private Vector2 _lastDirection = new Vector2();
+
+        public Blinky(ContentManager content, string name) {
             // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
             var ghostSprite = content.Load<SpriteSheet>("sprites/ghosts/spriteFactory.sf", new JsonContentLoader());
             this.Sprite = new AnimatedSprite(ghostSprite, "moving");
-            this._environment = env;
-            this.Position = env.GhostStartPoints.PopAt(new Random().Next(env.GhostStartPoints.Count)).Position;
+            this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.Name = name;
+            Console.WriteLine(ScaledPosition);
+            this.MovesToMake = AStar.Instance.GetPath(ScaledPosition, Environment.Instance.PacMan.ScaledPosition);
+            this._lastTarget = MovesToMake.Pop();
+            MovesToMake.Print();
+            Console.WriteLine(_lastTarget);
         }
 
         public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
@@ -25,18 +32,30 @@ namespace pactheman_client {
 
             switch (this.CurrentGhostState) {
                 case GhostStates.Chase:
-                    var direction = pacMan.Position - this.Position;
+                    var target = _lastTarget;
+                    if (MovesToMake.IsEmpty()) MovesToMake = AStar.Instance.GetPath(ScaledPosition, Environment.Instance.PacMan.ScaledPosition, iterDepth: 5);
+                    if (ScaledPosition == _lastTarget) {
+                        _lastTarget = MovesToMake.Pop();
+                        target = _lastTarget;
+                    }
+                    var direction = target - ScaledPosition;
                     direction.Normalize();
-                    /* Console.WriteLine(Math.Round(direction.X));
-                    Console.Write(Math.Round(direction.Y)); */
-                    Vector2 updatedPos = this.UpdatePosition(
-                        x: this.MovementSpeed * delta * (float) Math.Round(direction.X),
-                        y: this.MovementSpeed * delta * (float) Math.Round(direction.Y)
+                    Vector2 updatedPos = UpdatePosition(
+                        x: MovementSpeed * delta * direction.X,
+                        y: MovementSpeed * delta * direction.Y
                     );
 
                     if (!Environment.Instance.InsideWall(this, updatedPos)) {
-                        this.Position = updatedPos;
+                        Position = updatedPos;
+                    } else {
+                        Position = new Vector2(
+                            updatedPos.X + MovementSpeed * delta * _lastDirection.X * 0.25f,
+                            updatedPos.Y + MovementSpeed * delta * _lastDirection.Y * 0.25f
+                        );
                     }
+
+                    _lastDirection = direction;
+
                     break;
                 case GhostStates.Scatter:
                     break;

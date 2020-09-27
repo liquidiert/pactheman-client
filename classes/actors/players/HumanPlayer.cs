@@ -38,13 +38,12 @@ namespace pactheman_client {
             }
         }
 
-        public HumanPlayer(ContentManager content, Environment env, TiledMap map) {
+        public HumanPlayer(ContentManager content, TiledMap map) {
             this._content = content;
             // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
             var spriteSheet = _content.Load<SpriteSheet>("sprites/player/spriteFactory.sf", new JsonContentLoader());
-            this.Position = env.PlayerStartPoints.PopAt(new Random().Next(env.PlayerStartPoints.Count)).Position;
+            this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
             this.Sprite = new AnimatedSprite(spriteSheet, this.Position.X < 1120 ? "right" : "left");
-            this._environment = env;
         }
 
         public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
@@ -74,7 +73,7 @@ namespace pactheman_client {
                 this.CurrentMovingState = MovingStates.Right;
             }
 
-            if (updatedPosition != Vector2.Zero && !_environment.InsideWall(this, updatedPosition)) {
+            if (updatedPosition != Vector2.Zero && !Environment.Instance.InsideWall(this, updatedPosition)) {
                 // teleport if entering left or right gate
                 if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
                     this.Position = this.UpdatePosition(x: -1216, xFactor: -1);
