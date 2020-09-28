@@ -3,6 +3,7 @@ using System;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
 
@@ -13,6 +14,7 @@ namespace pactheman_client {
         public List<TiledMapObject> GhostStartPoints;
         public int[,] MapAsTiles;
         public Actor PacMan;
+        public CollisionWorld World;
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get { return lazy.Value; } }
@@ -38,10 +40,13 @@ namespace pactheman_client {
                 }
             }
 
+            World = new CollisionWorld(Vector2.Zero);
+            World.CreateGrid(_obstacles.Tiles.Select(tile => tile.GlobalIdentifier).ToArray(), 19, 22, 64, 64);
+
             return Instance;
         }
 
-        public bool InsideWall(Actor actor, Vector2 toCheck) {
+        /* public bool InsideWall(Actor actor, Vector2 toCheck) {
             TiledMapTile? tile = null;
             Func<double, bool> roundCondition = (double toRound) => {
                 double toTest = toRound % 1;
@@ -54,6 +59,6 @@ namespace pactheman_client {
                 out tile
             );
             return tile.Value.GlobalIdentifier != 6;
-        }
+        } */
     }
 }

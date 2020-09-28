@@ -1,8 +1,12 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using MonoGame.Extended.Content;
+using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
 
@@ -13,25 +17,44 @@ namespace pactheman_client {
         Right
     }
 
-    abstract class Actor {
+    abstract class Actor : IActorTarget {
+
+        public Actor(ContentManager content, string spriteSheetLocation) {
+            // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
+            var spriteSheet = content.Load<SpriteSheet>(spriteSheetLocation, new JsonContentLoader());
+            Sprite = new AnimatedSprite(spriteSheet);
+            BoundingBox = Sprite.GetBoundingRectangle(new Transform2());
+            // offset bounding box a little up and left
+            BoundingOffset = new Vector2(-32, -32);
+        }
 
         public AnimatedSprite Sprite;
         public float MovementSpeed = 350f;
-        public short DirectionX { get; set; }
-        public short DirectionY { get; set; }
+        public RectangleF BoundingBox { get; set; }
+        public Vector2 BoundingOffset { get; set; }
 
-        protected Transform2 _transform = new Transform2();
-        public RectangleF BoundingBox => Sprite.GetBoundingRectangle(_transform.Position, _transform.Rotation, _transform.Scale);
+        private Vector2 _position;
         public Vector2 Position {
-            get { return _transform.Position; }
-            set { _transform.Position = value; }
+            get => _position;
+            set { 
+                _position = value;
+                var t = BoundingBox;
+                t.Position = value + BoundingOffset;
+                BoundingBox = t;
+            }
         }
-        /**
-        * summary: returns position scaled down by tile size
-        * returns: scaled position
-        **/
-        public Vector2 ScaledPosition {
-            get { return new Vector2((float) Math.Round(Position.X / 64), (float) Math.Round(Position.Y / 64)); }
+        public Vector2 Velocity { get; set; }
+        /// <summary>
+        /// Position scaled down by tile size
+        /// </summary>
+        /// <returns>
+        /// scaled position as [Vector2]
+        /// </returns>
+        public Vector2 DownScaledPosition {
+            get { return new Vector2((float) Math.Floor(Position.X / 64), (float) Math.Round(Position.Y / 64)); }
+        }
+        public Vector2 UpScaledPosition {
+            get { return new Vector2((float) Math.Ceiling(Position.X / 64), (float) Math.Ceiling(Position.Y / 64)); }
         }
 
         protected MovingStates movingState;
@@ -41,12 +64,13 @@ namespace pactheman_client {
         }
         public abstract void Move(GameTime t, GraphicsDeviceManager g);
         public abstract void Draw(SpriteBatch b);
+        public virtual void OnCollision(CollisionInfo collisionInfo) {}
         public dynamic Describe() {
-            return new {pos = _transform.Position, speed = MovementSpeed};
+            return new {pos = Position, speed = MovementSpeed};
         }
 
         public new string ToString() {
-            return $"posX: {(ushort) this._transform.Position.X} posY: {(ushort) this._transform.Position.Y}\nspeed: {this.MovementSpeed}";
+            return $"posX: {(ushort) Position.X} posY: {(ushort) Position.Y}\nvelocity: {Velocity}\n";
         }
     }
 }

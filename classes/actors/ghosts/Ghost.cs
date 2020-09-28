@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace pactheman_client {
@@ -11,6 +12,8 @@ namespace pactheman_client {
     }
 
     class Ghost : Actor {
+
+        public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {}
 
         public string Name;
 

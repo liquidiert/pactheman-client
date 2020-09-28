@@ -59,7 +59,7 @@ namespace pactheman_client {
                         || nodePosition.Y > (maze.GetLength(1) - 1) || nodePosition.Y <= 0)
                         continue;
 
-                    if (maze[(int) nodePosition.X, (int) nodePosition.Y] != 6) continue;
+                    if (maze[(int) nodePosition.X, (int) nodePosition.Y] != 0) continue;
 
                     var newNode = new Node(currentNode, nodePosition);
 

@@ -10,10 +10,8 @@ namespace pactheman_client {
 
     class Pinky : Ghost {
 
-        public Pinky(ContentManager content, string name) {
-            // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
-            var ghostSprite = content.Load<SpriteSheet>("sprites/ghosts/spriteFactory.sf", new JsonContentLoader());
-            this.Sprite = new AnimatedSprite(ghostSprite, "moving");
+        public Pinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactory.sf") {
+            this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.Name = name;
         }
@@ -22,7 +20,7 @@ namespace pactheman_client {
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.Sprite, this._transform);
+            spriteBatch.Draw(Sprite, Position);
         }
     }
 }

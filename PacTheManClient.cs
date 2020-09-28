@@ -70,10 +70,15 @@ namespace pactheman_client
 
             actors.AddMany(player, blinky);
 
+            foreach (var actor in actors) {
+                environment.World.CreateActor(actor);
+            }
+
             // camera
             var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1216, 1408);
             camera = new OrthographicCamera(viewportadapter);
 
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -95,6 +100,7 @@ namespace pactheman_client
 
             }
 
+            environment.World.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -117,6 +123,13 @@ namespace pactheman_client
                     foreach (var actor in actors) {
                         actor.Draw(_spriteBatch);
                     }
+                    Texture2D _texture;
+
+                    _texture = new Texture2D(GraphicsDevice, 1, 1);
+                    _texture.SetData(new Color[] { Color.DarkSlateGray });
+                    _spriteBatch.Draw(_texture, 
+                        new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
+                        Color.White);
                     break;
             }
             _spriteBatch.End();
