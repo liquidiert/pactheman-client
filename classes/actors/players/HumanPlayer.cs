@@ -2,17 +2,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using MonoGame.Extended;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Content;
 using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Serialization;
-using System;
+using System.Linq;
+using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
     class HumanPlayer : Actor {
 
-        private ContentManager _content;
         private KeyboardStateExtended _kState;
 
         private MovingStates CurrentMovingState {
@@ -38,62 +37,49 @@ namespace pactheman_client {
             }
         }
 
-        private TiledMap map;
-
-        public HumanPlayer(ContentManager content, Environment env, TiledMap map) {
-            this._content = content;
-            // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
-            var spriteSheet = _content.Load<SpriteSheet>("sprites/player/spriteFactory.sf", new JsonContentLoader());
-            this.Sprite = new AnimatedSprite(spriteSheet);
-            this.MovementSpeed = 350f;
-            this._environment = env;
-            this.Position = env.PlayerStartPoints.PopAt(new Random().Next(env.PlayerStartPoints.Count)).Position;
-            this.map = map;
+        public HumanPlayer(ContentManager content, TiledMap map) : base(content, "sprites/player/spriteFactory.sf") {
+            // this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            this.Position = Environment.Instance.PlayerStartPoints.Find(point => point.Name == "player2").Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
-        private Vector2 UpdatePosition(float x = 0, int xFactor = 1, float y = 0, int yFactor = 1) {
-            return new Vector2() { X = (this.Position.X + x) * xFactor, Y = (this.Position.Y + y) * yFactor};
-        }
-
         public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
-            var delta = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var delta = gameTime.GetElapsedSeconds();
             _kState = KeyboardExtended.GetState();
 
-            Vector2 updatedPosition = new Vector2();
+            // TODO: use rotation instead of dedicated animations
+            Vector2 updatedPosition = Position;
             if (_kState.IsKeyDown(Keys.W)) { // up
-                this.DirectionY = -1;
-                this.DirectionX = 0;
-                updatedPosition = this.UpdatePosition(y: this.MovementSpeed * delta * this.DirectionY);
-                this.CurrentMovingState = MovingStates.Up;
-            } else if (_kState.IsKeyDown(Keys.S)) { // down
-                this.DirectionY = 1;
-                this.DirectionX = 0;
-                updatedPosition = this.UpdatePosition(y: this.MovementSpeed * delta);
-                this.CurrentMovingState = MovingStates.Down;
-            } else if (_kState.IsKeyDown(Keys.A)) { // left
-                this.DirectionX = -1;
-                this.DirectionY = 0;
-                updatedPosition = this.UpdatePosition(x: this.MovementSpeed * delta * this.DirectionX);
-                this.CurrentMovingState = MovingStates.Left;
-            } else if (_kState.IsKeyDown(Keys.D)) { // right
-                this.DirectionX = 1;
-                this.DirectionY = 0;
-                updatedPosition = this.UpdatePosition(x: this.MovementSpeed * delta);
-                this.CurrentMovingState = MovingStates.Right;
+                updatedPosition.Y -= MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Up;
+            }
+            if (_kState.IsKeyDown(Keys.S)) { // down
+                updatedPosition.Y += MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Down;
+            }
+            if (_kState.IsKeyDown(Keys.A)) { // left
+                updatedPosition.X -= MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Left;
+            }
+            if (_kState.IsKeyDown(Keys.D)) { // right
+                updatedPosition.X += MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Right;
             }
 
-            if (updatedPosition != Vector2.Zero && !_environment.InsideWall(this, delta)) {
-                if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
-                    this.Position = this.UpdatePosition(x: -1216, xFactor: -1);
-                } else {
-                    this.Position = updatedPosition;
-                }
+            // teleport if entering left or right gate
+            if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
+                Position = UpdatePosition(x: -1216, xFactor: -1);
+            } else {
+                Position = updatedPosition;
             }
         }
-
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(this.Sprite, this._transform);
+            spriteBatch.Draw(Sprite, Position);
+            
+        }
+        public override void OnCollision(CollisionInfo collisionInfo) {
+            Position -= collisionInfo.PenetrationVector;
+            base.OnCollision(collisionInfo);
         }
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>/home/secretone/git_repos/uni/pactheman-client/Content/tiles/pac_the_man_tile_set.png</SourceFile>
-  <SourceTime>2020-09-23T12:25:50.364807+02:00</SourceTime>
+  <SourceTime>2020-09-28T14:14:26.0140415+02:00</SourceTime>
   <DestFile>/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/tiles/pac_the_man_tile_set_0.xnb</DestFile>
-  <DestTime>2020-09-23T16:39:50.8211793+02:00</DestTime>
+  <DestTime>2020-09-28T14:14:56.3699321+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

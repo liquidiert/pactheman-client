@@ -35,11 +35,12 @@ namespace pactheman_client
 
         public PacTheManClient()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
             GameState.CurrentState = UIState.Game;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
@@ -57,20 +58,28 @@ namespace pactheman_client
             map = Content.Load<TiledMap>("pactheman_map");
             mapRenderer = new TiledMapRenderer(GraphicsDevice, map);
 
-            environment = new Environment(map);
+            environment = Environment.Instance.Init(map);
 
-            player = new HumanPlayer(Content, environment, map);
-            pinky = new Ghost(Content, environment, "pinky");
-            blinky = new Ghost(Content, environment, "blinky");
-            inky = new Ghost(Content, environment, "inky");
-            clyde = new Ghost(Content, environment, "clyde");
+            // actors
+            player = new HumanPlayer(Content, map);
+            environment.PacMan = player; // ensure player is set before ghosts
 
-            actors.AddMany(pinky, blinky, inky, clyde, player);
+            //pinky = new Pinky(Content, "pinky");
+            blinky = new Blinky(Content, "blinky");
+            /* inky = new Inky(Content, "inky");
+            clyde = new Clyde(Content, "clyde"); */
+
+            actors.AddMany(player, blinky);
+
+            foreach (var actor in actors) {
+                environment.World.CreateActor(actor);
+            }
 
             // camera
             var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1216, 1408);
             camera = new OrthographicCamera(viewportadapter);
 
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -92,6 +101,7 @@ namespace pactheman_client
 
             }
 
+            environment.World.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -114,6 +124,13 @@ namespace pactheman_client
                     foreach (var actor in actors) {
                         actor.Draw(_spriteBatch);
                     }
+                    /* Texture2D _texture;
+
+                    _texture = new Texture2D(GraphicsDevice, 1, 1);
+                    _texture.SetData(new Color[] { Color.DarkSlateGray });
+                    _spriteBatch.Draw(_texture, 
+                        new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
+                        Color.White); */
                     break;
             }
             _spriteBatch.End();

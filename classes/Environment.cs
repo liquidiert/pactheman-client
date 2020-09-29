@@ -3,17 +3,24 @@ using System;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
 
-    class Environment {
+    sealed class Environment {
 
         private TiledMapTileLayer _obstacles;
         public List<TiledMapObject> PlayerStartPoints;
         public List<TiledMapObject> GhostStartPoints;
+        public int[,] MapAsTiles;
+        public Actor PacMan;
+        public CollisionWorld World;
 
-        public Environment(TiledMap map) {
+        private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
+        public static Environment Instance { get { return lazy.Value; } }
+        private Environment() {}
 
+        public Environment Init(TiledMap map) {
             var positionLayer = map.ObjectLayers.First(l => l.Name == "positions");
 
             // get start positions
@@ -23,13 +30,23 @@ namespace pactheman_client {
             // get obstacles
             this._obstacles = map.GetLayer<TiledMapTileLayer>("ground");
 
+            // set tile map
+            this.MapAsTiles = new int[this._obstacles.Width + 1, this._obstacles.Height + 1];
+            for (var h = 0; h < this._obstacles.Height; h++) {
+                for (var w = 0; w < this._obstacles.Width; w++) {
+                    TiledMapTile? tile = null;
+                    this._obstacles.TryGetTile((ushort) w, (ushort) h, out tile);
+                    this.MapAsTiles[w, h] = tile.Value.GlobalIdentifier;
+                }
+            }
+
+            World = new CollisionWorld(Vector2.Zero);
+            World.CreateGrid(_obstacles.Tiles.Select(tile => tile.GlobalIdentifier).ToArray(), 19, 22, 64, 64);
+
+            return Instance;
         }
 
-        public bool InsideWall(Actor actor, float delta) {
-            var futurePos = new Vector2() { 
-                X = (actor.Position.X + actor.MovementSpeed * delta * actor.DirectionX) / 64 + actor.DirectionX * 0.5f,
-                Y = (actor.Position.Y + actor.MovementSpeed * delta * actor.DirectionY) / 64 + actor.DirectionY * 0.5f
-            };
+        /* public bool InsideWall(Actor actor, Vector2 toCheck) {
             TiledMapTile? tile = null;
             Func<double, bool> roundCondition = (double toRound) => {
                 double toTest = toRound % 1;
@@ -37,11 +54,11 @@ namespace pactheman_client {
             };
             _obstacles.TryGetTile(
                 // only round if "close" to edge
-                (ushort) MathExtension.RoundIf(futurePos.X, roundCondition),
-                (ushort) MathExtension.RoundIf(futurePos.Y, roundCondition),
+                (ushort) MathExtension.RoundIf(toCheck.X / 64 + actor.DirectionX * 0.5, roundCondition),
+                (ushort) MathExtension.RoundIf(toCheck.Y / 64 + actor.DirectionY * 0.5, roundCondition),
                 out tile
             );
             return tile.Value.GlobalIdentifier != 6;
-        }
+        } */
     }
 }
