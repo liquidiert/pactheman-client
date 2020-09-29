@@ -58,7 +58,7 @@ namespace pactheman_client
             map = Content.Load<TiledMap>("pactheman_map");
             mapRenderer = new TiledMapRenderer(GraphicsDevice, map);
 
-            environment = Environment.Instance.Init(map);
+            environment = Environment.Instance.Init(Content, map);
 
             // actors
             player = new HumanPlayer(Content, map);
@@ -72,11 +72,11 @@ namespace pactheman_client
             actors.AddMany(player, blinky);
 
             foreach (var actor in actors) {
-                environment.World.CreateActor(actor);
+                environment.Walls.CreateActor(actor);
             }
 
             // camera
-            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1216, 1408);
+            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
             camera = new OrthographicCamera(viewportadapter);
 
             base.LoadContent();
@@ -101,7 +101,7 @@ namespace pactheman_client
 
             }
 
-            environment.World.Update(gameTime);
+            environment.Walls.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -120,7 +120,38 @@ namespace pactheman_client
                 case UIState.Settings:
                     break;
                 case UIState.Game:
+                    // draw map
                     mapRenderer.Draw(camera.GetViewMatrix());
+
+                    // draw score points
+                    foreach (var point in environment.ScorePointPositions) {
+                        point.Draw(_spriteBatch);
+                    }
+
+                    // player one stats
+                    // draw name
+                    _spriteBatch.DrawString(
+                        Content.Load<SpriteFont>("ScoreFont"),
+                        player.Name,
+                        new Vector2(-350, 50),
+                        Color.White
+                    );
+                    // draw lives
+                    _spriteBatch.DrawString(
+                        Content.Load<SpriteFont>("ScoreFont"),
+                        $"Lives: {player.Lives}",
+                        new Vector2(-350, 100),
+                        Color.White
+                    );
+                    // draw score
+                    _spriteBatch.DrawString(
+                        Content.Load<SpriteFont>("ScoreFont"),
+                        $"Score: {player.Score}",
+                        new Vector2(-350, 150),
+                        Color.White
+                    );
+
+                    // draw actors
                     foreach (var actor in actors) {
                         actor.Draw(_spriteBatch);
                     }

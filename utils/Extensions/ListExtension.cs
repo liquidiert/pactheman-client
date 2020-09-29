@@ -26,9 +26,13 @@ namespace pactheman_client {
             }
             return list;
         }
-        /** 
-        * returns: Index of the minimal member
-        **/
+        public static bool RemoveWhere<T>(this List<T> list, Predicate<T> removeCondition) {
+            var entry = list.Find(removeCondition);
+            return list.Remove(entry);
+        }
+        ///
+        /// <returns>Index of the minimal member</returns>
+        ///
         public static int MinIndex <T>(this List<T> list) where T: IComparable<T> {
             dynamic min = Int32.MaxValue;
             int res = 0;

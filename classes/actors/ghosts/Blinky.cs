@@ -5,6 +5,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Collisions;
 using System;
+using System.Collections.Generic;
 
 namespace pactheman_client {
 
@@ -12,6 +13,8 @@ namespace pactheman_client {
 
         private Vector2 _lastTarget;
         private float _scatterTicker;
+
+        private List<Vector2> fiveSteps => AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 5);
 
         public Blinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactory.sf") {
             this.Sprite.Play("moving");
@@ -33,8 +36,10 @@ namespace pactheman_client {
                         try {
                             target = _lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                         } catch (ArgumentOutOfRangeException) {
-                            MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 5);
+                            MovesToMake = fiveSteps;
                             if (MovesToMake.IsEmpty()) { // hussa pacman reached!
+                                // TODO: rather handle that via collision
+                                Environment.Instance.PacMan.DecreaseLives();
                                 CurrentGhostState = GhostStates.Scatter;
                                 MovesToMake = AStar.Instance.GetPath(DownScaledPosition, new Vector2(17, 1));
                                 break;
@@ -56,7 +61,12 @@ namespace pactheman_client {
                             break;
                         }
                     }
-                    if (_scatterTicker >= SCATTER_SECONDS) CurrentGhostState = GhostStates.Chase;
+                    if (_scatterTicker >= SCATTER_SECONDS) {
+                        MovesToMake = fiveSteps;
+                        CurrentGhostState = GhostStates.Chase;
+                        _scatterTicker = 0;
+                        break;
+                    }
                     Velocity = target - Position;
                     Position += Velocity.RealNormalize() * MovementSpeed * delta;
                     _scatterTicker += delta;

@@ -16,7 +16,7 @@ namespace pactheman_client {
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {}
 
         public string Name { get; set; }
-        protected readonly int SCATTER_SECONDS = 5;
+        protected readonly float SCATTER_SECONDS = 3.5f;
 
         protected List<Vector2> MovesToMake;
         protected GhostStates CurrentGhostState = GhostStates.Chase;

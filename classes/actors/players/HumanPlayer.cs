@@ -6,13 +6,26 @@ using MonoGame.Extended;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tiled;
-using System.Linq;
+using System;
 using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
     class HumanPlayer : Actor {
 
         private KeyboardStateExtended _kState;
+        private int _score = 0;
+        private int _lives = 3;
+        public int Score { 
+            get {
+                return _score;
+            }
+        }
+        public string Lives {
+            get {
+                return "<3".Multiple(_lives);
+            }
+        }
+        public string Name = "PlayerOne";
 
         private MovingStates CurrentMovingState {
             get { return movingState; } 
@@ -38,8 +51,7 @@ namespace pactheman_client {
         }
 
         public HumanPlayer(ContentManager content, TiledMap map) : base(content, "sprites/player/spriteFactory.sf") {
-            // this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
-            this.Position = Environment.Instance.PlayerStartPoints.Find(point => point.Name == "player2").Position;
+            this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
@@ -66,11 +78,15 @@ namespace pactheman_client {
                 CurrentMovingState = MovingStates.Right;
             }
 
-            // teleport if entering left or right gate
+            // teleport if entering either left or right gate
             if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
                 Position = UpdatePosition(x: -1216, xFactor: -1);
             } else {
                 Position = updatedPosition;
+            }
+
+            if (Environment.Instance.RemoveScorePoint(Position)) {
+                _score += 10;
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
@@ -80,6 +96,10 @@ namespace pactheman_client {
         public override void OnCollision(CollisionInfo collisionInfo) {
             Position -= collisionInfo.PenetrationVector;
             base.OnCollision(collisionInfo);
+        }
+
+        public void DecreaseLives() {
+            _lives--;
         }
     }
 }

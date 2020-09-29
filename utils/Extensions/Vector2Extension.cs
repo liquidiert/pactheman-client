@@ -4,22 +4,28 @@ namespace pactheman_client {
 
     static class Vector2Extension {
 
-        public static Vector2 RealNormalize(this Vector2 vec) {
-            vec /= vec.Length();
-            vec.Round();
-            return vec;
+        public static Vector2 RealNormalize(this Vector2 vector) {
+            vector /= vector.Length();
+            vector.Round();
+            return vector;
         }
 
-        public static Vector2 SubtractValue(this Vector2 vec, int toSubtract) {
-            vec.X -= toSubtract;
-            vec.Y -= toSubtract;
-            return vec;
+        public static Vector2 SubtractValue(this Vector2 vector, int toSubtract) {
+            vector.X -= toSubtract;
+            vector.Y -= toSubtract;
+            return vector;
         }
 
-        public static Vector2 AddValue(this Vector2 vec, int toAdd) {
-            vec.X += toAdd;
-            vec.Y += toAdd;
-            return vec;
+        public static Vector2 AddValue(this Vector2 vector, int toAdd) {
+            vector.X += toAdd;
+            vector.Y += toAdd;
+            return vector;
+        }
+
+        public static Vector2 DivideValue(this Vector2 vector, int toDivide) {
+            vector.X /= toDivide;
+            vector.Y /= toDivide;
+            return vector;
         }
 
     }
