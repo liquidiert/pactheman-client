@@ -6,7 +6,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tiled;
-using System;
+using System.Linq;
 using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
@@ -38,7 +38,8 @@ namespace pactheman_client {
         }
 
         public HumanPlayer(ContentManager content, TiledMap map) : base(content, "sprites/player/spriteFactory.sf") {
-            this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            // this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            this.Position = Environment.Instance.PlayerStartPoints.Find(point => point.Name == "player2").Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 

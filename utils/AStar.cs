@@ -15,7 +15,7 @@ namespace pactheman_client {
             return Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);
         }
 
-        public List<Vector2> GetPath(Vector2 start, Vector2 end, int iterDepth = -1) {
+        public List<Vector2> GetPath(Vector2 start, Vector2 end, int iterDepth = -3) {
 
             var maze = Environment.Instance.MapAsTiles;
             var startNode = new Node(null, start);
@@ -34,7 +34,8 @@ namespace pactheman_client {
                 var currentNode = openList.Pop(currentIndex);
                 closedList.Add(currentNode);
 
-                if (iteration == iterDepth || currentNode == endNode) {
+                // iterDepth + 2 cause start point gets removed
+                if (iteration == iterDepth + 2 || currentNode == endNode) {
                     var path = new List<Vector2>();
                     var current = currentNode;
                     while (current != null) {

@@ -35,11 +35,12 @@ namespace pactheman_client
 
         public PacTheManClient()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
             GameState.CurrentState = UIState.Game;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
@@ -123,13 +124,13 @@ namespace pactheman_client
                     foreach (var actor in actors) {
                         actor.Draw(_spriteBatch);
                     }
-                    Texture2D _texture;
+                    /* Texture2D _texture;
 
                     _texture = new Texture2D(GraphicsDevice, 1, 1);
                     _texture.SetData(new Color[] { Color.DarkSlateGray });
                     _spriteBatch.Draw(_texture, 
                         new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
-                        Color.White);
+                        Color.White); */
                     break;
             }
             _spriteBatch.End();
