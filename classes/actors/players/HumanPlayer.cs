@@ -55,7 +55,7 @@ namespace pactheman_client {
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
-        public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
+        public override void Move(GameTime gameTime) {
             var delta = gameTime.GetElapsedSeconds();
             _kState = KeyboardExtended.GetState();
 

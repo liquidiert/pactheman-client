@@ -20,12 +20,12 @@ namespace pactheman_client {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.Name = name;
-            this.MovementSpeed = 300f;
+            this.MovementSpeed = 275f;
             this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 10);
             this._lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
         }
 
-        public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
+        public override void Move(GameTime gameTime) {
             float delta = gameTime.GetElapsedSeconds();
 
             Vector2 target;

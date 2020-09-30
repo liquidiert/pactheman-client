@@ -95,7 +95,7 @@ namespace pactheman_client
 
                 // update actors
                 foreach (var actor in actors) {
-                    actor.Move(gameTime, _graphics);
+                    actor.Move(gameTime);
                     actor.Sprite.Update(gameTime);
                 }
 

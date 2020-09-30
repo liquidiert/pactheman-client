@@ -16,7 +16,8 @@ namespace pactheman_client {
             this.Name = name;
         }
 
-        public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
+        public override void Move(GameTime gameTime) {
+            
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

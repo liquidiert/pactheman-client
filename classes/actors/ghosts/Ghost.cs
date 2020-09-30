@@ -26,7 +26,7 @@ namespace pactheman_client {
             set { movingState = value; }
         }
 
-        public override void Move(GameTime t, GraphicsDeviceManager g) {}
+        public override void Move(GameTime t) {}
         public override void Draw(SpriteBatch b){}
 
     }
