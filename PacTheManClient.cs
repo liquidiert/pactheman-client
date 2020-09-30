@@ -9,12 +9,11 @@ using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
-namespace pactheman_client
-{
-    public class PacTheManClient : Game
-    {
+namespace pactheman_client {
+    public class PacTheManClient : Game {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private OrthographicCamera camera;
@@ -33,25 +32,22 @@ namespace pactheman_client
 
         private List<Actor> actors = new List<Actor>();
 
-        public PacTheManClient()
-        {
+        public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
-            GameState.CurrentState = UIState.Game;
+            GameState.Instance.CurrentState = UIState.Game;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-            
+
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             base.Initialize();
 
         }
 
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // tile map
@@ -64,16 +60,20 @@ namespace pactheman_client
             player = new HumanPlayer(Content, map);
             environment.PacMan = player; // ensure player is set before ghosts
 
-            //pinky = new Pinky(Content, "pinky");
+            pinky = new Pinky(Content, "pinky");
             blinky = new Blinky(Content, "blinky");
-            /* inky = new Inky(Content, "inky");
-            clyde = new Clyde(Content, "clyde"); */
+            inky = new Inky(Content, "inky");
+            clyde = new Clyde(Content, "clyde");
 
-            actors.AddMany(player, blinky);
+            actors.AddMany(player, blinky, pinky, inky, clyde);
 
+            // add map collisions
             foreach (var actor in actors) {
                 environment.Walls.CreateActor(actor);
             }
+
+            // add actor collision pairs
+            environment.AddCollisionPairs(player, blinky, pinky, inky, clyde);
 
             // camera
             var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
@@ -82,13 +82,11 @@ namespace pactheman_client
             base.LoadContent();
         }
 
-        protected override void Update(GameTime gameTime)
-        {
+        protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit(); // TODO: rather open menu
 
-            if (GameState.CurrentState == UIState.Game)
-            {
+            if (GameState.Instance.CurrentState == UIState.Game) {
                 // update map
                 mapRenderer.Update(gameTime);
                 camera.LookAt(new Vector2(608, 704));
@@ -99,14 +97,18 @@ namespace pactheman_client
                     actor.Sprite.Update(gameTime);
                 }
 
+                // update collision pairs
+                foreach (var pair in GameState.Instance.CollisionPairs) {
+                    pair.Update(gameTime);
+                }
+
             }
 
             environment.Walls.Update(gameTime);
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
 
             // map draw
@@ -114,7 +116,7 @@ namespace pactheman_client
                 transformMatrix: camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
-            switch (GameState.CurrentState) {
+            switch (GameState.Instance.CurrentState) {
                 case UIState.Menu:
                     break;
                 case UIState.Settings:

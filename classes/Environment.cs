@@ -14,13 +14,13 @@ namespace pactheman_client {
         private TiledMapTileLayer _obstacles;
         public List<TiledMapObject> PlayerStartPoints;
         public List<TiledMapObject> GhostStartPoints;
-        public List<Point> ScorePointPositions;
+        public List<ScorePoint> ScorePointPositions;
         public int[,] MapAsTiles;
         public HumanPlayer PacMan;
         public CollisionWorld Walls;
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
-        public static Environment Instance { get { return lazy.Value; } }
+        public static Environment Instance { get => lazy.Value; }
         private Environment() {}
 
         public Environment Init(ContentManager content, TiledMap map) {
@@ -32,7 +32,7 @@ namespace pactheman_client {
             this.GhostStartPoints = positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
 
             // get point positions
-            this.ScorePointPositions = pointLayer.Objects.Select(p => new Point(content, p.Position)).ToList();
+            this.ScorePointPositions = pointLayer.Objects.Select(p => new ScorePoint(content, p.Position)).ToList();
 
             // get obstacles
             this._obstacles = map.GetLayer<TiledMapTileLayer>("ground");
@@ -56,6 +56,20 @@ namespace pactheman_client {
 
         public bool RemoveScorePoint(Vector2 position) {
             return ScorePointPositions.RemoveWhere(p => p.Position.AddValue(32).EqualsWithTolerence(position, tolerance: 32f));
+        }
+        /// <summary>
+        /// Adds collsion pairs for each Ghost and Player to GameState.
+        /// </summary>
+        /// <param name="actors">IMPORTANT: index 0 and 1 are reserved for player and opponent</param>
+        public void AddCollisionPairs(params Actor[] actors) {
+            var actorsAsList = actors.ToList();
+            var player = (HumanPlayer) actorsAsList.Pop(0);
+            // TODO: add opponent var opponent = actors.Pop(0);
+            foreach (var actor in actorsAsList) {
+                var pair = new CollisionPair(player, actor);
+                pair.Collision += player.OnActorCollision;
+                GameState.Instance.CollisionPairs.Add(pair);
+            }
         }
 
     }

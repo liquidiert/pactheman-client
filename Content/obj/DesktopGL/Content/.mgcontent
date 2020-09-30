@@ -4,16 +4,28 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/ScoreFont.spritefont</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/ghost_base.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactory.sf</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/objects/point.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/pactheman_player.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/pactheman.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/pactheman_map.tmx</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/ScoreFont.spritefont</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/blinky.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/clyde.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/inky.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/pinky.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/spriteFactoryBlinky.sf</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/spriteFactoryClyde.sf</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/spriteFactoryInky.sf</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/ghosts/spriteFactoryPinky.sf</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/objects/point.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/player/pactheman.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/player/pactheman_player.png</File>
+    <File>C:/Users/haber/git_repos/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

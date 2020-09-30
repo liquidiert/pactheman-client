@@ -17,6 +17,8 @@ namespace pactheman_client {
 
         public string Name { get; set; }
         protected readonly float SCATTER_SECONDS = 3.5f;
+        protected float scatterTicker { get; set; }
+        protected Vector2 lastTarget { get; set; }
 
         protected List<Vector2> MovesToMake;
         protected GhostStates CurrentGhostState = GhostStates.Chase;
