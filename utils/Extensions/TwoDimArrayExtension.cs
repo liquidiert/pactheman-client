@@ -32,15 +32,10 @@ namespace pactheman_client {
             var sizeFactor = Math.Floor((decimal) regionSize / 2);
             var xIndex = 0;
             var yIndex = 0;
-            for (var h = 0; h < arr.GetLength(1) - 1; h++) {
-                for (var w = 0; w < arr.GetLength(0) - 1; w++) {
-                    if (
-                        (h >= center.Y - sizeFactor && h <= center.Y + sizeFactor) &&
-                        (w >= center.X - sizeFactor && w <= center.X + sizeFactor)
-                    ) {
-                        res[xIndex, yIndex] = new Tuple<Point, T>(new Point(w, h), arr[w, h]);
-                        xIndex++;
-                    }
+            for (var h = center.Y - sizeFactor; h <= center.Y + sizeFactor; h++) {
+                for (var w = center.X - sizeFactor; w <= center.X + sizeFactor; w++) {
+                    res[xIndex, yIndex] = new Tuple<Point, T>(new Point(w, h), arr[w, h]);
+                    xIndex++;
                 }
                 xIndex = 0;
                 if (h >= center.Y - sizeFactor && h <= center.Y + sizeFactor) yIndex ++;
