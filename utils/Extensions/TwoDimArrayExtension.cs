@@ -26,15 +26,15 @@ namespace pactheman_client {
         /// A array of tuples consisting of the original position of the element and the element itself;
         /// if size is 1 returns a tuple with the center and the elemnt of the array at the center
         /// </returns>
-        public static dynamic GetRegion<T>(this T[,] arr, Point center, int regionSize=1) {
-            if (regionSize == 1) return new Tuple<Point, T>(center, arr[center.X, center.Y]);
-            var res = new Tuple<Point, T>[regionSize, regionSize];
-            var sizeFactor = Math.Floor((decimal) regionSize / 2);
+        public static dynamic GetRegion<T>(this T[,] arr, Vector2 center, int regionSize=1) {
+            if (regionSize == 1) return new Tuple<Vector2, T>(center, arr[(int) center.X, (int) center.Y]);
+            var res = new Tuple<Vector2, T>[regionSize, regionSize];
+            var sizeFactor = Math.Floor((float) regionSize / 2);
             var xIndex = 0;
             var yIndex = 0;
-            for (var h = center.Y - sizeFactor; h <= center.Y + sizeFactor; h++) {
-                for (var w = center.X - sizeFactor; w <= center.X + sizeFactor; w++) {
-                    res[xIndex, yIndex] = new Tuple<Point, T>(new Point(w, h), arr[w, h]);
+            for (int h = (int) (center.Y - sizeFactor); h <= center.Y + sizeFactor; h++) {
+                for (int w = (int) (center.X - sizeFactor); w <= center.X + sizeFactor; w++) {
+                    res[xIndex, yIndex] = new Tuple<Vector2, T>(new Vector2(w, h), arr[w, h]);
                     xIndex++;
                 }
                 xIndex = 0;

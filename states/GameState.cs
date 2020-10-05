@@ -6,12 +6,15 @@ namespace pactheman_client {
     public enum UIState {
         Menu,
         Settings,
-        Game
+        Game,
+        GameReset,
+        GamePaused
     }
 
     class GameState {
-        public UIState CurrentState { get; set; }
+        public UIState CurrentUIState { get; set; }
         public List<CollisionPair> CollisionPairs = new List<CollisionPair>();
+        public float RESET_COUNTER = 6;
 
         private static readonly Lazy<GameState> lazy = new Lazy<GameState>(() => new GameState());
         public static GameState Instance { get => lazy.Value; }

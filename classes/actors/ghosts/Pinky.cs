@@ -17,6 +17,7 @@ namespace pactheman_client {
         public Pinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryPinky.sf") {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.StartPosition = Position;
             this.Name = name;
             this.MovementSpeed = 275f;
             this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.Position, iterDepth: 5);

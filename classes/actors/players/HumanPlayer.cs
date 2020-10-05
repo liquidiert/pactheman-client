@@ -48,6 +48,7 @@ namespace pactheman_client {
 
         public HumanPlayer(ContentManager content, TiledMap map) : base(content, "sprites/player/spriteFactory.sf") {
             this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            this.StartPosition = Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
@@ -100,6 +101,7 @@ namespace pactheman_client {
 
         public void OnActorCollision(object sender, EventArgs args) {
             DecreaseLives();
+            Environment.Instance.Reset();
         }
 
         public void DecreaseLives() {

@@ -24,6 +24,7 @@ namespace pactheman_client {
         public RectangleF BoundingBox { get; set; }
         public Vector2 BoundingOffset { get; set; }
 
+        public Vector2 StartPosition;
         private Vector2 _position;
         public Vector2 Position {
             get => _position;

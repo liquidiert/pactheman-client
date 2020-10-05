@@ -10,8 +10,8 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\..\.nuget\packages\monogame.extended.content.pipeline\3.8.0\tools\Newtonsoft.Json.dll
-/reference:..\..\..\.nuget\packages\monogame.extended.content.pipeline\3.8.0\tools\MonoGame.Extended.Content.Pipeline.dll
+/reference:../../../../.nuget/packages/monogame.extended.content.pipeline/3.8.0/tools/MonoGame.Extended.Content.Pipeline.dll
+/reference:../../../../.nuget/packages/monogame.extended.content.pipeline/3.8.0/tools/Newtonsoft.Json.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -111,18 +111,6 @@
 /processorParam:TextureFormat=Color
 /build:sprites/objects/point.png
 
-#begin sprites/player/pactheman.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:sprites/player/pactheman.png
-
 #begin sprites/player/pactheman_player.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -134,6 +122,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/player/pactheman_player.png
+
+#begin sprites/player/pactheman.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/player/pactheman.png
 
 #begin sprites/player/spriteFactory.sf
 /importer:SpriteFactoryContentImporter

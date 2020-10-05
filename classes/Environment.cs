@@ -15,6 +15,7 @@ namespace pactheman_client {
         public List<TiledMapObject> PlayerStartPoints;
         public List<TiledMapObject> GhostStartPoints;
         public List<ScorePoint> ScorePointPositions;
+        public List<Actor> Actors;
         public int[,] MapAsTiles;
         public HumanPlayer PacMan;
         public CollisionWorld Walls;
@@ -53,24 +54,32 @@ namespace pactheman_client {
 
             return Instance;
         }
-
         public bool RemoveScorePoint(Vector2 position) {
             return ScorePointPositions.RemoveWhere(p => p.Position.AddValue(32).EqualsWithTolerence(position, tolerance: 32f));
         }
         /// <summary>
-        /// Adds collsion pairs for each Ghost and Player to GameState.
+        /// Adds collsions for walls and also for pairs of each Ghost and Player to GameState.
         /// </summary>
         /// <param name="actors">IMPORTANT: index 0 and 1 are reserved for player and opponent</param>
-        public void AddCollisionPairs(params Actor[] actors) {
-            var actorsAsList = actors.ToList();
-            var player = (HumanPlayer) actorsAsList.Pop(0);
+        public void AddCollisions() {
+            foreach (var actor in Actors) {
+                Walls.CreateActor(actor);
+            }
+            var actorsCopy = new List<Actor>(Actors);
+            var player = (HumanPlayer) actorsCopy.Pop(0);
             // TODO: add opponent var opponent = actors.Pop(0);
-            foreach (var actor in actorsAsList) {
+            foreach (var actor in actorsCopy) {
                 var pair = new CollisionPair(player, actor);
                 pair.Collision += player.OnActorCollision;
                 GameState.Instance.CollisionPairs.Add(pair);
             }
         }
-
+        public void Reset() {
+            GameState.Instance.CurrentUIState = UIState.GameReset;
+            foreach (var actor in Actors) {
+                actor.Position = actor.StartPosition;
+                actor.Velocity = Vector2.Zero;
+            }
+        }
     }
 }

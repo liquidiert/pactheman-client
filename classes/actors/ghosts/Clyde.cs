@@ -13,11 +13,15 @@ namespace pactheman_client {
     class Clyde : Ghost {
 
         private List<Vector2> _nextSteps(GameTime gameTime) {
-            var possibleTargets = ((Tuple<Point, int>[,]) Environment.Instance.MapAsTiles.GetRegion(Position.ToPoint(), regionSize: 3))
-                .Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
+            var isCloseToCenter = DownScaledPosition.X > 2 || DownScaledPosition.X <= 20 && DownScaledPosition.Y > 2 || DownScaledPosition.Y <= 17;
+            var possibleTargets = ((Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
+                DownScaledPosition,
+                regionSize: isCloseToCenter ? 5 : 3
+            )).Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
             return AStar.Instance.GetPath(
                 DownScaledPosition,
-                possibleTargets[new Random().Next(possibleTargets.Count)].ToVector2()
+                possibleTargets[new Random().Next(possibleTargets.Count)],
+                iterDepth: 5
             );
         }
 
@@ -25,12 +29,13 @@ namespace pactheman_client {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.MovementSpeed = 275f;
+            this.StartPosition = Position;
             this.Name = name;
-            var region = (Tuple<Point, int>[,]) Environment.Instance.MapAsTiles.GetRegion(Position.ToPoint(), regionSize: 7);
+            var region = (Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(DownScaledPosition, regionSize: 7);
             var startTargets = region.Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
             this.MovesToMake = AStar.Instance.GetPath(
                 DownScaledPosition,
-                startTargets[new Random().Next(startTargets.Count)].ToVector2(),
+                startTargets[new Random().Next(startTargets.Count)],
                 iterDepth: 5
             );
             this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);

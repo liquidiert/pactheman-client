@@ -34,7 +34,7 @@ namespace pactheman_client {
 
         public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
-            GameState.Instance.CurrentState = UIState.Game;
+            GameState.Instance.CurrentUIState = UIState.Game;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
@@ -66,18 +66,15 @@ namespace pactheman_client {
             clyde = new Clyde(Content, "clyde");
 
             actors.AddMany(player, blinky, pinky, inky, clyde);
+            environment.Actors = actors;
 
-            // add map collisions
-            foreach (var actor in actors) {
-                environment.Walls.CreateActor(actor);
-            }
-
-            // add actor collision pairs
-            environment.AddCollisionPairs(player, blinky, pinky, inky, clyde);
+            // add collisions
+            environment.AddCollisions();
 
             // camera
             var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
             camera = new OrthographicCamera(viewportadapter);
+            camera.LookAt(new Vector2(608, 704));
 
             base.LoadContent();
         }
@@ -86,21 +83,29 @@ namespace pactheman_client {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit(); // TODO: rather open menu
 
-            if (GameState.Instance.CurrentState == UIState.Game) {
-                // update map
-                mapRenderer.Update(gameTime);
-                camera.LookAt(new Vector2(608, 704));
+            switch (GameState.Instance.CurrentUIState) {
+                case UIState.Game:
+                    // update map
+                    mapRenderer.Update(gameTime);
 
-                // update actors
-                foreach (var actor in actors) {
-                    actor.Move(gameTime);
-                    actor.Sprite.Update(gameTime);
-                }
+                    // update actors
+                    foreach (var actor in actors) {
+                        actor.Move(gameTime);
+                        actor.Sprite.Update(gameTime);
+                    }
 
-                // update collision pairs
-                foreach (var pair in GameState.Instance.CollisionPairs) {
-                    pair.Update(gameTime);
-                }
+                    // update collision pairs
+                    foreach (var pair in GameState.Instance.CollisionPairs) {
+                        pair.Update(gameTime);
+                    }
+                    break;
+                case UIState.GameReset:
+                    GameState.Instance.RESET_COUNTER -= gameTime.GetElapsedSeconds();
+                    if (GameState.Instance.RESET_COUNTER <= 0) {
+                        GameState.Instance.CurrentUIState = UIState.Game;
+                        GameState.Instance.RESET_COUNTER = 6f;
+                    }
+                    break;
 
             }
 
@@ -116,60 +121,78 @@ namespace pactheman_client {
                 transformMatrix: camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
-            switch (GameState.Instance.CurrentState) {
+            switch (GameState.Instance.CurrentUIState) {
                 case UIState.Menu:
                     break;
                 case UIState.Settings:
                     break;
                 case UIState.Game:
-                    // draw map
-                    mapRenderer.Draw(camera.GetViewMatrix());
-
-                    // draw score points
-                    foreach (var point in environment.ScorePointPositions) {
-                        point.Draw(_spriteBatch);
-                    }
-
-                    // player one stats
-                    // draw name
+                    DrawEnvironment();
+                    break;
+                case UIState.GameReset:
+                    DrawEnvironment();
                     _spriteBatch.DrawString(
                         Content.Load<SpriteFont>("ScoreFont"),
-                        player.Name,
-                        new Vector2(-350, 50),
-                        Color.White
+                        $"{(int)GameState.Instance.RESET_COUNTER}",
+                        new Vector2(570, 650),
+                        Color.Yellow,
+                        0f,
+                        Vector2.Zero,
+                        3f,
+                        SpriteEffects.None,
+                        0f
                     );
-                    // draw lives
-                    _spriteBatch.DrawString(
-                        Content.Load<SpriteFont>("ScoreFont"),
-                        $"Lives: {player.Lives}",
-                        new Vector2(-350, 100),
-                        Color.White
-                    );
-                    // draw score
-                    _spriteBatch.DrawString(
-                        Content.Load<SpriteFont>("ScoreFont"),
-                        $"Score: {player.Score}",
-                        new Vector2(-350, 150),
-                        Color.White
-                    );
-
-                    // draw actors
-                    foreach (var actor in actors) {
-                        actor.Draw(_spriteBatch);
-                    }
-                    /* Texture2D _texture;
-
-                    _texture = new Texture2D(GraphicsDevice, 1, 1);
-                    _texture.SetData(new Color[] { Color.DarkSlateGray });
-                    _spriteBatch.Draw(_texture, 
-                        new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
-                        Color.White); */
                     break;
             }
             _spriteBatch.End();
 
 
             base.Draw(gameTime);
+        }
+
+        private void DrawEnvironment() {
+            // draw map
+            mapRenderer.Draw(camera.GetViewMatrix());
+
+            // draw score points
+            foreach (var point in environment.ScorePointPositions) {
+                point.Draw(_spriteBatch);
+            }
+
+            // player one stats
+            // draw name
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                player.Name,
+                new Vector2(-350, 50),
+                Color.White
+            );
+            // draw lives
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                $"Lives: {player.Lives}",
+                new Vector2(-350, 100),
+                Color.White
+            );
+            // draw score
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                $"Score: {player.Score}",
+                new Vector2(-350, 150),
+                Color.White
+            );
+
+            // draw actors
+            foreach (var actor in actors) {
+                actor.Draw(_spriteBatch);
+            }
+            /* Texture2D _texture;
+
+            _texture = new Texture2D(GraphicsDevice, 1, 1);
+            _texture.SetData(new Color[] { Color.DarkSlateGray });
+            _spriteBatch.Draw(_texture, 
+                new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
+                Color.White); */
         }
     }
 }

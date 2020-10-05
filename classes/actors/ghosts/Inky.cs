@@ -15,11 +15,11 @@ namespace pactheman_client {
         private Vector2 _randomPatrollingTarget {
             get {
                 var targetPos = Environment.Instance.PacMan.DownScaledPosition;
-                var possibleTargets = ((Tuple<Point, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
-                    Environment.Instance.PacMan.DownScaledPosition.ToPoint(),
+                var possibleTargets = ((Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
+                    targetPos,
                     regionSize: 3))
                         .Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
-                return possibleTargets[new Random().Next(possibleTargets.Count)].ToVector2();
+                return possibleTargets[new Random().Next(possibleTargets.Count)];
             }
         }
         private List<Vector2> _nextSteps => AStar.Instance.GetPath(DownScaledPosition, _randomPatrollingTarget, iterDepth: 5);
@@ -27,6 +27,7 @@ namespace pactheman_client {
         public Inky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryInky.sf") {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.StartPosition = Position;
             this.Name = name;
             this.MovementSpeed = 275f;
             this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.Position, iterDepth: 5);
