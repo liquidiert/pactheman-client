@@ -17,12 +17,12 @@ namespace pactheman_client {
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Name = name;
-            this.MovementSpeed = 275f;
             this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 10);
             this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
         }
 
         public override void Move(GameTime gameTime) {
+            if (Waiting) return;
             float delta = gameTime.GetElapsedSeconds();
 
             Vector2 target;

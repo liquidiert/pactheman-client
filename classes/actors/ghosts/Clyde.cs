@@ -28,7 +28,6 @@ namespace pactheman_client {
         public Clyde(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryClyde.sf") {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
-            this.MovementSpeed = 275f;
             this.StartPosition = Position;
             this.Name = name;
             var region = (Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(DownScaledPosition, regionSize: 7);
@@ -42,6 +41,7 @@ namespace pactheman_client {
         }
 
         public override void Move(GameTime gameTime) {
+            if (Waiting) return;
             float delta = gameTime.GetElapsedSeconds();
 
             Vector2 target;

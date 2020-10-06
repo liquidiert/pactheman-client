@@ -13,9 +13,12 @@ namespace pactheman_client {
 
     class Ghost : Actor {
 
-        public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {}
+        public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
+            this.MovementSpeed = 250f;
+        }
 
         public string Name { get; set; }
+        public bool Waiting = true;
         protected readonly float SCATTER_SECONDS = 3.5f;
         protected float scatterTicker { get; set; }
         protected Vector2 lastTarget { get; set; }
@@ -30,6 +33,12 @@ namespace pactheman_client {
 
         public override void Move(GameTime t) {}
         public override void Draw(SpriteBatch b){}
+        public override void Reset() {
+            Velocity = Vector2.Zero;
+            Position = StartPosition.AddValue(32);
+            MovesToMake.Clear();
+            lastTarget = Position;
+        }
 
     }
 

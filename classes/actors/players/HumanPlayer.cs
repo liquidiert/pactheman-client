@@ -94,6 +94,10 @@ namespace pactheman_client {
             spriteBatch.Draw(Sprite, Position);
 
         }
+        public override void Reset() {
+            Velocity = Vector2.Zero;
+            Position = StartPosition;
+        }
         public override void OnCollision(CollisionInfo collisionInfo) {
             Position -= collisionInfo.PenetrationVector;
             base.OnCollision(collisionInfo);

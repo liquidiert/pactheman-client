@@ -103,7 +103,7 @@ namespace pactheman_client {
                     GameState.Instance.RESET_COUNTER -= gameTime.GetElapsedSeconds();
                     if (GameState.Instance.RESET_COUNTER <= 0) {
                         GameState.Instance.CurrentUIState = UIState.Game;
-                        GameState.Instance.RESET_COUNTER = 6f;
+                        GameState.Instance.RESET_COUNTER = 4f;
                     }
                     break;
 
