@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx</SourceFile>
-  <SourceTime>2020-09-29T19:57:29.005786+02:00</SourceTime>
+  <SourceTime>2020-10-07T15:30:17.9867422+02:00</SourceTime>
   <DestFile>/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/pactheman_map.xnb</DestFile>
-  <DestTime>2020-10-01T10:11:59.5756328+02:00</DestTime>
+  <DestTime>2020-10-07T15:38:56.5015383+02:00</DestTime>
   <Importer>TiledMapImporter</Importer>
   <ImporterTime>2020-08-29T17:17:30+02:00</ImporterTime>
   <Processor>TiledMapProcessor</Processor>

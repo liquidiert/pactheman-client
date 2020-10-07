@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -15,6 +17,8 @@ namespace pactheman_client {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
             this.MovementSpeed = 250f;
+            Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 4500))
+                .ContinueWith(task => Waiting = false);
         }
 
         public string Name { get; set; }

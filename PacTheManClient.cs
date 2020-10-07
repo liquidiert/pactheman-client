@@ -44,7 +44,6 @@ namespace pactheman_client {
 
         protected override void Initialize() {
             base.Initialize();
-
         }
 
         protected override void LoadContent() {
