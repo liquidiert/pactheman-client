@@ -27,7 +27,7 @@
 /processorParam:TextureFormat=Compressed
 /build:ScoreFont.spritefont
 
-#begin sprites/ghosts/ghost_base.png
+#begin sprites/ghosts/blinky.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -37,13 +37,67 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/ghosts/ghost_base.png
+/build:sprites/ghosts/blinky.png
 
-#begin sprites/ghosts/spriteFactory.sf
+#begin sprites/ghosts/clyde.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/ghosts/clyde.png
+
+#begin sprites/ghosts/inky.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/ghosts/inky.png
+
+#begin sprites/ghosts/pinky.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/ghosts/pinky.png
+
+#begin sprites/ghosts/spriteFactoryBlinky.sf
 /importer:SpriteFactoryContentImporter
 /processor:SpriteFactoryContentProcessor
 /processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/ghosts/spriteFactory.sf
+/build:sprites/ghosts/spriteFactoryBlinky.sf
+
+#begin sprites/ghosts/spriteFactoryClyde.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:sprites/ghosts/spriteFactoryClyde.sf
+
+#begin sprites/ghosts/spriteFactoryInky.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:sprites/ghosts/spriteFactoryInky.sf
+
+#begin sprites/ghosts/spriteFactoryPinky.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:sprites/ghosts/spriteFactoryPinky.sf
 
 #begin sprites/objects/point.png
 /importer:TextureImporter

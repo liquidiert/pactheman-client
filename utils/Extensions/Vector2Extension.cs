@@ -28,6 +28,16 @@ namespace pactheman_client {
             return vector;
         }
 
+        public static Vector2 CeilInstance(this Vector2 vector) {
+            vector.Ceiling();
+            return vector;
+        }
+
+        public static Vector2 FloorInstance(this Vector2 vector) {
+            vector.Floor();
+            return vector;
+        }
+
     }
 
 }

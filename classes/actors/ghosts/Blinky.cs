@@ -10,41 +10,36 @@ using System.Collections.Generic;
 namespace pactheman_client {
 
     class Blinky : Ghost {
+        private List<Vector2> _nextSteps => AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 5);
 
-        private Vector2 _lastTarget;
-        private float _scatterTicker;
-
-        private List<Vector2> fiveSteps => AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 5);
-
-        public Blinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactory.sf") {
+        public Blinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryBlinky.sf") {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.StartPosition = Position;
             this.Name = name;
-            this.MovementSpeed = 300f;
             this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 10);
-            this._lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+            this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
         }
 
-        public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
+        public override void Move(GameTime gameTime) {
+            if (Waiting) return;
             float delta = gameTime.GetElapsedSeconds();
 
             Vector2 target;
             switch (this.CurrentGhostState) {
                 case GhostStates.Chase:
-                    target = _lastTarget;
-                    if (Position.EqualsWithTolerence(_lastTarget, 5f)) {
+                    target = lastTarget;
+                    if (Position.EqualsWithTolerence(lastTarget, 5f)) {
                         try {
-                            target = _lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+                            target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                         } catch (ArgumentOutOfRangeException) {
-                            MovesToMake = fiveSteps;
+                            MovesToMake = _nextSteps;
                             if (MovesToMake.IsEmpty()) { // hussa pacman reached!
-                                // TODO: rather handle that via collision
-                                Environment.Instance.PacMan.DecreaseLives();
                                 CurrentGhostState = GhostStates.Scatter;
                                 MovesToMake = AStar.Instance.GetPath(DownScaledPosition, new Vector2(17, 1));
                                 break;
                             }
-                            target = _lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+                            target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                         }
                     }
                     Velocity = target - Position;
@@ -52,24 +47,24 @@ namespace pactheman_client {
                     break;
                 case GhostStates.Scatter:
                     // move to upper right corner
-                    target = _lastTarget;
-                    if (Position.EqualsWithTolerence(_lastTarget, 5f)) {
+                    target = lastTarget;
+                    if (Position.EqualsWithTolerence(lastTarget, 5f)) {
                         try {
-                            target = _lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+                            target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                         } catch (ArgumentOutOfRangeException) {
                             CurrentGhostState = GhostStates.Chase;
                             break;
                         }
                     }
-                    if (_scatterTicker >= SCATTER_SECONDS) {
-                        MovesToMake = fiveSteps;
+                    if (scatterTicker >= SCATTER_SECONDS) {
+                        MovesToMake = _nextSteps;
                         CurrentGhostState = GhostStates.Chase;
-                        _scatterTicker = 0;
+                        scatterTicker = 0;
                         break;
                     }
                     Velocity = target - Position;
                     Position += Velocity.RealNormalize() * MovementSpeed * delta;
-                    _scatterTicker += delta;
+                    scatterTicker += delta;
                     break;
                 case GhostStates.Frightened:
                     break;

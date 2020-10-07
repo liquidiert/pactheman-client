@@ -15,24 +15,20 @@ namespace pactheman_client {
         private KeyboardStateExtended _kState;
         private int _score = 0;
         private int _lives = 3;
-        public int Score { 
-            get {
-                return _score;
-            }
+        public int Score {
+            get => _score;
         }
         public string Lives {
-            get {
-                return "<3".Multiple(_lives);
-            }
+            get => "<3".Multiple(_lives);
         }
         public string Name = "PlayerOne";
 
         private MovingStates CurrentMovingState {
-            get { return movingState; } 
+            get { return movingState; }
             set {
                 if (movingState != value) {
                     movingState = value;
-                    switch(movingState) {
+                    switch (movingState) {
                         case MovingStates.Up:
                             Sprite.Play("up");
                             break;
@@ -52,28 +48,33 @@ namespace pactheman_client {
 
         public HumanPlayer(ContentManager content, TiledMap map) : base(content, "sprites/player/spriteFactory.sf") {
             this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            this.StartPosition = Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
-        public override void Move(GameTime gameTime, GraphicsDeviceManager graphics) {
+        public override void Move(GameTime gameTime) {
             var delta = gameTime.GetElapsedSeconds();
             _kState = KeyboardExtended.GetState();
 
             // TODO: use rotation instead of dedicated animations
             Vector2 updatedPosition = Position;
             if (_kState.IsKeyDown(Keys.W)) { // up
+                Velocity = new Vector2(0, -1);
                 updatedPosition.Y -= MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Up;
             }
             if (_kState.IsKeyDown(Keys.S)) { // down
+                Velocity = new Vector2(0, 1);
                 updatedPosition.Y += MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Down;
             }
             if (_kState.IsKeyDown(Keys.A)) { // left
+                Velocity = new Vector2(-1, 0);
                 updatedPosition.X -= MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Left;
             }
             if (_kState.IsKeyDown(Keys.D)) { // right
+                Velocity = new Vector2(1, 0);
                 updatedPosition.X += MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Right;
             }
@@ -91,11 +92,20 @@ namespace pactheman_client {
         }
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Sprite, Position);
-            
+
+        }
+        public override void Reset() {
+            Velocity = Vector2.Zero;
+            Position = StartPosition;
         }
         public override void OnCollision(CollisionInfo collisionInfo) {
             Position -= collisionInfo.PenetrationVector;
             base.OnCollision(collisionInfo);
+        }
+
+        public void OnActorCollision(object sender, EventArgs args) {
+            DecreaseLives();
+            Environment.Instance.Reset();
         }
 
         public void DecreaseLives() {
