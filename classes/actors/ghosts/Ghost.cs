@@ -17,7 +17,7 @@ namespace pactheman_client {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
             this.MovementSpeed = 250f;
-            Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 4500))
+            Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
                 .ContinueWith(task => Waiting = false);
         }
 
