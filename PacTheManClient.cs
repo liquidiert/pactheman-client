@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Gui;
-using MonoGame.Extended.Gui.Markup;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
@@ -19,7 +19,10 @@ namespace pactheman_client {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private OrthographicCamera _camera;
+
+        // GUI
         private GuiSystem _guiSystem;
+        private MainMenu _mainMenu = new MainMenu();
 
         // environment
         private TiledMap map;
@@ -41,27 +44,33 @@ namespace pactheman_client {
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            // Window.ClientSizeChanged += WindowOnClientSizeChanged;
 
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
+        private void WindowOnClientSizeChanged(object sender, EventArgs eventArgs) {
+            _guiSystem.ClientSizeChanged();
+        }
+
         protected override void Initialize() {
+            base.Initialize();
+        }
+
+        protected override void LoadContent() {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
             // _camera
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
             _camera = new OrthographicCamera(viewportAdapter);
             _camera.LookAt(new Vector2(608, 704));
 
             // menus
-            var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, () => Matrix.Identity);
-
-            // TODO: add main menu
-
-            _guiSystem = new GuiSystem(viewportAdapter, guiRenderer) { ActiveScreen = mainMenu };
-            base.Initialize();
-        }
-
-        protected override void LoadContent() {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            var font = Content.Load<BitmapFont>("go");
+            BitmapFont.UseKernings = false;
+            Skin.CreateDefault(font);
+            var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, viewportAdapter.GetScaleMatrix);
+            _guiSystem = new GuiSystem(viewportAdapter, guiRenderer) { ActiveScreen = _mainMenu };
 
             // tile map
             map = Content.Load<TiledMap>("pactheman_map");
@@ -93,7 +102,7 @@ namespace pactheman_client {
 
             switch (GameState.Instance.CurrentUIState) {
                 case UIState.MainMenu:
-
+                    _mainMenu.Update(gameTime);
                     break;
                 case UIState.Game:
                     // update map

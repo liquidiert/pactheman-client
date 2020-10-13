@@ -15,6 +15,23 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin go_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:go_0.png
+
+#begin go.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:go.fnt
+
 #begin pactheman_map.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
