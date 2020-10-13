@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using MonoGame.Extended.Gui;
+using MonoGame.Extended.Gui.Markup;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.TextureAtlases;
@@ -16,7 +18,8 @@ namespace pactheman_client {
     public class PacTheManClient : Game {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private OrthographicCamera camera;
+        private OrthographicCamera _camera;
+        private GuiSystem _guiSystem;
 
         // environment
         private TiledMap map;
@@ -34,7 +37,7 @@ namespace pactheman_client {
 
         public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
-            GameState.Instance.CurrentUIState = UIState.Game;
+            GameState.Instance.CurrentUIState = UIState.MainMenu;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
@@ -43,6 +46,17 @@ namespace pactheman_client {
         }
 
         protected override void Initialize() {
+            // _camera
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
+            _camera = new OrthographicCamera(viewportAdapter);
+            _camera.LookAt(new Vector2(608, 704));
+
+            // menus
+            var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, () => Matrix.Identity);
+
+            // TODO: add main menu
+
+            _guiSystem = new GuiSystem(viewportAdapter, guiRenderer) { ActiveScreen = mainMenu };
             base.Initialize();
         }
 
@@ -70,11 +84,6 @@ namespace pactheman_client {
             // add collisions
             environment.AddCollisions();
 
-            // camera
-            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
-            camera = new OrthographicCamera(viewportadapter);
-            camera.LookAt(new Vector2(608, 704));
-
             base.LoadContent();
         }
 
@@ -83,6 +92,9 @@ namespace pactheman_client {
                 Exit(); // TODO: rather open menu
 
             switch (GameState.Instance.CurrentUIState) {
+                case UIState.MainMenu:
+
+                    break;
                 case UIState.Game:
                     // update map
                     mapRenderer.Update(gameTime);
@@ -108,6 +120,7 @@ namespace pactheman_client {
 
             }
 
+            _guiSystem.Update(gameTime);
             environment.Walls.Update(gameTime);
             base.Update(gameTime);
         }
@@ -117,11 +130,12 @@ namespace pactheman_client {
 
             // map draw
             _spriteBatch.Begin(
-                transformMatrix: camera.GetViewMatrix(),
+                transformMatrix: _camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
             switch (GameState.Instance.CurrentUIState) {
-                case UIState.Menu:
+                case UIState.MainMenu:
+                    _guiSystem.Draw(gameTime);
                     break;
                 case UIState.Settings:
                     break;
@@ -151,7 +165,7 @@ namespace pactheman_client {
 
         private void DrawEnvironment() {
             // draw map
-            mapRenderer.Draw(camera.GetViewMatrix());
+            mapRenderer.Draw(_camera.GetViewMatrix());
 
             // draw score points
             foreach (var point in environment.ScorePointPositions) {

@@ -5,6 +5,7 @@ namespace pactheman_client {
 
     public enum UIState {
         Menu,
+        MainMenu,
         Settings,
         Game,
         GameReset,

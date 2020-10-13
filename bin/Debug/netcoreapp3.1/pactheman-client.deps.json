@@ -12,6 +12,7 @@
           "MonoGame.Extended": "3.8.0",
           "MonoGame.Extended.Collisions": "3.8.0",
           "MonoGame.Extended.Content.Pipeline": "3.8.0",
+          "MonoGame.Extended.Gui": "3.8.0",
           "MonoGame.Extended.Input": "3.8.0",
           "MonoGame.Extended.Tiled": "3.8.0",
           "MonoGame.Framework.DesktopGL": "3.8.0.1641",
@@ -66,6 +67,18 @@
         },
         "runtime": {
           "lib/netstandard2.0/MonoGame.Extended.Graphics.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "MonoGame.Extended.Gui/3.8.0": {
+        "dependencies": {
+          "MonoGame.Extended": "3.8.0",
+          "MonoGame.Extended.Input": "3.8.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/MonoGame.Extended.Gui.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -201,6 +214,13 @@
       "sha512": "sha512-vSl1+4dFNKnOqHUB1SRQ7IdWXNagJJI+KKCQmaSyfon99/kumsChQ9iZXltEaUO3ArB8QGnblii/PXq/bsLUHQ==",
       "path": "monogame.extended.graphics/3.8.0",
       "hashPath": "monogame.extended.graphics.3.8.0.nupkg.sha512"
+    },
+    "MonoGame.Extended.Gui/3.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Q40QIqEsmX3+tpLqENswMRIQ1FBf/3llJDGk3zTStdb2ejs4LGYWNeBIEbGqj3anfecT4qgNnJKCIaL61Cmx7A==",
+      "path": "monogame.extended.gui/3.8.0",
+      "hashPath": "monogame.extended.gui.3.8.0.nupkg.sha512"
     },
     "MonoGame.Extended.Input/3.8.0": {
       "type": "package",
