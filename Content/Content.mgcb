@@ -15,6 +15,40 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin fonts/go_0.tga
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:fonts/go_0.tga
+
+#begin fonts/go.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:fonts/go.fnt
+
+#begin fonts/lato_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:fonts/lato_0.png
+
+#begin fonts/lato.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:fonts/lato.fnt
+
 #begin pactheman_map.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

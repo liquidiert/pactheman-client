@@ -105,6 +105,13 @@ namespace pactheman_client {
 
         public void OnActorCollision(object sender, EventArgs args) {
             DecreaseLives();
+            if (_lives <= 0) {
+                GameState.Instance.CurrentGameState = GameStates.MainMenu;
+                UIState.Instance.CurrentUIState = UIStates.MainMenu;
+                UIState.Instance.GuiSystem.ActiveScreen.Show();
+                this._lives = 3;
+                return;
+            }
             Environment.Instance.Reset();
         }
 

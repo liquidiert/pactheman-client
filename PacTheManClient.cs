@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using MonoGame.Extended.Gui;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
@@ -16,7 +18,10 @@ namespace pactheman_client {
     public class PacTheManClient : Game {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private OrthographicCamera camera;
+        private OrthographicCamera _camera;
+
+        // menus
+        private MainMenu _mainMenu;
 
         // environment
         private TiledMap map;
@@ -34,15 +39,37 @@ namespace pactheman_client {
 
         public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
-            GameState.Instance.CurrentUIState = UIState.Game;
+            GameState.Instance.CurrentGameState = GameStates.MainMenu;
+            UIState.Instance.CurrentUIState = UIStates.MainMenu;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            // Window.ClientSizeChanged += WindowOnClientSizeChanged;
 
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
+        private void WindowOnClientSizeChanged(object sender, EventArgs eventArgs) {
+            UIState.Instance.GuiSystem.ClientSizeChanged();
+        }
+
         protected override void Initialize() {
+            // _camera
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
+            _camera = new OrthographicCamera(viewportAdapter);
+            _camera.LookAt(new Vector2(608, 704));
+
+            // menus
+            _mainMenu = new MainMenu(Exit);
+
+            // gui rendering
+            var font = Content.Load<BitmapFont>("fonts/go");
+            BitmapFont.UseKernings = false;
+            Skin.CreateDefault(font);
+            var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, viewportAdapter.GetScaleMatrix);
+            UIState.Instance.GuiSystem = new GuiSystem(viewportAdapter, guiRenderer);
+            UIState.Instance.CurrentScreen = _mainMenu;
+
             base.Initialize();
         }
 
@@ -70,20 +97,18 @@ namespace pactheman_client {
             // add collisions
             environment.AddCollisions();
 
-            // camera
-            var viewportadapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
-            camera = new OrthographicCamera(viewportadapter);
-            camera.LookAt(new Vector2(608, 704));
-
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit(); // TODO: rather open menu
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+                if (UIState.Instance.CurrentUIState != UIStates.MainMenu && UIState.Instance.CurrentUIState != UIStates.Settings) {
+                    Exit(); // TODO: rather open ingame menu
+                }
+            }
 
-            switch (GameState.Instance.CurrentUIState) {
-                case UIState.Game:
+            switch (GameState.Instance.CurrentGameState) {
+                case GameStates.Game:
                     // update map
                     mapRenderer.Update(gameTime);
 
@@ -98,16 +123,20 @@ namespace pactheman_client {
                         pair.Update(gameTime);
                     }
                     break;
-                case UIState.GameReset:
+                case GameStates.GameReset:
                     GameState.Instance.RESET_COUNTER -= gameTime.GetElapsedSeconds();
                     if (GameState.Instance.RESET_COUNTER <= 0) {
-                        GameState.Instance.CurrentUIState = UIState.Game;
+                        GameState.Instance.CurrentGameState = GameStates.Game;
                         GameState.Instance.RESET_COUNTER = 4f;
                     }
                     break;
 
             }
+            if (UIState.Instance.CurrentUIState != UIStates.Game) {
+                UIState.Instance.CurrentScreen.Update(gameTime);
+            }
 
+            UIState.Instance.GuiSystem.Update(gameTime);
             environment.Walls.Update(gameTime);
             base.Update(gameTime);
         }
@@ -117,18 +146,15 @@ namespace pactheman_client {
 
             // map draw
             _spriteBatch.Begin(
-                transformMatrix: camera.GetViewMatrix(),
+                transformMatrix: _camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
-            switch (GameState.Instance.CurrentUIState) {
-                case UIState.Menu:
-                    break;
-                case UIState.Settings:
-                    break;
-                case UIState.Game:
+
+            switch (GameState.Instance.CurrentGameState) {
+                case GameStates.Game:
                     DrawEnvironment();
                     break;
-                case UIState.GameReset:
+                case GameStates.GameReset:
                     DrawEnvironment();
                     _spriteBatch.DrawString(
                         Content.Load<SpriteFont>("ScoreFont"),
@@ -145,13 +171,17 @@ namespace pactheman_client {
             }
             _spriteBatch.End();
 
+            if (UIState.Instance.CurrentUIState != UIStates.Game) {
+                UIState.Instance.GuiSystem.Draw(gameTime);
+            }
+
 
             base.Draw(gameTime);
         }
 
         private void DrawEnvironment() {
             // draw map
-            mapRenderer.Draw(camera.GetViewMatrix());
+            mapRenderer.Draw(_camera.GetViewMatrix());
 
             // draw score points
             foreach (var point in environment.ScorePointPositions) {
