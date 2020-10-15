@@ -20,9 +20,8 @@ namespace pactheman_client {
         private SpriteBatch _spriteBatch;
         private OrthographicCamera _camera;
 
-        // GUI
-        private GuiSystem _guiSystem;
-        private MainMenu _mainMenu = new MainMenu();
+        // menus
+        private MainMenu _mainMenu;
 
         // environment
         private TiledMap map;
@@ -40,7 +39,8 @@ namespace pactheman_client {
 
         public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
-            GameState.Instance.CurrentUIState = UIState.MainMenu;
+            GameState.Instance.CurrentGameState = GameStates.MainMenu;
+            UIState.Instance.CurrentUIState = UIStates.MainMenu;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
@@ -50,27 +50,31 @@ namespace pactheman_client {
         }
 
         private void WindowOnClientSizeChanged(object sender, EventArgs eventArgs) {
-            _guiSystem.ClientSizeChanged();
+            UIState.Instance.GuiSystem.ClientSizeChanged();
         }
 
         protected override void Initialize() {
-            base.Initialize();
-        }
-
-        protected override void LoadContent() {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // _camera
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);
             _camera = new OrthographicCamera(viewportAdapter);
             _camera.LookAt(new Vector2(608, 704));
 
             // menus
-            var font = Content.Load<BitmapFont>("go");
+            _mainMenu = new MainMenu(Exit);
+
+            // gui rendering
+            var font = Content.Load<BitmapFont>("fonts/go");
             BitmapFont.UseKernings = false;
             Skin.CreateDefault(font);
             var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, viewportAdapter.GetScaleMatrix);
-            _guiSystem = new GuiSystem(viewportAdapter, guiRenderer) { ActiveScreen = _mainMenu };
+            UIState.Instance.GuiSystem = new GuiSystem(viewportAdapter, guiRenderer);
+            UIState.Instance.CurrentScreen = _mainMenu;
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent() {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // tile map
             map = Content.Load<TiledMap>("pactheman_map");
@@ -97,14 +101,14 @@ namespace pactheman_client {
         }
 
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit(); // TODO: rather open menu
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+                if (UIState.Instance.CurrentUIState != UIStates.MainMenu && UIState.Instance.CurrentUIState != UIStates.Settings) {
+                    Exit(); // TODO: rather open ingame menu
+                }
+            }
 
-            switch (GameState.Instance.CurrentUIState) {
-                case UIState.MainMenu:
-                    _mainMenu.Update(gameTime);
-                    break;
-                case UIState.Game:
+            switch (GameState.Instance.CurrentGameState) {
+                case GameStates.Game:
                     // update map
                     mapRenderer.Update(gameTime);
 
@@ -119,17 +123,20 @@ namespace pactheman_client {
                         pair.Update(gameTime);
                     }
                     break;
-                case UIState.GameReset:
+                case GameStates.GameReset:
                     GameState.Instance.RESET_COUNTER -= gameTime.GetElapsedSeconds();
                     if (GameState.Instance.RESET_COUNTER <= 0) {
-                        GameState.Instance.CurrentUIState = UIState.Game;
+                        GameState.Instance.CurrentGameState = GameStates.Game;
                         GameState.Instance.RESET_COUNTER = 4f;
                     }
                     break;
 
             }
+            if (UIState.Instance.CurrentUIState != UIStates.Game) {
+                UIState.Instance.CurrentScreen.Update(gameTime);
+            }
 
-            _guiSystem.Update(gameTime);
+            UIState.Instance.GuiSystem.Update(gameTime);
             environment.Walls.Update(gameTime);
             base.Update(gameTime);
         }
@@ -142,16 +149,12 @@ namespace pactheman_client {
                 transformMatrix: _camera.GetViewMatrix(),
                 samplerState: new SamplerState { Filter = TextureFilter.Point }
             );
-            switch (GameState.Instance.CurrentUIState) {
-                case UIState.MainMenu:
-                    _guiSystem.Draw(gameTime);
-                    break;
-                case UIState.Settings:
-                    break;
-                case UIState.Game:
+
+            switch (GameState.Instance.CurrentGameState) {
+                case GameStates.Game:
                     DrawEnvironment();
                     break;
-                case UIState.GameReset:
+                case GameStates.GameReset:
                     DrawEnvironment();
                     _spriteBatch.DrawString(
                         Content.Load<SpriteFont>("ScoreFont"),
@@ -167,6 +170,10 @@ namespace pactheman_client {
                     break;
             }
             _spriteBatch.End();
+
+            if (UIState.Instance.CurrentUIState != UIStates.Game) {
+                UIState.Instance.GuiSystem.Draw(gameTime);
+            }
 
 
             base.Draw(gameTime);

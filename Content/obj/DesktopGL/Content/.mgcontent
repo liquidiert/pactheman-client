@@ -4,8 +4,10 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/go_0.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/go.fnt</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go_0.tga</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go.fnt</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/lato_0.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/lato.fnt</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/ScoreFont.spritefont</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/blinky.png</File>
@@ -22,6 +24,8 @@
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

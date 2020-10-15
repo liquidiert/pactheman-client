@@ -3,17 +3,15 @@ using System.Collections.Generic;
 
 namespace pactheman_client {
 
-    public enum UIState {
-        Menu,
+    public enum GameStates {
         MainMenu,
-        Settings,
         Game,
         GameReset,
         GamePaused
     }
 
     class GameState {
-        public UIState CurrentUIState { get; set; }
+        public GameStates CurrentGameState { get; set; }
         public List<CollisionPair> CollisionPairs = new List<CollisionPair>();
         public float RESET_COUNTER = 4;
 

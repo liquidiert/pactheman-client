@@ -75,7 +75,7 @@ namespace pactheman_client {
             }
         }
         public void Reset() {
-            GameState.Instance.CurrentUIState = UIState.GameReset;
+            GameState.Instance.CurrentGameState = GameStates.GameReset;
             foreach (var actor in Actors) {
                 actor.Reset();
             }
