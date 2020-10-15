@@ -30,6 +30,7 @@ namespace pactheman_client {
 
         // characters
         private HumanPlayer player;
+        private Opponent opponent;
         private Ghost pinky;
         private Ghost blinky;
         private Ghost inky;
@@ -83,15 +84,17 @@ namespace pactheman_client {
             environment = Environment.Instance.Init(Content, map);
 
             // actors
-            player = new HumanPlayer(Content, map);
+            player = new HumanPlayer(Content);
             environment.PacMan = player; // ensure player is set before ghosts
+
+            opponent = new Opponent(Content);
 
             pinky = new Pinky(Content, "pinky");
             blinky = new Blinky(Content, "blinky");
             inky = new Inky(Content, "inky");
             clyde = new Clyde(Content, "clyde");
 
-            actors.AddMany(player, blinky, pinky, inky, clyde);
+            actors.AddMany(player, opponent, blinky, pinky, inky, clyde);
             environment.Actors = actors;
 
             // add collisions

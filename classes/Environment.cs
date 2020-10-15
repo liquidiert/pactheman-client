@@ -67,11 +67,17 @@ namespace pactheman_client {
             }
             var actorsCopy = new List<Actor>(Actors);
             var player = (HumanPlayer) actorsCopy.Pop(0);
-            // TODO: add opponent var opponent = actors.Pop(0);
+            var opponent = (Opponent) actorsCopy.Pop(0);
             foreach (var actor in actorsCopy) {
-                var pair = new CollisionPair(player, actor);
-                pair.Collision += player.OnActorCollision;
-                GameState.Instance.CollisionPairs.Add(pair);
+                // pair of player and ghost
+                var playerPair = new CollisionPair(player, actor);
+                playerPair.Collision += player.OnActorCollision;
+
+                // pair of opponent and ghost
+                var opponentPair = new CollisionPair(opponent, actor);
+                opponentPair.Collision += opponent.OnActorCollision;
+
+                GameState.Instance.CollisionPairs.AddMany(playerPair, opponentPair);
             }
         }
         public void Reset() {

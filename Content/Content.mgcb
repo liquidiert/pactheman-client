@@ -145,7 +145,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/objects/point.png
 
-#begin sprites/player/pactheman_player.png
+#begin sprites/opponent/opponent_base.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/player/pactheman_player.png
+/build:sprites/opponent/opponent_base.png
 
-#begin sprites/player/pactheman.png
+#begin sprites/opponent/opponent.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,7 +167,37 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/player/pactheman.png
+/build:sprites/opponent/opponent.png
+
+#begin sprites/opponent/spriteFactory.sf
+/importer:SpriteFactoryContentImporter
+/processor:SpriteFactoryContentProcessor
+/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
+/build:sprites/opponent/spriteFactory.sf
+
+#begin sprites/player/player_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/player/player_base.png
+
+#begin sprites/player/player.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/player/player.png
 
 #begin sprites/player/spriteFactory.sf
 /importer:SpriteFactoryContentImporter

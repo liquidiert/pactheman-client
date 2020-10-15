@@ -10,10 +10,11 @@ using System;
 using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
-    class HumanPlayer : Actor {
+    class Opponent : Actor {
 
         private KeyboardStateExtended _kState;
         private int _score = 0;
+        private bool _isHooman = true;
         private int _lives = 3;
         public int Score {
             get => _score;
@@ -21,7 +22,7 @@ namespace pactheman_client {
         public string Lives {
             get => "<3".Multiple(_lives);
         }
-        public string Name = "PlayerOne"; // TODO: change at game start
+        public string Name = "PlayerTwo"; // TODO: change at game start
 
         private MovingStates CurrentMovingState {
             get { return movingState; }
@@ -46,34 +47,35 @@ namespace pactheman_client {
             }
         }
 
-        public HumanPlayer(ContentManager content) : base(content, "sprites/player/spriteFactory.sf") {
+        public Opponent(ContentManager content) : base(content, "sprites/opponent/spriteFactory.sf") {
             this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
 
         public override void Move(GameTime gameTime) {
+            // TODO: add real ai movement if _isHooman is false
             var delta = gameTime.GetElapsedSeconds();
             _kState = KeyboardExtended.GetState();
 
             // TODO: use rotation instead of dedicated animations
             Vector2 updatedPosition = Position;
-            if (_kState.IsKeyDown(Keys.W)) { // up
+            if (_kState.IsKeyDown(Keys.Up)) { // up
                 Velocity = new Vector2(0, -1);
                 updatedPosition.Y -= MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Up;
             }
-            if (_kState.IsKeyDown(Keys.S)) { // down
+            if (_kState.IsKeyDown(Keys.Down)) { // down
                 Velocity = new Vector2(0, 1);
                 updatedPosition.Y += MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Down;
             }
-            if (_kState.IsKeyDown(Keys.A)) { // left
+            if (_kState.IsKeyDown(Keys.Left)) { // left
                 Velocity = new Vector2(-1, 0);
                 updatedPosition.X -= MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Left;
             }
-            if (_kState.IsKeyDown(Keys.D)) { // right
+            if (_kState.IsKeyDown(Keys.Right)) { // right
                 Velocity = new Vector2(1, 0);
                 updatedPosition.X += MovementSpeed * delta;
                 CurrentMovingState = MovingStates.Right;

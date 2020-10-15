@@ -1,6 +1,6 @@
 {
   "textureAtlas": {
-    "texture": "player.png",
+    "texture": "opponent.png",
     "regionWidth": 64,
     "regionHeight": 64
   },
