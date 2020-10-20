@@ -4,9 +4,49 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go_0.tga</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go.fnt</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/lato_0.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/fonts/lato.fnt</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/pactheman_map.tmx</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/ScoreFont.spritefont</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/blinky.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/clyde.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/inky.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/pinky.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryBlinky.sf</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryClyde.sf</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryInky.sf</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryPinky.sf</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/objects/point.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/opponent_base.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/opponent.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/spriteFactory.sf</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/player_base.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/player.png</File>
+    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

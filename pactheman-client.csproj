@@ -7,15 +7,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>PacTheMan.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Icon.ico"/>
-    <None Remove="Icon.bmp"/>
+    <None Remove="PacTheMan.ico"/>
+    <None Remove="PacTheMan.bmp"/>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icon.ico"/>
-    <EmbeddedResource Include="Icon.bmp"/>
+    <EmbeddedResource Include="PacTheMan.ico"/>
+    <EmbeddedResource Include="PacTheMan.bmp"/>
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb"/>
@@ -30,5 +30,8 @@
     <PackageReference Include="MonoGame.Extended" Version="3.8.0"/>
     <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0"/>
     <PackageReference Include="MonoGame.Extended.Tiled" Version="3.8.0"/>
+    <PackageReference Include="MonoGame.Extended.Input" Version="3.8.0"/>
+    <PackageReference Include="MonoGame.Extended.Collisions" Version="3.8.0"/>
+    <PackageReference Include="MonoGame.Extended.Gui" Version="3.8.0"/>
   </ItemGroup>
 </Project>
