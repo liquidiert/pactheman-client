@@ -85,7 +85,6 @@ namespace pactheman_client {
 
             // actors
             player = new HumanPlayer(Content);
-            environment.PacMan = player; // ensure player is set before ghosts
 
             opponent = new Opponent(Content);
 
@@ -96,6 +95,8 @@ namespace pactheman_client {
 
             actors.AddMany(player, opponent, blinky, pinky, inky, clyde);
             environment.Actors = actors;
+
+            environment.InitMoveInstructions();
 
             // add collisions
             environment.AddCollisions();

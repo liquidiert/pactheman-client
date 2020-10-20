@@ -5,32 +5,20 @@ using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Sprites;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace pactheman_client {
 
     class Inky : Ghost {
 
-        private Vector2 _randomPatrollingTarget {
-            get {
-                var targetPos = Environment.Instance.PacMan.DownScaledPosition;
-                var possibleTargets = ((Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
-                    targetPos,
-                    regionSize: 3))
-                        .Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
-                return possibleTargets[new Random().Next(possibleTargets.Count)];
-            }
-        }
-        private List<Vector2> _nextSteps => AStar.Instance.GetPath(DownScaledPosition, _randomPatrollingTarget, iterDepth: 5);
-
         public Inky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryInky.sf") {
             this.Sprite.Play("moving");
-            this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.Position = Environment.Instance.GhostStartPoints
+                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Name = name;
-            this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.Position, iterDepth: 5);
-            this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+            this.MovesToMake = new List<Vector2>();
+            this.lastTarget = StartPosition.AddValue(32);
         }
         public override void Move(GameTime gameTime) {
             if (Waiting) return;
@@ -40,7 +28,7 @@ namespace pactheman_client {
             switch (this.CurrentGhostState) {
                 case GhostStates.Chase:
                     target = lastTarget;
-                    if (MovesToMake.IsEmpty()) MovesToMake = _nextSteps;
+                    if (MovesToMake.IsEmpty()) MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
                     if (Position.EqualsWithTolerence(lastTarget, 5f)) {
                         target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                     }
@@ -59,7 +47,7 @@ namespace pactheman_client {
                         }
                     }
                     if (scatterTicker >= SCATTER_SECONDS) {
-                        MovesToMake = _nextSteps;
+                        MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
                         CurrentGhostState = GhostStates.Chase;
                         scatterTicker = 0;
                         break;

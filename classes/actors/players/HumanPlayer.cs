@@ -21,7 +21,6 @@ namespace pactheman_client {
         public string Lives {
             get => "<3".Multiple(_lives);
         }
-        public string Name = "PlayerOne"; // TODO: change at game start
 
         private MovingStates CurrentMovingState {
             get { return movingState; }
@@ -47,6 +46,7 @@ namespace pactheman_client {
         }
 
         public HumanPlayer(ContentManager content) : base(content, "sprites/player/spriteFactory.sf") {
+            this.Name = "PlayerOne"; // TODO: change at game start
             this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");

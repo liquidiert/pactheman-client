@@ -10,15 +10,15 @@ using System.Collections.Generic;
 namespace pactheman_client {
 
     class Blinky : Ghost {
-        private List<Vector2> _nextSteps => AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 5);
 
         public Blinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryBlinky.sf") {
             this.Sprite.Play("moving");
-            this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.Position = Environment.Instance.GhostStartPoints
+                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Name = name;
-            this.MovesToMake = AStar.Instance.GetPath(DownScaledPosition, Environment.Instance.PacMan.DownScaledPosition, iterDepth: 10);
-            this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+            this.MovesToMake = new List<Vector2>();
+            this.lastTarget = StartPosition.AddValue(32);
         }
 
         public override void Move(GameTime gameTime) {
@@ -33,7 +33,7 @@ namespace pactheman_client {
                         try {
                             target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                         } catch (ArgumentOutOfRangeException) {
-                            MovesToMake = _nextSteps;
+                            MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
                             if (MovesToMake.IsEmpty()) { // hussa pacman reached!
                                 CurrentGhostState = GhostStates.Scatter;
                                 MovesToMake = AStar.Instance.GetPath(DownScaledPosition, new Vector2(17, 1));
@@ -57,7 +57,7 @@ namespace pactheman_client {
                         }
                     }
                     if (scatterTicker >= SCATTER_SECONDS) {
-                        MovesToMake = _nextSteps;
+                        MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
                         CurrentGhostState = GhostStates.Chase;
                         scatterTicker = 0;
                         break;

@@ -12,32 +12,14 @@ namespace pactheman_client {
 
     class Clyde : Ghost {
 
-        private List<Vector2> _nextSteps(GameTime gameTime) {
-            var isCloseToCenter = DownScaledPosition.X > 2 || DownScaledPosition.X <= 20 && DownScaledPosition.Y > 2 || DownScaledPosition.Y <= 17;
-            var possibleTargets = ((Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
-                DownScaledPosition,
-                regionSize: isCloseToCenter ? 5 : 3
-            )).Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
-            return AStar.Instance.GetPath(
-                DownScaledPosition,
-                possibleTargets[new Random().Next(possibleTargets.Count)],
-                iterDepth: 5
-            );
-        }
-
         public Clyde(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryClyde.sf") {
             this.Sprite.Play("moving");
-            this.Position = Environment.Instance.GhostStartPoints.Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+            this.Position = Environment.Instance.GhostStartPoints
+                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Name = name;
-            var region = (Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(DownScaledPosition, regionSize: 7);
-            var startTargets = region.Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();
-            this.MovesToMake = AStar.Instance.GetPath(
-                DownScaledPosition,
-                startTargets[new Random().Next(startTargets.Count)],
-                iterDepth: 5
-            );
-            this.lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
+            this.MovesToMake = new List<Vector2>();
+            this.lastTarget = StartPosition.AddValue(32);
         }
 
         public override void Move(GameTime gameTime) {
@@ -48,7 +30,7 @@ namespace pactheman_client {
             switch (this.CurrentGhostState) {
                 case GhostStates.Chase:
                     target = lastTarget;
-                    if (MovesToMake.IsEmpty()) MovesToMake = _nextSteps(gameTime);
+                    if (MovesToMake.IsEmpty()) MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();;
                     if (Position.EqualsWithTolerence(lastTarget, 5f)) {
                         target = lastTarget = (MovesToMake.Pop() * 64).AddValue(32);
                     }
@@ -67,7 +49,7 @@ namespace pactheman_client {
                         }
                     }
                     if (scatterTicker >= SCATTER_SECONDS) {
-                        MovesToMake = _nextSteps(gameTime);
+                        MovesToMake = Environment.Instance.GhostMoveInstructions[Name].GetMoves();;
                         CurrentGhostState = GhostStates.Chase;
                         scatterTicker = 0;
                         break;

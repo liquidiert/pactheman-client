@@ -17,8 +17,8 @@ namespace pactheman_client {
         public List<ScorePoint> ScorePointPositions;
         public List<Actor> Actors;
         public int[,] MapAsTiles;
-        public HumanPlayer PacMan;
         public CollisionWorld Walls;
+        public Dictionary<String, MoveInstruction> GhostMoveInstructions = new Dictionary<string, MoveInstruction>();
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get => lazy.Value; }
@@ -49,10 +49,16 @@ namespace pactheman_client {
             }
 
             // set wall collision world
-            Walls = new CollisionWorld(Vector2.Zero);
-            Walls.CreateGrid(_obstacles.Tiles.Select(tile => tile.GlobalIdentifier).ToArray(), 19, 22, 64, 64);
+            this.Walls = new CollisionWorld(Vector2.Zero);
+            this.Walls.CreateGrid(_obstacles.Tiles.Select(tile => tile.GlobalIdentifier).ToArray(), 19, 22, 64, 64);
 
             return Instance;
+        }
+        public void InitMoveInstructions() {
+            // TODO: read ghost moves from config file
+            foreach (var ghost in (new List<Actor>(Actors)).Skip(2)) {
+                this.GhostMoveInstructions.Add(ghost.Name, new DirectAStarMove(ghost, Actors[0]));
+            }
         }
         public bool RemoveScorePoint(Vector2 position) {
             return ScorePointPositions.RemoveWhere(p => p.Position.AddValue(32).EqualsWithTolerence(position, tolerance: 32f));

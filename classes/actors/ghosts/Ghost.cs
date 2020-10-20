@@ -20,12 +20,12 @@ namespace pactheman_client {
             Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
                 .ContinueWith(task => Waiting = false);
         }
-
-        public string Name { get; set; }
+        
         public bool Waiting = true;
         protected readonly float SCATTER_SECONDS = 3.5f;
         protected float scatterTicker { get; set; }
         protected Vector2 lastTarget { get; set; }
+        protected MoveInstruction moveInstruction { get; set; }
 
         protected List<Vector2> MovesToMake;
         protected GhostStates CurrentGhostState = GhostStates.Chase;

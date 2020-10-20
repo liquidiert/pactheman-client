@@ -10,17 +10,18 @@ using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
 
-    enum MovingStates {
+    public enum MovingStates {
         Up,
         Down,
         Left,
         Right
     }
 
-    abstract class Actor : IActorTarget {
+    public abstract class Actor : IActorTarget {
 
         public AnimatedSprite Sprite;
         public float MovementSpeed = 350f;
+        public string Name { get; set; }
         public RectangleF BoundingBox { get; set; }
         public Vector2 BoundingOffset { get; set; }
 
@@ -68,8 +69,8 @@ namespace pactheman_client {
         /// </summary>
         /// <param name="gameTime">The global GameTime</param>
         /// <returns>Actors future position as Vector2</returns>
-        public Vector2 FuturePosition(GameTime gameTime) {
-            return Position + (Velocity * MovementSpeed * gameTime.GetElapsedSeconds());
+        public Vector2 FuturePosition(float elapsedSeconds) {
+            return Position + (Velocity * MovementSpeed * elapsedSeconds);
         }
         public abstract void Move(GameTime t);
         public abstract void Draw(SpriteBatch b);
