@@ -19,21 +19,25 @@ namespace pactheman_client {
         public int[,] MapAsTiles;
         public CollisionWorld Walls;
         public Dictionary<String, MoveInstruction> GhostMoveInstructions = new Dictionary<string, MoveInstruction>();
+        private TiledMapObjectLayer _positionLayer;
+        private TiledMapObjectLayer _pointLayer;
+        private ContentManager _content;
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get => lazy.Value; }
         private Environment() {}
 
         public Environment Init(ContentManager content, TiledMap map) {
-            var positionLayer = map.ObjectLayers.First(l => l.Name == "positions");
-            var pointLayer = map.ObjectLayers.First(l => l.Name == "points");
+            this._content = content;
+            this._positionLayer = map.ObjectLayers.First(l => l.Name == "positions");
+            this._pointLayer = map.ObjectLayers.First(l => l.Name == "points");
 
             // get start positions
-            this.PlayerStartPoints = positionLayer.Objects.Where(obj => obj.Type.ToString() == "player_start").ToList();
-            this.GhostStartPoints = positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
+            this.PlayerStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "player_start").ToList();
+            this.GhostStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
 
             // get point positions
-            this.ScorePointPositions = pointLayer.Objects.Select(p => new ScorePoint(content, p.Position)).ToList();
+            this.ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(content, p.Position)).ToList();
 
             // get obstacles
             this._obstacles = map.GetLayer<TiledMapTileLayer>("ground");
@@ -57,7 +61,8 @@ namespace pactheman_client {
         public void InitMoveInstructions() {
             // TODO: read ghost moves from config file
             foreach (var ghost in (new List<Actor>(Actors)).Skip(2)) {
-                this.GhostMoveInstructions.Add(ghost.Name, new DirectAStarMove(ghost, Actors[0]));
+                Actor target = ghost.Position.Distance(Actors[0].Position) < ghost.Position.Distance(Actors[1].Position) ? Actors[0] : Actors[1];
+                this.GhostMoveInstructions.Add(ghost.Name, new DirectAStarMove(ghost, target));
             }
         }
         public bool RemoveScorePoint(Vector2 position) {
@@ -90,6 +95,18 @@ namespace pactheman_client {
             GameState.Instance.CurrentGameState = GameStates.GameReset;
             foreach (var actor in Actors) {
                 actor.Reset();
+            }
+        }
+
+        public void Clear() {
+            GameState.Instance.CurrentGameState = GameStates.MainMenu;
+            UIState.Instance.CurrentUIState = UIStates.MainMenu;
+            UIState.Instance.GuiSystem.ActiveScreen.Show();
+            ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(_content, p.Position)).ToList();
+            PlayerStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "player_start").ToList();
+            GhostStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
+            foreach (var actor in Actors) {
+                actor.Clear();
             }
         }
     }

@@ -124,7 +124,7 @@ namespace pactheman_client {
 
                     // update collision pairs
                     foreach (var pair in GameState.Instance.CollisionPairs) {
-                        pair.Update(gameTime);
+                        pair.Update();
                     }
                     break;
                 case GameStates.GameReset:

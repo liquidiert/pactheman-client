@@ -100,6 +100,12 @@ namespace pactheman_client {
             Velocity = Vector2.Zero;
             Position = StartPosition;
         }
+        public override void Clear() {
+            _lives = 3;
+            Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;;
+            StartPosition = Position;
+            this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
+        }
         public override void OnCollision(CollisionInfo collisionInfo) {
             Position -= collisionInfo.PenetrationVector;
             base.OnCollision(collisionInfo);
@@ -108,10 +114,7 @@ namespace pactheman_client {
         public void OnActorCollision(object sender, EventArgs args) {
             DecreaseLives();
             if (_lives <= 0) {
-                GameState.Instance.CurrentGameState = GameStates.MainMenu;
-                UIState.Instance.CurrentUIState = UIStates.MainMenu;
-                UIState.Instance.GuiSystem.ActiveScreen.Show();
-                this._lives = 3;
+                Environment.Instance.Clear();
                 return;
             }
             Environment.Instance.Reset();

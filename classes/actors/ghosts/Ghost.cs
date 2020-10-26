@@ -17,8 +17,12 @@ namespace pactheman_client {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
             this.MovementSpeed = 250f;
-            Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
-                .ContinueWith(task => Waiting = false);
+            UIState.Instance.StateChanged += (object sender, StateEvent args) => {
+                if (args.CurrentState == UIStates.Game) {
+                    Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
+                        .ContinueWith(task => Waiting = false);
+                }
+            };
         }
         
         public bool Waiting = true;
@@ -35,13 +39,25 @@ namespace pactheman_client {
             set { movingState = value; }
         }
 
-        public override void Move(GameTime t) {}
+        public override void Move(GameTime t) {
+            if (Waiting) return;
+            new ClosestAggression().SelectTarget(this);
+        }
         public override void Draw(SpriteBatch b){}
         public override void Reset() {
             Velocity = Vector2.Zero;
-            Position = StartPosition.AddValue(32);
+            Position = StartPosition;
             MovesToMake.Clear();
             lastTarget = Position;
+        }
+        public override void Clear() {
+            Waiting = true;
+            Velocity = Vector2.Zero;
+            StartPosition = Environment.Instance.GhostStartPoints
+                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);
+            Position = StartPosition;
+            lastTarget = Position;
+            MovesToMake.Clear();
         }
 
     }
