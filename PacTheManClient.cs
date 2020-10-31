@@ -100,6 +100,8 @@ namespace pactheman_client {
             // add collisions
             environment.AddCollisions();
 
+            Console.WriteLine(ConfigReader.Instance.config["general"]["author"]);
+
             base.LoadContent();
         }
 
