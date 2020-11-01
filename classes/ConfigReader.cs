@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -18,6 +19,16 @@ namespace pactheman_client {
                 .Build();
 
             this.config =  deserializer.Deserialize<Dictionary<string, dynamic>>(yaml_input);
+        }
+
+        public async Task<bool> Save() {
+            var serializer = new SerializerBuilder().Build();
+            try {
+                await File.WriteAllTextAsync("Content/config.yaml", serializer.Serialize(config));
+                return true;
+            } catch {
+                return false;
+            }
         }
     }
 }
