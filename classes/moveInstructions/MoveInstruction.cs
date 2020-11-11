@@ -3,7 +3,16 @@ using Microsoft.Xna.Framework;
 using System;
 
 namespace pactheman_client {
+
     public abstract class MoveInstruction {
+
+        public static readonly Dictionary<string, string> HumanReadableMoveInstructions = new Dictionary<string, string> {
+            {"direct_astar", "Direct AStar"},
+            {"patroling_astar", "Patroling AStar"},
+            {"predicted_astar", "Predicted AStar"},
+            {"random_astar", "Random AStar"},
+        };
+
         public Actor Moveable;
         public Actor Target;
 

@@ -1,31 +1,24 @@
-# general config
 general:
   version: 0.0.1
   author: Korbinian Habereder
   server_ip: 127.0.0.1
   server_port: 5387
-  last_ai_algo: ""
-
-# player config
+  last_ai_alg: ''
 player:
-  name: "PlayerOne"
+  name: PlayerOne
   controls:
-    up: "w"
-    down: "s"
-    left: "a"
-    right: "d"
-
-# opponent config
+    up: w
+    down: s
+    left: a
+    right: d
 opponent:
-  name: "PlayerTwo"
-
-# ghost config
+  name: PlayerTwo
 ghosts:
   move_behaviors:
-    - direct_astar
-    - patroling_astar
-    - predicted_astar
-    - random_astar
+  - direct_astar
+  - patroling_astar
+  - predicted_astar
+  - random_astar
   blinky:
     move_behavior:
       default: direct_astar
