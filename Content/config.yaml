@@ -3,7 +3,7 @@ general:
   author: Korbinian Habereder
   server_ip: 127.0.0.1
   server_port: 5387
-  last_ai_algo: ''
+  last_ai_alg: ''
 player:
   name: PlayerOne
   controls:

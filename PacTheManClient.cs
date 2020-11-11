@@ -73,7 +73,7 @@ namespace pactheman_client {
             base.Initialize();
         }
 
-        protected async override void LoadContent() {
+        protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // tile map

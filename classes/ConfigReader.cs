@@ -7,10 +7,11 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace pactheman_client {
     public class ConfigReader {
-        public Dictionary<string, dynamic> config;
+        public Dictionary<string, dynamic> config { get; set; }
         private static readonly Lazy<ConfigReader> lazy = new Lazy<ConfigReader>(() => new ConfigReader());
         public static ConfigReader Instance { get => lazy.Value; }
         private ConfigReader() {
+            // not dry due to async :(
             var config_file_content = File.ReadAllText("Content/config.yaml");
             var yaml_input = new StringReader(config_file_content);
 
@@ -18,7 +19,23 @@ namespace pactheman_client {
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
                 .Build();
 
-            this.config =  deserializer.Deserialize<Dictionary<string, dynamic>>(yaml_input);
+            this.config = deserializer.Deserialize<Dictionary<string, dynamic>>(yaml_input);
+        }
+
+        public async Task<bool> Reset() {
+            try {
+                var config_file_content = await File.ReadAllTextAsync("Content/config.yaml");
+                var yaml_input = new StringReader(config_file_content);
+
+                var deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                    .Build();
+
+                this.config = deserializer.Deserialize<Dictionary<string, dynamic>>(yaml_input);
+                return true;
+            } catch {
+                return false;
+            }
         }
 
         public async Task<bool> Save() {

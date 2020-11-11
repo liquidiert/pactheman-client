@@ -55,7 +55,7 @@ namespace pactheman_client {
                     },
                     gameStartBtn,
                     // TODO: investigate why back btn in settings is different
-                    //settingsBtn,
+                    settingsBtn,
                     exitBtn,
                 }
             };

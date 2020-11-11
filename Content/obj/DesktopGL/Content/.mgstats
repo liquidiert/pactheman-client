@@ -1,5 +1,5 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"/home/secretone/git_repos/uni/pactheman-client/Content/config.yaml","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/config.yaml","CopyItem","File",679,679,0.0003535
+"/home/secretone/git_repos/uni/pactheman-client/Content/config.yaml","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/config.yaml","CopyItem","File",678,678,0.0003611
 "/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go_0.tga","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/fonts/go_0.xnb","TextureProcessor","Texture2DContent",524332,524373,0.1244386
 "/home/secretone/git_repos/uni/pactheman-client/Content/fonts/go.fnt","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/fonts/go.xnb","BitmapFontProcessor","BitmapFontProcessorResult",17126,5180,0.0239947
 "/home/secretone/git_repos/uni/pactheman-client/Content/fonts/lato_0.png","/home/secretone/git_repos/uni/pactheman-client/Content/bin/DesktopGL/Content/fonts/lato_0.xnb","TextureProcessor","Texture2DContent",13853,155733,0.0045927
