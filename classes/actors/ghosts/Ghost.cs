@@ -17,7 +17,7 @@ namespace pactheman_client {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
             this.MovementSpeed = 250f;
-            UIState.Instance.StateChanged += (object sender, StateEvent args) => {
+            UIState.Instance.StateChanged += (object sender, UIStateEvent args) => {
                 if (args.CurrentState == UIStates.Game) {
                     Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
                         .ContinueWith(task => Waiting = false);
@@ -33,11 +33,6 @@ namespace pactheman_client {
 
         protected List<Vector2> MovesToMake;
         protected GhostStates CurrentGhostState = GhostStates.Chase;
-
-        protected MovingStates CurrentMovingState {
-            get { return movingState; } 
-            set { movingState = value; }
-        }
 
         public override void Move(GameTime t) {
             if (Waiting) return;

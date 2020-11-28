@@ -8,10 +8,10 @@ namespace pactheman_client {
         Settings,
         Game
     }
-    public class StateEvent : EventArgs {
+    public class UIStateEvent : EventArgs {
         public UIStates CurrentState { get; set; }
 
-        public StateEvent(UIStates currentState) => CurrentState = currentState;
+        public UIStateEvent(UIStates currentState) => CurrentState = currentState;
     }
     public class UIState {
 
@@ -32,11 +32,11 @@ namespace pactheman_client {
             set {
                 _currentUIState = value;
                 if (StateChanged != null) {
-                    StateChanged.Invoke(this, new StateEvent(_currentUIState));
+                    StateChanged.Invoke(this, new UIStateEvent(_currentUIState));
                 }
             }
         }
-        public event EventHandler<StateEvent> StateChanged; // IDEA: do more with that?
+        public event EventHandler<UIStateEvent> StateChanged; // IDEA: do more with that?
 
         private static readonly Lazy<UIState> lazy = new Lazy<UIState>(() => new UIState());
         public static UIState Instance { get => lazy.Value; }
