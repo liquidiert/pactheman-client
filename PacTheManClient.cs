@@ -122,7 +122,7 @@ namespace pactheman_client {
                     }
 
                     // update collision pairs
-                    foreach (var pair in GameState.Instance.CollisionPairs) {
+                    foreach (var pair in Environment.Instance.CollisionPairs) {
                         pair.Update();
                     }
                     break;
