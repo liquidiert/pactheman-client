@@ -14,7 +14,7 @@ namespace pactheman_client {
         Up,
         Down,
         Left,
-        Right
+        Right,
     }
 
     public abstract class Actor : IActorTarget {
