@@ -18,6 +18,7 @@ namespace pactheman_client {
         public List<Actor> Actors;
         public int[,] MapAsTiles;
         public CollisionWorld Walls;
+        public List<CollisionPair> CollisionPairs = new List<CollisionPair>();
         public Dictionary<String, MoveInstruction> GhostMoveInstructions = new Dictionary<string, MoveInstruction>();
         private TiledMapObjectLayer _positionLayer;
         private TiledMapObjectLayer _pointLayer;
@@ -88,7 +89,7 @@ namespace pactheman_client {
                 var opponentPair = new CollisionPair(opponent, actor);
                 opponentPair.Collision += opponent.OnActorCollision;
 
-                GameState.Instance.CollisionPairs.AddMany(playerPair, opponentPair);
+                CollisionPairs.AddMany(playerPair, opponentPair);
             }
         }
         public void Reset() {

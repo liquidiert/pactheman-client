@@ -14,7 +14,7 @@ namespace pactheman_client {
         Up,
         Down,
         Left,
-        Right
+        Right,
     }
 
     public abstract class Actor : IActorTarget {
@@ -50,7 +50,7 @@ namespace pactheman_client {
             get { return new Vector2((float)Math.Ceiling(Position.X / 64), (float)Math.Ceiling(Position.Y / 64)); }
         }
 
-        protected MovingStates movingState;
+        protected MovingStates movingState { get; set; }
 
         public Actor(ContentManager content, string spriteSheetLocation) {
             // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!
