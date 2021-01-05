@@ -68,7 +68,7 @@ namespace pactheman_client {
             Skin.CreateDefault(font);
             var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, viewportAdapter.GetScaleMatrix);
             UIState.Instance.GuiSystem = new GuiSystem(viewportAdapter, guiRenderer);
-            UIState.Instance.CurrentScreen = _mainMenu;
+            UIState.Instance.CurrentScreen = UIState.Instance.MainMenu = _mainMenu;
 
             base.Initialize();
         }
@@ -105,8 +105,11 @@ namespace pactheman_client {
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
-                if (UIState.Instance.CurrentUIState != UIStates.MainMenu && UIState.Instance.CurrentUIState != UIStates.Settings) {
-                    Exit(); // TODO: rather open ingame menu
+                if (UIState.Instance.CurrentUIState == UIStates.Game) {
+                    // TODO: check if online if so send pause
+                    UIState.Instance.CurrentUIState = UIStates.InGame;
+                    UIState.Instance.GuiSystem.ActiveScreen.Show();
+                    GameState.Instance.CurrentGameState = GameStates.GamePaused;
                 }
             }
 
@@ -154,6 +157,7 @@ namespace pactheman_client {
             );
 
             switch (GameState.Instance.CurrentGameState) {
+                case GameStates.GamePaused:
                 case GameStates.Game:
                     DrawEnvironment();
                     break;

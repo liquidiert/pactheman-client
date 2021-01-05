@@ -1,41 +1,65 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using System;
+using System.Net;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Sockets;
 using MonoGame.Extended;
-using MonoGame.Extended.Input;
+using PacTheMan.Models;
+using Bebop.Runtime;
 
 namespace pactheman_client {
     class HumanPlayer : Player {
+
+        private Guid playerId;
+        private TcpClient client;
+        private Task listener;
+        public PlayerState PlayerState;
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
         }
 
+        public async void Connect() {
+            var address = IPAddress.Parse(ConfigReader.Instance.config["server_ip"]);
+            var port = ConfigReader.Instance.config["server_port"];
+            this.client = new TcpClient();
+            await client.ConnectAsync(address, port);
+            listener = Listen();
+        }
+
+        private async Task Listen() {
+            Byte[] buffer = new Byte[4096];
+
+            while (true) {
+                await client.GetStream().ReadAsync(buffer);
+                var msg = NetworkMessage.Decode(buffer);
+                BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+            }
+        }
+
+        public override void OnActorCollision(object sender, EventArgs args) {
+            _lives--;
+            if (!Environment.Instance.IsOnline) {
+                if (_lives <= 0) {
+                    Environment.Instance.Clear();
+                    return;
+                }
+                Environment.Instance.Reset();
+            }
+        }
+
         public override void Move(GameTime gameTime) {
             var delta = gameTime.GetElapsedSeconds();
-            var _kState = KeyboardExtended.GetState();
 
-            // TODO: use rotation instead of dedicated animations
-            Vector2 updatedPosition = Position;
-            if (_kState.IsKeyDown(Keys.W)) { // up
-                Velocity = new Vector2(0, -1);
-                updatedPosition.Y -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Up;
-            }
-            if (_kState.IsKeyDown(Keys.S)) { // down
-                Velocity = new Vector2(0, 1);
-                updatedPosition.Y += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Down;
-            }
-            if (_kState.IsKeyDown(Keys.A)) { // left
-                Velocity = new Vector2(-1, 0);
-                updatedPosition.X -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Left;
-            }
-            if (_kState.IsKeyDown(Keys.D)) { // right
-                Velocity = new Vector2(1, 0);
-                updatedPosition.X += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Right;
+            Vector2 updatedPosition;
+
+            if (IsHooman) {
+                updatedPosition = keyboardMove(delta);
+            } else {
+                // TODO: ai movement
+                updatedPosition = new Vector2();
             }
 
             // teleport if entering either left or right gate
@@ -47,6 +71,19 @@ namespace pactheman_client {
 
             if (Environment.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
+                if (Environment.Instance.IsOnline) {
+                    PlayerState.Score[playerId] += 10;
+                }
+            }
+
+            if (Environment.Instance.IsOnline) {
+                PlayerState.ReconciliationId++;
+                PlayerState.PlayerPositions[playerId] = new Position { X = (int)DownScaledPosition.X, Y = (int)DownScaledPosition.Y };
+                var msg = new NetworkMessage {
+                    IncomingOpCode = PlayerState.OpCode,
+                    IncomingRecord = PlayerState.EncodeAsImmutable()
+                };
+                client.GetStream().WriteAsync(msg.Encode());
             }
         }
     }

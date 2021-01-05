@@ -6,6 +6,9 @@ namespace pactheman_client {
         Menu,
         MainMenu,
         Settings,
+        PreGame,
+        Lobby,
+        InGame,
         Game
     }
     public class UIStateEvent : EventArgs {
@@ -25,6 +28,7 @@ namespace pactheman_client {
                 GuiSystem.ActiveScreen = value;
             }
         }
+        public Screen MainMenu { get; set; }
         public GuiSystem GuiSystem { get; set; }
         private UIStates _currentUIState { get; set; }
         public UIStates CurrentUIState { 

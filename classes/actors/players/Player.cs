@@ -1,12 +1,16 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Input;
 
 namespace pactheman_client {
     public class Player : Actor {
+
+        public bool IsHooman = true;
         protected int _score = 0;
         protected int _lives = 3;
         public int Score {
@@ -47,6 +51,32 @@ namespace pactheman_client {
         }
 
         public override void Move(GameTime t) {}
+        protected Vector2 keyboardMove(float delta, Boolean useArrows = false) {
+            var _kState = KeyboardExtended.GetState();
+            // TODO: use rotation instead of dedicated animations
+            Vector2 updatedPosition = Position;
+            if (useArrows ? _kState.IsKeyDown(Keys.Up) : _kState.IsKeyDown(Keys.W)) { // up
+                Velocity = new Vector2(0, -1);
+                updatedPosition.Y -= MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Up;
+            }
+            if (useArrows ? _kState.IsKeyDown(Keys.Down) : _kState.IsKeyDown(Keys.S)) { // down
+                Velocity = new Vector2(0, 1);
+                updatedPosition.Y += MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Down;
+            }
+            if (useArrows ? _kState.IsKeyDown(Keys.Left) : _kState.IsKeyDown(Keys.A)) { // left
+                Velocity = new Vector2(-1, 0);
+                updatedPosition.X -= MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Left;
+            }
+            if (useArrows ? _kState.IsKeyDown(Keys.Right) : _kState.IsKeyDown(Keys.D)) { // right
+                Velocity = new Vector2(1, 0);
+                updatedPosition.X += MovementSpeed * delta;
+                CurrentMovingState = MovingStates.Right;
+            }
+            return updatedPosition;
+        }
         public override void Draw(SpriteBatch b){
             b.Draw(Sprite, Position);
         }
@@ -65,7 +95,7 @@ namespace pactheman_client {
             base.OnCollision(collisionInfo);
         }
 
-        public void OnActorCollision(object sender, EventArgs args) {
+        public virtual void OnActorCollision(object sender, EventArgs args) {
             _lives--;
             if (_lives <= 0) {
                 Environment.Instance.Clear();

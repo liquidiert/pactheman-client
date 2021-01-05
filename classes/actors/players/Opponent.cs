@@ -6,38 +6,21 @@ using MonoGame.Extended.Input;
 
 namespace pactheman_client {
     class Opponent : Player {
-        private bool _isHooman = true;
 
         public Opponent(ContentManager content, string name) : base(content, name, "sprites/opponent/spriteFactory.sf") {
             this.StatsPosition = new Vector2(1300, 50);
         }
 
         public override void Move(GameTime gameTime) {
-            // TODO: add real ai movement if _isHooman is false
             var delta = gameTime.GetElapsedSeconds();
-            var _kState = KeyboardExtended.GetState();
+            
+            Vector2 updatedPosition;
 
-            // TODO: use rotation instead of dedicated animations
-            Vector2 updatedPosition = Position;
-            if (_kState.IsKeyDown(Keys.Up)) { // up
-                Velocity = new Vector2(0, -1);
-                updatedPosition.Y -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Up;
-            }
-            if (_kState.IsKeyDown(Keys.Down)) { // down
-                Velocity = new Vector2(0, 1);
-                updatedPosition.Y += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Down;
-            }
-            if (_kState.IsKeyDown(Keys.Left)) { // left
-                Velocity = new Vector2(-1, 0);
-                updatedPosition.X -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Left;
-            }
-            if (_kState.IsKeyDown(Keys.Right)) { // right
-                Velocity = new Vector2(1, 0);
-                updatedPosition.X += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Right;
+            // TODO: add real ai movement if IsHooman is false
+            if (IsHooman) {
+                updatedPosition = keyboardMove(delta, true);
+            } else {
+                updatedPosition = new Vector2();
             }
 
             // teleport if entering either left or right gate

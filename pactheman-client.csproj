@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -34,5 +35,8 @@
     <PackageReference Include="MonoGame.Extended.Collisions" Version="3.8.0"/>
     <PackageReference Include="MonoGame.Extended.Gui" Version="3.8.0"/>
     <PackageReference Include="YamlDotNet" Version="8.1.2"/>
+    <PackageReference Include="bebop" Version="2.0.3"/>
+    <PackageReference Include="bebop-tools" Version="2.0.3"/>
+    <Bebop Include="**/*.bop" OutputDir="./Models/" OutputFile="PacTheManModels.g.cs" Namespace="PacTheMan.Models"/>
   </ItemGroup>
 </Project>

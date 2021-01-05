@@ -9,8 +9,15 @@ using MonoGame.Extended.Collisions;
 
 namespace pactheman_client {
 
+    enum GameModes {
+        Local,
+        vsAI,
+        Online
+    }
+
     sealed class Environment {
 
+        public GameModes CurrentGameMode { get; set; }
         private TiledMapTileLayer _obstacles;
         public List<TiledMapObject> PlayerStartPoints;
         public List<TiledMapObject> GhostStartPoints;
@@ -23,10 +30,15 @@ namespace pactheman_client {
         private TiledMapObjectLayer _positionLayer;
         private TiledMapObjectLayer _pointLayer;
         private ContentManager _content;
+        public Boolean IsOnline {
+            get {
+                return CurrentGameMode == GameModes.Online;
+            }
+        }
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get => lazy.Value; }
-        private Environment() {}
+        private Environment() { }
 
         public Environment Init(ContentManager content, TiledMap map) {
             this._content = content;
@@ -48,7 +60,7 @@ namespace pactheman_client {
             for (var h = 0; h < this._obstacles.Height; h++) {
                 for (var w = 0; w < this._obstacles.Width; w++) {
                     TiledMapTile? tile = null;
-                    this._obstacles.TryGetTile((ushort) w, (ushort) h, out tile);
+                    this._obstacles.TryGetTile((ushort)w, (ushort)h, out tile);
                     this.MapAsTiles[w, h] = tile.Value.GlobalIdentifier;
                 }
             }
@@ -78,8 +90,11 @@ namespace pactheman_client {
                 Walls.CreateActor(actor);
             }
             var actorsCopy = new List<Actor>(Actors);
-            var player = (HumanPlayer) actorsCopy.Pop(0);
-            var opponent = (Opponent) actorsCopy.Pop(0);
+            var player = (HumanPlayer)actorsCopy.Pop(0);
+            var opponent = (Opponent)actorsCopy.Pop(0);
+            // remove score points for start positions
+            RemoveScorePoint(player.Position);
+            RemoveScorePoint(opponent.Position);
             foreach (var actor in actorsCopy) {
                 // pair of player and ghost
                 var playerPair = new CollisionPair(player, actor);
