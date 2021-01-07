@@ -11,7 +11,7 @@ namespace pactheman_client {
         public static void HandleGhostMove(object client, PlayerJoinedMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
 
-            
+            // TODO: show in lobby
         }
     }
 }

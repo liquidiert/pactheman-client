@@ -14,11 +14,11 @@ namespace pactheman_client {
         public static void HandleGhostMove(object val, GhostMoveMsg msg) {
             foreach (var reset in msg.State.ClearTargets) {
                 if (reset.Value) {
-                    (Environment.Instance.Actors.Where(a => a.Name == reset.Key).First() as Ghost).Targets = new List<Vector2>();
+                    (Environment.Instance.Actors.Where(a => a.Key == reset.Key).First().Value as Ghost).Targets = new List<Vector2>();
                 }
             }
             foreach (var target in msg.State.Targets) {
-                (Environment.Instance.Actors.Where(a => a.Name == target.Key).First() as Ghost)
+                (Environment.Instance.Actors.Where(a => a.Key == target.Key).First().Value as Ghost)
                     .Targets.Add(new Vector2(target.Value.X, target.Value.Y));
             }
         }

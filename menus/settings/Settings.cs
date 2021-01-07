@@ -61,7 +61,7 @@ namespace pactheman_client {
             // blinky
             var blinkyMoves = new ListBox();
             blinkyMoves.Items.AddMany((object[])behaviors);
-            blinkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.config["ghosts"]["blinky"]["move_behavior"]["current"]];
+            blinkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.CurrentMoveBehavior("blinky")];
             blinkyMoves.SelectedIndexChanged += (sender, args) => {
                 ConfigReader.Instance.config["ghosts"]["blinky"]["move_behavior"]["current"] =
                     MoveInstruction.HumanReadableMoveInstructions.FirstOrDefault(x => x.Value == (string)blinkyMoves.SelectedItem).Key;
@@ -70,7 +70,7 @@ namespace pactheman_client {
             // clyde
             var clydeMoves = new ListBox();
             clydeMoves.Items.AddMany((object[])behaviors);
-            clydeMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.config["ghosts"]["clyde"]["move_behavior"]["current"]];
+            clydeMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.CurrentMoveBehavior("clyde")];
             clydeMoves.SelectedIndexChanged += (sender, args) => {
                 ConfigReader.Instance.config["ghosts"]["clyde"]["move_behavior"]["current"] =
                     MoveInstruction.HumanReadableMoveInstructions.FirstOrDefault(x => x.Value == (string)clydeMoves.SelectedItem).Key;
@@ -79,7 +79,7 @@ namespace pactheman_client {
             // inky
             var inkyMoves = new ListBox();
             inkyMoves.Items.AddMany((object[])behaviors);
-            inkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.config["ghosts"]["inky"]["move_behavior"]["current"]];
+            inkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.CurrentMoveBehavior("inky")];
             inkyMoves.SelectedIndexChanged += (sender, args) => {
                 ConfigReader.Instance.config["ghosts"]["inky"]["move_behavior"]["current"] =
                     MoveInstruction.HumanReadableMoveInstructions.FirstOrDefault(x => x.Value == (string)inkyMoves.SelectedItem).Key;
@@ -88,7 +88,7 @@ namespace pactheman_client {
             // pinky
             var pinkyMoves = new ListBox();
             pinkyMoves.Items.AddMany((object[])behaviors);
-            pinkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.config["ghosts"]["pinky"]["move_behavior"]["current"]];
+            pinkyMoves.SelectedItem = MoveInstruction.HumanReadableMoveInstructions[ConfigReader.Instance.CurrentMoveBehavior("pinky")];
             pinkyMoves.SelectedIndexChanged += (sender, args) => {
                 ConfigReader.Instance.config["ghosts"]["pinky"]["move_behavior"]["current"] =
                     MoveInstruction.HumanReadableMoveInstructions.FirstOrDefault(x => x.Value == (string)pinkyMoves.SelectedItem).Key;

@@ -47,8 +47,10 @@ namespace pactheman_client {
                         Content = "Online",
                         Margin = new Thickness(0, 50)
                     };
-            onlineBtn.Clicked += (sender, args) => {
-                // TODO: try connect to server
+            onlineBtn.Clicked += async (sender, args) => {
+                Environment.Instance.CurrentGameMode = GameModes.Online;
+                var player = (HumanPlayer)Environment.Instance.Actors["player"];
+                await player.Connect();
                 UIState.Instance.CurrentUIState = UIStates.Lobby;
                 UIState.Instance.CurrentScreen = new Lobby();
             };

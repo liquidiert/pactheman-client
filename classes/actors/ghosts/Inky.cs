@@ -18,7 +18,7 @@ namespace pactheman_client {
             this.StartPosition = Position;
             this.Name = name;
             this.lastTarget = StartPosition;
-            this.scatterTarget = new Vector2(17, 19);
+            this.scatterTarget = new Vector2(17, 21);
         }
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Sprite, Position);

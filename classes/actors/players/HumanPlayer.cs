@@ -12,7 +12,8 @@ using Bebop.Runtime;
 namespace pactheman_client {
     class HumanPlayer : Player {
 
-        private Guid playerId;
+        public Guid ClientId { get; set; }
+        public Guid SessionId { get; set; }
         private TcpClient client;
         private Task listener;
         public PlayerState PlayerState;
@@ -21,33 +22,67 @@ namespace pactheman_client {
             this.StatsPosition = new Vector2(-350, 50);
         }
 
-        public async void Connect() {
-            var address = IPAddress.Parse(ConfigReader.Instance.config["server_ip"]);
-            var port = ConfigReader.Instance.config["server_port"];
+        public async Task Connect() {
+            IPAddress address;
+            if (!IPAddress.TryParse(ConfigReader.Instance.config["general"]["server_ip"], out address)) {
+                Console.WriteLine("Invalid ip address in config");
+            }
+            int port;
+            if (!int.TryParse(ConfigReader.Instance.config["general"]["server_port"], out port)) {
+                Console.WriteLine("Invalid port in config");
+            }
             this.client = new TcpClient();
             await client.ConnectAsync(address, port);
             listener = Listen();
+
+            // send join
+            var joinMsg = new JoinMsg {
+                Algorithms = new GhostAlgorithms {
+                    Blinky = ConfigReader.Instance.CurrentMoveBehavior("blinky"),
+                    Clyde = ConfigReader.Instance.CurrentMoveBehavior("clyde"),
+                    Inky = ConfigReader.Instance.CurrentMoveBehavior("inky"),
+                    Pinky = ConfigReader.Instance.CurrentMoveBehavior("pinky")
+                },
+                PlayerName = "PlayerOne"
+            };
+            var netMsg = new NetworkMessage {
+                IncomingOpCode = JoinMsg.OpCode,
+                IncomingRecord = joinMsg.EncodeAsImmutable()
+            };
+
+            await client.GetStream().WriteAsync(netMsg.Encode());
         }
 
         private async Task Listen() {
             Byte[] buffer = new Byte[4096];
 
-            while (true) {
-                await client.GetStream().ReadAsync(buffer);
-                var msg = NetworkMessage.Decode(buffer);
-                BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+            try {
+                while (true) {
+                    Console.WriteLine("waiting for msg...");
+                    await client.GetStream().ReadAsync(buffer);
+                    var msg = NetworkMessage.Decode(buffer);
+                    BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+                }
+            } catch (SocketException ex) {
+                Console.WriteLine("Lost connection to server: " + ex);
+            } finally {
+                client.Dispose();
             }
         }
 
-        public override void OnActorCollision(object sender, EventArgs args) {
-            _lives--;
-            if (!Environment.Instance.IsOnline) {
-                if (_lives <= 0) {
-                    Environment.Instance.Clear();
-                    return;
-                }
-                Environment.Instance.Reset();
-            }
+        public async Task SetReady() {
+            var rdyMsg = new ReadyMsg {
+                Session = new SessionMsg {
+                    SessionId = this.SessionId,
+                    ClientId = this.ClientId
+                },
+                Ready = true
+            };
+            var netMsg = new NetworkMessage {
+                IncomingOpCode = ReadyMsg.OpCode,
+                IncomingRecord = rdyMsg.EncodeAsImmutable()
+            };
+            await client.GetStream().WriteAsync(netMsg.Encode());
         }
 
         public override void Move(GameTime gameTime) {
@@ -72,13 +107,13 @@ namespace pactheman_client {
             if (Environment.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
                 if (Environment.Instance.IsOnline) {
-                    PlayerState.Score[playerId] += 10;
+                    PlayerState.Score[ClientId] += 10;
                 }
             }
 
             if (Environment.Instance.IsOnline) {
                 PlayerState.ReconciliationId++;
-                PlayerState.PlayerPositions[playerId] = new Position { X = (int)DownScaledPosition.X, Y = (int)DownScaledPosition.Y };
+                PlayerState.PlayerPositions[ClientId] = new Position { X = (int)DownScaledPosition.X, Y = (int)DownScaledPosition.Y };
                 var msg = new NetworkMessage {
                     IncomingOpCode = PlayerState.OpCode,
                     IncomingRecord = PlayerState.EncodeAsImmutable()

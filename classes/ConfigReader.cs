@@ -22,6 +22,10 @@ namespace pactheman_client {
             this.config = deserializer.Deserialize<Dictionary<string, dynamic>>(yaml_input);
         }
 
+        public string CurrentMoveBehavior(string ghostName) {
+            return this.config["ghosts"][ghostName]["move_behavior"]["current"];
+        }
+
         public async Task<bool> Reset() {
             try {
                 var config_file_content = await File.ReadAllTextAsync("Content/config.yaml");

@@ -35,9 +35,7 @@ namespace pactheman_client {
             get => _currentUIState; 
             set {
                 _currentUIState = value;
-                if (StateChanged != null) {
-                    StateChanged.Invoke(this, new UIStateEvent(_currentUIState));
-                }
+                StateChanged?.Invoke(this, new UIStateEvent(_currentUIState));
             }
         }
         public event EventHandler<UIStateEvent> StateChanged; // IDEA: do more with that?

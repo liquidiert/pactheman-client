@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Collisions;
@@ -22,7 +23,7 @@ namespace pactheman_client {
         public List<TiledMapObject> PlayerStartPoints;
         public List<TiledMapObject> GhostStartPoints;
         public List<ScorePoint> ScorePointPositions;
-        public List<Actor> Actors;
+        public ConcurrentDictionary<String, Actor> Actors;
         public int[,] MapAsTiles;
         public CollisionWorld Walls;
         public List<CollisionPair> CollisionPairs = new List<CollisionPair>();
@@ -38,7 +39,10 @@ namespace pactheman_client {
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get => lazy.Value; }
-        private Environment() { }
+        private Environment() {
+            var numProcs = System.Environment.ProcessorCount * 3;
+            Actors = new ConcurrentDictionary<string, Actor>(numProcs, 6);
+        }
 
         public Environment Init(ContentManager content, TiledMap map) {
             this._content = content;
@@ -73,9 +77,10 @@ namespace pactheman_client {
         }
         public void InitMoveInstructions() {
             // TODO: read ghost moves from config file
-            foreach (var ghost in (new List<Actor>(Actors)).Skip(2)) {
-                Actor target = ghost.Position.Distance(Actors[0].Position) < ghost.Position.Distance(Actors[1].Position) ? Actors[0] : Actors[1];
-                this.GhostMoveInstructions.Add(ghost.Name, new DirectAStarMove(ghost, target));
+            foreach (var ghost in Actors.Where(a => a.Key != "player" && a.Key != "opponent")) {
+                Actor target = ghost.Value.Position.Distance(Actors["player"].Position) < ghost.Value.Position.Distance(Actors["opponent"].Position) ?
+                    Actors["player"] : Actors["opponent"];
+                this.GhostMoveInstructions.Add(ghost.Value.Name, new DirectAStarMove(ghost.Value, target));
             }
         }
         public bool RemoveScorePoint(Vector2 position) {
@@ -86,22 +91,33 @@ namespace pactheman_client {
         /// </summary>
         /// <param name="actors">IMPORTANT: index 0 and 1 are reserved for player and opponent</param>
         public void AddCollisions() {
-            foreach (var actor in Actors) {
+            foreach (var actor in Actors.Values) {
                 Walls.CreateActor(actor);
             }
-            var actorsCopy = new List<Actor>(Actors);
-            var player = (HumanPlayer)actorsCopy.Pop(0);
-            var opponent = (Opponent)actorsCopy.Pop(0);
+
+            var player = (HumanPlayer)Actors["player"];
+            var opponent = (Opponent)Actors["opponent"];
             // remove score points for start positions
             RemoveScorePoint(player.Position);
             RemoveScorePoint(opponent.Position);
-            foreach (var actor in actorsCopy) {
+            
+            var playerOppPair = new CollisionPair(player, opponent);
+            playerOppPair.Collision += player.OnActorCollision;
+            var oppPlayerPair = new CollisionPair(opponent, player);
+            oppPlayerPair.Collision += opponent.OnActorCollision;
+
+            CollisionPairs.AddMany(
+                playerOppPair,
+                oppPlayerPair
+            );
+
+            foreach (var actor in Actors.Where(a => a.Key != "player" && a.Key != "opponent")) {
                 // pair of player and ghost
-                var playerPair = new CollisionPair(player, actor);
+                var playerPair = new CollisionPair(player, actor.Value);
                 playerPair.Collision += player.OnActorCollision;
 
                 // pair of opponent and ghost
-                var opponentPair = new CollisionPair(opponent, actor);
+                var opponentPair = new CollisionPair(opponent, actor.Value);
                 opponentPair.Collision += opponent.OnActorCollision;
 
                 CollisionPairs.AddMany(playerPair, opponentPair);
@@ -109,7 +125,7 @@ namespace pactheman_client {
         }
         public void Reset() {
             GameState.Instance.CurrentGameState = GameStates.GameReset;
-            foreach (var actor in Actors) {
+            foreach (var actor in Actors.Values) {
                 actor.Reset();
             }
         }
@@ -121,7 +137,7 @@ namespace pactheman_client {
             ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(_content, p.Position)).ToList();
             PlayerStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "player_start").ToList();
             GhostStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
-            foreach (var actor in Actors) {
+            foreach (var actor in Actors.Values) {
                 actor.Clear();
             }
         }

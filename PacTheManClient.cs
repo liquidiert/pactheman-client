@@ -35,8 +35,6 @@ namespace pactheman_client {
         private Ghost inky;
         private Ghost clyde;
 
-        private List<Actor> actors = new List<Actor>();
-
         public PacTheManClient() {
             _graphics = new GraphicsDeviceManager(this) { IsFullScreen = false };
             GameState.Instance.CurrentGameState = GameStates.MainMenu;
@@ -92,8 +90,12 @@ namespace pactheman_client {
             inky = new Inky(Content, "inky");
             clyde = new Clyde(Content, "clyde");
 
-            actors.AddMany(player, opponent, blinky, pinky, inky, clyde);
-            environment.Actors = actors;
+            environment.Actors.TryAdd("player", player);
+            environment.Actors.TryAdd("opponent", opponent);
+            environment.Actors.TryAdd(pinky.Name, pinky);
+            environment.Actors.TryAdd(blinky.Name, blinky);
+            environment.Actors.TryAdd(clyde.Name, clyde);
+            environment.Actors.TryAdd(inky.Name, inky);
 
             environment.InitMoveInstructions();
 
@@ -119,7 +121,7 @@ namespace pactheman_client {
                     mapRenderer.Update(gameTime);
 
                     // update actors
-                    foreach (var actor in actors) {
+                    foreach (var actor in environment.Actors.Values) {
                         actor.Move(gameTime);
                         actor.Sprite.Update(gameTime);
                     }
@@ -200,7 +202,7 @@ namespace pactheman_client {
             DrawPlayerStats(opponent);
 
             // draw actors
-            foreach (var actor in actors) {
+            foreach (var actor in environment.Actors.Values) {
                 actor.Draw(_spriteBatch);
             }
             /*

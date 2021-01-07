@@ -17,7 +17,7 @@ namespace pactheman_client {
     class Ghost : Actor {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
-            this.MovementSpeed = 250f;
+            this.MovementSpeed = 0.5f;
             UIState.Instance.StateChanged += (object sender, UIStateEvent args) => {
                 if (args.CurrentState == UIStates.Game) {
                     Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
