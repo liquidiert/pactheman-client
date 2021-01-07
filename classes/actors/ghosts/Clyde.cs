@@ -13,6 +13,7 @@ namespace pactheman_client {
     class Clyde : Ghost {
 
         public Clyde(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryClyde.sf") {
+            this.ID = "clyde";
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints
                 .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);

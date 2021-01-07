@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Gui;
 using MonoGame.Extended.Gui.Controls;
-using System;
+using System.Threading;
 
 namespace pactheman_client {
     class PreGameMenu : Screen {

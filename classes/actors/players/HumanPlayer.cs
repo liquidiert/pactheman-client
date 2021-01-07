@@ -20,6 +20,7 @@ namespace pactheman_client {
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
+            this.ID = "playerOne";
         }
 
         public async Task Connect() {

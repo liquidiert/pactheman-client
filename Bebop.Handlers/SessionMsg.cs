@@ -17,6 +17,9 @@ namespace pactheman_client {
 
             Console.WriteLine(player.ClientId);
             Console.WriteLine(player.SessionId);
+
+            (UIState.Instance.CurrentScreen as Lobby).SessionID = player.SessionId.ToString();
+            (UIState.Instance.CurrentScreen as Lobby).UpdateContent();
         }
     }
 }

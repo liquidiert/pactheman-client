@@ -33,5 +33,17 @@ namespace pactheman_client {
                     }
             };
         }
+
+        public static Control labeledListBox(string label, Control child, int labelPaddingBottom = 8) {
+            return new StackPanel {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Padding = new Thickness(0, 20),
+                Items = {
+                    new Label(label) { Padding = new Thickness(0, 0, 0, labelPaddingBottom)},
+                    child
+                }
+            };
+        }
     }
 }
