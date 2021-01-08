@@ -18,7 +18,7 @@ namespace pactheman_client {
             cancelBtn.Clicked += (sender, args) => {
                 player.Disconnect();
                 UIState.Instance.CurrentUIState = UIStates.PreGame;
-                UIState.Instance.CurrentScreen = UIState.Instance.PreviousScreen;
+                UIState.Instance.CurrentScreen = new PreGameMenu();
             };
 
             var hostBtn = new Button {
@@ -36,8 +36,6 @@ namespace pactheman_client {
             };
             joinBtn.Clicked += async (sender, args) => {
                 await player.Join();
-                UIState.Instance.CurrentUIState = UIStates.Lobby;
-                UIState.Instance.CurrentScreen = new Lobby(player.SessionId.ToString());
             };
 
             var sessionIDBox = new TextBox {

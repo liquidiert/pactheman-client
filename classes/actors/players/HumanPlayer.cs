@@ -20,10 +20,12 @@ namespace pactheman_client {
 
         private CancellationTokenSource _ctSource;
         private CancellationToken _ct;
+        public bool Connected = false;
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
             this.ID = "playerOne";
+            this.PlayerState = new PlayerState();
         }
 
         public async Task Connect() {
@@ -40,13 +42,32 @@ namespace pactheman_client {
             this.client = new TcpClient();
             await client.ConnectAsync(address, port);
             Task.Run(() => Listen(), _ct);
+            Connected = true;
         }
 
         public void Disconnect() {
-            _ctSource.Cancel();
-            client.Close();
-            client.Dispose();
-            _ctSource.Dispose();
+            if (Connected) {
+                _ctSource.Cancel();
+                client.Close();
+                client.Dispose();
+                _ctSource.Dispose();
+            }
+            Connected = false;
+        }
+
+        public async Task Exit() {
+            var exitMsg = new ExitMsg {
+                Session = new SessionMsg {
+                    SessionId = SessionId,
+                    ClientId = ClientId
+                }
+            };
+            var netMsg = new NetworkMessage {
+                IncomingOpCode = ExitMsg.OpCode,
+                IncomingRecord = exitMsg.EncodeAsImmutable()
+            };
+            await client.GetStream().WriteAsync(netMsg.Encode());
+            Disconnect();
         }
 
         private async Task Listen() {
@@ -60,16 +81,22 @@ namespace pactheman_client {
                     if (_ct.IsCancellationRequested) {
                         _ct.ThrowIfCancellationRequested();
                     }
+
                     Console.WriteLine("waiting for msg...");
-                    await client.GetStream().ReadAsync(buffer);
-                    Console.WriteLine("got message");
+                    if (await client.GetStream().ReadAsync(buffer) == 0) {
+                        // server closed session
+                        this.Disconnect();
+                        UIState.Instance.CurrentUIState = UIStates.PreGame;
+                        UIState.Instance.CurrentScreen = new PreGameMenu();
+                        return;
+                    }
                     var msg = NetworkMessage.Decode(buffer);
                     BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
                 }
             } catch (SocketException ex) {
                 Console.WriteLine("Lost connection to server: " + ex);
             } finally {
-                client.Dispose();
+                this.Disconnect();
             }
         }
 
@@ -110,6 +137,7 @@ namespace pactheman_client {
         }
 
         public async Task SetReady() {
+            this.PlayerState.Ready = true;
             var rdyMsg = new ReadyMsg {
                 Session = new SessionMsg {
                     SessionId = this.SessionId,

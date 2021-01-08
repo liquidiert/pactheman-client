@@ -8,6 +8,7 @@ namespace pactheman_client {
         Settings,
         PreGame,
         HostOrJoin,
+        PreLobby,
         Lobby,
         InGame,
         Game

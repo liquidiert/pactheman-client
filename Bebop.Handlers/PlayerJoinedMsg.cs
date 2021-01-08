@@ -1,6 +1,7 @@
 using Bebop.Attributes;
 using Bebop.Runtime;
 using PacTheMan.Models;
+using System;
 
 namespace pactheman_client {
 
@@ -8,10 +9,16 @@ namespace pactheman_client {
     public static class PlayerJoinedHandler {
 
         [BindRecord(typeof(BebopRecord<PlayerJoinedMsg>))]
-        public static void HandleGhostMove(object client, PlayerJoinedMsg msg) {
+        public static void HandlePlayerJoinedMsg(object client, PlayerJoinedMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
 
-            // TODO: show in lobby
+            if (msg.Session != null) {
+                player.SessionId = msg.Session.SessionId;
+                player.ClientId = (Guid) msg.Session.ClientId;
+            }
+
+            UIState.Instance.CurrentUIState = UIStates.Lobby;
+            UIState.Instance.CurrentScreen = new Lobby(msg.PlayerName);
         }
     }
 }

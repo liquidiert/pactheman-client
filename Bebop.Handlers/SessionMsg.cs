@@ -9,7 +9,7 @@ namespace pactheman_client {
     public static class SessionMsgHandler {
 
         [BindRecord(typeof(BebopRecord<SessionMsg>))]
-        public static void HandleGhostMove(object client, SessionMsg msg) {
+        public static void HandleSessionMsg(object client, SessionMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
 
             player.ClientId = (Guid) msg.ClientId;
@@ -18,8 +18,8 @@ namespace pactheman_client {
             Console.WriteLine(player.ClientId);
             Console.WriteLine(player.SessionId);
 
-            UIState.Instance.CurrentUIState = UIStates.Lobby;
-            UIState.Instance.CurrentScreen = new Lobby(player.SessionId.ToString());
+            UIState.Instance.CurrentUIState = UIStates.PreLobby;
+            UIState.Instance.CurrentScreen = new PreLobby(player.SessionId.ToString());
         }
     }
 }

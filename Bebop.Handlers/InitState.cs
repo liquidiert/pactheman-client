@@ -8,7 +8,7 @@ namespace pactheman_client {
     public static class InitStateHandler {
 
         [BindRecord(typeof(BebopRecord<InitState>))]
-        public static void HandleGhostMove(object client, InitState msg) {
+        public static void HandleInitStateMsg(object client, InitState msg) {
             HumanPlayer player = (HumanPlayer) client;
 
             player.PlayerState.ReconciliationId = msg.StartReconciliationId;
