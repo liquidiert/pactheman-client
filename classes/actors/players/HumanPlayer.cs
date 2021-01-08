@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using System;
 using System.Net;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using MonoGame.Extended;
@@ -13,10 +14,12 @@ namespace pactheman_client {
     class HumanPlayer : Player {
 
         public Guid ClientId { get; set; }
-        public Guid SessionId { get; set; }
+        public string SessionId { get; set; }
         private TcpClient client;
-        private Task listener;
         public PlayerState PlayerState;
+
+        private CancellationTokenSource _ctSource;
+        private CancellationToken _ct;
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
@@ -24,6 +27,8 @@ namespace pactheman_client {
         }
 
         public async Task Connect() {
+            _ctSource = new CancellationTokenSource();
+            _ct = _ctSource.Token;
             IPAddress address;
             if (!IPAddress.TryParse(ConfigReader.Instance.config["general"]["server_ip"], out address)) {
                 Console.WriteLine("Invalid ip address in config");
@@ -34,8 +39,41 @@ namespace pactheman_client {
             }
             this.client = new TcpClient();
             await client.ConnectAsync(address, port);
-            listener = Listen();
+            Task.Run(() => Listen(), _ct);
+        }
 
+        public void Disconnect() {
+            _ctSource.Cancel();
+            client.Close();
+            client.Dispose();
+            _ctSource.Dispose();
+        }
+
+        private async Task Listen() {
+            // Were we already canceled?
+            _ct.ThrowIfCancellationRequested();
+
+            Byte[] buffer = new Byte[4096];
+
+            try {
+                while (true) {
+                    if (_ct.IsCancellationRequested) {
+                        _ct.ThrowIfCancellationRequested();
+                    }
+                    Console.WriteLine("waiting for msg...");
+                    await client.GetStream().ReadAsync(buffer);
+                    Console.WriteLine("got message");
+                    var msg = NetworkMessage.Decode(buffer);
+                    BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+                }
+            } catch (SocketException ex) {
+                Console.WriteLine("Lost connection to server: " + ex);
+            } finally {
+                client.Dispose();
+            }
+        }
+
+        public async Task Host() {
             // send join
             var joinMsg = new JoinMsg {
                 Algorithms = new GhostAlgorithms {
@@ -54,21 +92,21 @@ namespace pactheman_client {
             await client.GetStream().WriteAsync(netMsg.Encode());
         }
 
-        private async Task Listen() {
-            Byte[] buffer = new Byte[4096];
-
-            try {
-                while (true) {
-                    Console.WriteLine("waiting for msg...");
-                    await client.GetStream().ReadAsync(buffer);
-                    var msg = NetworkMessage.Decode(buffer);
-                    BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+        public async Task Join() {
+            // send join
+            var joinMsg = new JoinMsg {
+                PlayerName = "PlayerOne",
+                Session = new SessionMsg {
+                    ClientId = this.ClientId,
+                    SessionId = this.SessionId
                 }
-            } catch (SocketException ex) {
-                Console.WriteLine("Lost connection to server: " + ex);
-            } finally {
-                client.Dispose();
-            }
+            };
+            var netMsg = new NetworkMessage {
+                IncomingOpCode = JoinMsg.OpCode,
+                IncomingRecord = joinMsg.EncodeAsImmutable()
+            };
+
+            await client.GetStream().WriteAsync(netMsg.Encode());
         }
 
         public async Task SetReady() {

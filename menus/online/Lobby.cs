@@ -14,13 +14,9 @@ namespace pactheman_client {
 
         private ListBox playerList;
         private Button readyBtn;
-        private TextBox sessionIDBox;
 
-        public Lobby() {
-            this.Content = generateContent();
-        }
-
-        public void UpdateContent() {
+        public Lobby(string sessionID) {
+            this.SessionID = sessionID;
             this.Content = generateContent();
         }
 
@@ -93,7 +89,7 @@ namespace pactheman_client {
                     },
                     new StackPanel {
                         Orientation = Orientation.Horizontal,
-                        HorizontalAlignment = HorizontalAlignment.Left,
+                        HorizontalAlignment = HorizontalAlignment.Centre,
                         Items = {
                             new Label($"Your session ID is: {SessionID}")
                         }

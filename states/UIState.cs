@@ -7,6 +7,7 @@ namespace pactheman_client {
         MainMenu,
         Settings,
         PreGame,
+        HostOrJoin,
         Lobby,
         InGame,
         Game
