@@ -24,7 +24,6 @@ namespace pactheman_client {
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
-            this.ID = "playerOne";
             this.PlayerState = new PlayerState();
         }
 
@@ -137,7 +136,6 @@ namespace pactheman_client {
         }
 
         public async Task SetReady() {
-            this.PlayerState.Ready = true;
             var rdyMsg = new ReadyMsg {
                 Session = new SessionMsg {
                     SessionId = this.SessionId,

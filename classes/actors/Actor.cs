@@ -22,7 +22,6 @@ namespace pactheman_client {
         public AnimatedSprite Sprite;
         public float MovementSpeed = 350f;
         public string Name { get; set; }
-        public string ID { get; set; }
         public RectangleF BoundingBox { get; set; }
         public Vector2 BoundingOffset { get; set; }
 

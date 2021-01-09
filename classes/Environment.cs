@@ -36,6 +36,9 @@ namespace pactheman_client {
                 return CurrentGameMode == GameModes.Online;
             }
         }
+        public HumanPlayer PlayerOne {
+            get => Environment.Instance.Actors["player"] as HumanPlayer;
+        }
 
         private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
         public static Environment Instance { get => lazy.Value; }

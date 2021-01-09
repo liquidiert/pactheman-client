@@ -32,9 +32,7 @@ namespace pactheman_client {
             playerList.Items.AddMany("Me", "AI");
             playerList.SelectedItem = "Me";
             playerList.SelectedIndexChanged += (sender, args) => {
-                (Environment.Instance.Actors
-                    .Where(a => a.Value.ID == "playerOne")
-                        .First().Value as Player).IsHooman = (string)playerList.SelectedItem == "Me";
+                Environment.Instance.PlayerOne.IsHooman = (string)playerList.SelectedItem == "Me";
             };
 
             // ready btn
@@ -44,13 +42,8 @@ namespace pactheman_client {
                 Margin = new Thickness(0, 50)
             };
             readyBtn.Clicked += async (sender, args) => {
-                await (Environment.Instance.Actors
-                    .Where(a => a.Value.ID == "playerOne")
-                        .First().Value as HumanPlayer).SetReady();
-                /* TODO: transfer to start
-                UIState.Instance.CurrentUIState = UIStates.Game;
-                GameState.Instance.CurrentGameState = GameStates.Game;
-                UIState.Instance.CurrentScreen = new InGameMenu(); */
+                await Environment.Instance.PlayerOne.SetReady();
+                playerList.IsEnabled = false;
             };
 
             return new StackPanel {

@@ -9,7 +9,6 @@ namespace pactheman_client {
 
         public Opponent(ContentManager content, string name) : base(content, name, "sprites/opponent/spriteFactory.sf") {
             this.StatsPosition = new Vector2(1300, 50);
-            this.ID = "playerTwo";
         }
 
         public override void Move(GameTime gameTime) {

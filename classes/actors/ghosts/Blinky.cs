@@ -12,7 +12,6 @@ namespace pactheman_client {
     class Blinky : Ghost {
 
         public Blinky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryBlinky.sf") {
-            this.ID = "blinky";
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints
                 .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);

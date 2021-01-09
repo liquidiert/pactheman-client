@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Gui;
 using MonoGame.Extended.Gui.Controls;
-using System;
+using System.Linq;
 
 namespace pactheman_client {
     class InGameMenu : Screen {
@@ -30,9 +30,11 @@ namespace pactheman_client {
                         Content = "Exit",
                         Margin = new Thickness(0, 25)
                     };
-            exitBtn.Clicked += (sender, args) => {
+            exitBtn.Clicked += async (sender, args) => {
                 Environment.Instance.Clear();
-                // TODO: check mode and if connected to server disconnect gracefully
+                if (Environment.Instance.IsOnline) {
+                    await Environment.Instance.PlayerOne.Exit();
+                }
                 UIState.Instance.CurrentUIState = UIStates.MainMenu;
                 GameState.Instance.CurrentGameState = GameStates.MainMenu;
                 UIState.Instance.CurrentScreen = UIState.Instance.MainMenu;

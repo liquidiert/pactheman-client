@@ -49,8 +49,7 @@ namespace pactheman_client {
                     };
             onlineBtn.Clicked += async (sender, args) => {
                 Environment.Instance.CurrentGameMode = GameModes.Online;
-                var player = (HumanPlayer)Environment.Instance.Actors["player"];
-                await player.Connect();
+                await Environment.Instance.PlayerOne.Connect();
                 UIState.Instance.CurrentUIState = UIStates.HostOrJoin;
                 UIState.Instance.CurrentScreen = new HostOrJoinMenu();
             };

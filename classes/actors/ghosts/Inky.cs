@@ -12,7 +12,6 @@ namespace pactheman_client {
     class Inky : Ghost {
 
         public Inky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryInky.sf") {
-            this.ID = "inky";
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints
                 .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);
