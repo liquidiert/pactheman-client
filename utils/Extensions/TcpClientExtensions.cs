@@ -1,9 +1,8 @@
-using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 
-namespace pactheman_server {
+namespace pactheman_client {
     public static class TcpClientExtensions {
 
         /// <summary>

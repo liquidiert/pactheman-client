@@ -12,14 +12,13 @@ namespace pactheman_client {
         public static void HandleSessionMsg(object client, SessionMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
 
-            player.ClientId = (Guid) msg.ClientId;
-            player.SessionId = msg.SessionId;
+            player.InternalPlayerState.Session = msg;
 
-            Console.WriteLine(player.ClientId);
-            Console.WriteLine(player.SessionId);
+            Console.WriteLine(player.InternalPlayerState.Session.ClientId);
+            Console.WriteLine(player.InternalPlayerState.Session.SessionId);
 
             UIState.Instance.CurrentUIState = UIStates.PreLobby;
-            UIState.Instance.CurrentScreen = new PreLobby(player.SessionId.ToString());
+            UIState.Instance.CurrentScreen = new PreLobby(player.InternalPlayerState.Session.SessionId.ToString());
         }
     }
 }

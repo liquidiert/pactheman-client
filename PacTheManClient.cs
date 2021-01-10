@@ -51,6 +51,11 @@ namespace pactheman_client {
             UIState.Instance.GuiSystem.ClientSizeChanged();
         }
 
+        protected override async void OnExiting(Object sender, EventArgs args) {
+            base.OnExiting(sender, args);
+            await Environment.Instance.PlayerOne.Exit();
+        }
+
         protected override void Initialize() {
             // _camera
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 2216, 1408);

@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Gui;
 using MonoGame.Extended.Gui.Controls;
-using System;
+using PacTheMan.Models;
 
 namespace pactheman_client {
     public class HostOrJoinMenu : Screen {
@@ -44,7 +44,9 @@ namespace pactheman_client {
                 TextColor = Color.White
             };
             sessionIDBox.TextChanged += (sender, args) => {
-                player.SessionId = sessionIDBox.Text;
+                player.InternalPlayerState.Session = new SessionMsg { 
+                    SessionId = sessionIDBox.Text
+                };
                 joinBtn.IsEnabled = true;
             };
 

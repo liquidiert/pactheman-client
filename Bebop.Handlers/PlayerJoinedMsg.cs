@@ -13,8 +13,7 @@ namespace pactheman_client {
             HumanPlayer player = (HumanPlayer) client;
 
             if (msg.Session != null) {
-                player.SessionId = msg.Session.SessionId;
-                player.ClientId = (Guid) msg.Session.ClientId;
+                player.InternalPlayerState.Session = msg.Session;
             }
 
             UIState.Instance.CurrentUIState = UIStates.Lobby;

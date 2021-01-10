@@ -2,6 +2,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
 using System.Net;
+using System.IO;
+using System.Net.NetworkInformation;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +15,10 @@ using Bebop.Runtime;
 namespace pactheman_client {
     class HumanPlayer : Player {
 
-        public Guid ClientId { get; set; }
-        public string SessionId { get; set; }
-        private TcpClient client;
-        public PlayerState PlayerState;
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private StreamWriter _writer;
+        public PlayerState InternalPlayerState;
 
         private CancellationTokenSource _ctSource;
         private CancellationToken _ct;
@@ -24,7 +26,8 @@ namespace pactheman_client {
 
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
-            this.PlayerState = new PlayerState();
+            this.InternalPlayerState = new PlayerState();
+            InternalPlayerState.Name = name;
         }
 
         public async Task Connect() {
@@ -38,17 +41,46 @@ namespace pactheman_client {
             if (!int.TryParse(ConfigReader.Instance.config["general"]["server_port"], out port)) {
                 Console.WriteLine("Invalid port in config");
             }
-            this.client = new TcpClient();
-            await client.ConnectAsync(address, port);
+            _client = new TcpClient();
+            await _client.ConnectAsync(address, port);
+            _stream = _client.GetStream();
+            _writer = new StreamWriter(_stream, leaveOpen: true);
             Task.Run(() => Listen(), _ct);
             Connected = true;
+        }
+
+        private async Task _reconnect() {
+            try {
+                _client = new TcpClient();
+                await _client.ConnectAsync(
+                    IPAddress.Parse(ConfigReader.Instance.config["general"]["server_ip"]),
+                    int.Parse(ConfigReader.Instance.config["general"]["server_port"])
+                );
+
+                var netMessage = new NetworkMessage {
+                    IncomingOpCode = ReconnectMsg.OpCode,
+                    IncomingRecord = new ReconnectMsg {
+                        Session = InternalPlayerState.Session
+                    }.EncodeAsImmutable()
+                };
+
+                this._stream = _client.GetStream();
+                this._writer = new StreamWriter(_stream, leaveOpen: true);
+
+                await _stream.WriteAsync(netMessage.Encode());
+            } catch (Exception ex) {
+                Console.WriteLine(ex);
+                Disconnect();
+            }
         }
 
         public void Disconnect() {
             if (Connected) {
                 _ctSource.Cancel();
-                client.Close();
-                client.Dispose();
+                _stream.Close();
+                _stream.Dispose();
+                _writer.Dispose();
+                _client.Dispose();
                 _ctSource.Dispose();
             }
             Connected = false;
@@ -56,16 +88,13 @@ namespace pactheman_client {
 
         public async Task Exit() {
             var exitMsg = new ExitMsg {
-                Session = new SessionMsg {
-                    SessionId = SessionId,
-                    ClientId = ClientId
-                }
+                Session = InternalPlayerState.Session
             };
             var netMsg = new NetworkMessage {
                 IncomingOpCode = ExitMsg.OpCode,
                 IncomingRecord = exitMsg.EncodeAsImmutable()
             };
-            await client.GetStream().WriteAsync(netMsg.Encode());
+            await _writer.WriteLineAsync(netMsg.Encode().ToString());
             Disconnect();
         }
 
@@ -82,7 +111,7 @@ namespace pactheman_client {
                     }
 
                     Console.WriteLine("waiting for msg...");
-                    if (await client.GetStream().ReadAsync(buffer) == 0) {
+                    if (await _stream.ReadAsync(buffer) == 0) {
                         // server closed session
                         this.Disconnect();
                         UIState.Instance.CurrentUIState = UIStates.PreGame;
@@ -115,42 +144,36 @@ namespace pactheman_client {
                 IncomingRecord = joinMsg.EncodeAsImmutable()
             };
 
-            await client.GetStream().WriteAsync(netMsg.Encode());
+            await _stream.WriteAsync(netMsg.Encode());
         }
 
         public async Task Join() {
             // send join
             var joinMsg = new JoinMsg {
                 PlayerName = "PlayerOne",
-                Session = new SessionMsg {
-                    ClientId = this.ClientId,
-                    SessionId = this.SessionId
-                }
+                Session = InternalPlayerState.Session
             };
             var netMsg = new NetworkMessage {
                 IncomingOpCode = JoinMsg.OpCode,
                 IncomingRecord = joinMsg.EncodeAsImmutable()
             };
 
-            await client.GetStream().WriteAsync(netMsg.Encode());
+            await _stream.WriteAsync(netMsg.Encode());
         }
 
         public async Task SetReady() {
             var rdyMsg = new ReadyMsg {
-                Session = new SessionMsg {
-                    SessionId = this.SessionId,
-                    ClientId = this.ClientId
-                },
+                Session = InternalPlayerState.Session,
                 Ready = true
             };
             var netMsg = new NetworkMessage {
                 IncomingOpCode = ReadyMsg.OpCode,
                 IncomingRecord = rdyMsg.EncodeAsImmutable()
             };
-            await client.GetStream().WriteAsync(netMsg.Encode());
+            await _stream.WriteAsync(netMsg.Encode());
         }
 
-        public override void Move(GameTime gameTime) {
+        public override async void Move(GameTime gameTime) {
             var delta = gameTime.GetElapsedSeconds();
 
             Vector2 updatedPosition;
@@ -172,18 +195,23 @@ namespace pactheman_client {
             if (Environment.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
                 if (Environment.Instance.IsOnline) {
-                    PlayerState.Score[ClientId] += 10;
+                    InternalPlayerState.Score[(Guid)InternalPlayerState.Session.ClientId] = _score;
                 }
             }
 
             if (Environment.Instance.IsOnline) {
-                PlayerState.ReconciliationId++;
-                PlayerState.PlayerPositions[ClientId] = new Position { X = (int)DownScaledPosition.X, Y = (int)DownScaledPosition.Y };
+                InternalPlayerState.ReconciliationId++;
+                InternalPlayerState.PlayerPositions[(Guid)InternalPlayerState.Session.ClientId] = new Position { X = (int)DownScaledPosition.X, Y = (int)DownScaledPosition.Y };
                 var msg = new NetworkMessage {
                     IncomingOpCode = PlayerState.OpCode,
-                    IncomingRecord = PlayerState.EncodeAsImmutable()
+                    IncomingRecord = InternalPlayerState.EncodeAsImmutable()
                 };
-                client.GetStream().WriteAsync(msg.Encode());
+                try {
+                    await _writer.WriteLineAsync(msg.Encode().ToString());
+                } catch (ObjectDisposedException) {
+                    await _reconnect();
+                    await _writer.WriteLineAsync(msg.Encode().ToString());
+                }
             }
         }
     }
