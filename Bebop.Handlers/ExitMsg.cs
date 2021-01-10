@@ -12,6 +12,7 @@ namespace pactheman_client {
         public static void HandleExitMsg(object client, ExitMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
 
+            Console.WriteLine("received exit msg");
             player.Disconnect();
 
             UIState.Instance.CurrentUIState = UIStates.PreGame;

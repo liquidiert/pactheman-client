@@ -16,8 +16,7 @@ namespace pactheman_client {
     class HumanPlayer : Player {
 
         private TcpClient _client;
-        private NetworkStream _stream;
-        private StreamWriter _writer;
+        private NonDisposableStream _stream;
         public PlayerState InternalPlayerState;
 
         private CancellationTokenSource _ctSource;
@@ -43,8 +42,7 @@ namespace pactheman_client {
             }
             _client = new TcpClient();
             await _client.ConnectAsync(address, port);
-            _stream = _client.GetStream();
-            _writer = new StreamWriter(_stream, leaveOpen: true);
+            _stream = new NonDisposableStream(_client.Client);
             Task.Run(() => Listen(), _ct);
             Connected = true;
         }
@@ -64,8 +62,7 @@ namespace pactheman_client {
                     }.EncodeAsImmutable()
                 };
 
-                this._stream = _client.GetStream();
-                this._writer = new StreamWriter(_stream, leaveOpen: true);
+                this._stream = new NonDisposableStream(_client.Client);
 
                 await _stream.WriteAsync(netMessage.Encode());
             } catch (Exception ex) {
@@ -75,11 +72,12 @@ namespace pactheman_client {
         }
 
         public void Disconnect() {
+            Console.WriteLine("Disconnect got called");
             if (Connected) {
+                _stream.YouMayDispose = true;
                 _ctSource.Cancel();
                 _stream.Close();
                 _stream.Dispose();
-                _writer.Dispose();
                 _client.Dispose();
                 _ctSource.Dispose();
             }
@@ -87,6 +85,7 @@ namespace pactheman_client {
         }
 
         public async Task Exit() {
+            Console.WriteLine("called exit");
             var exitMsg = new ExitMsg {
                 Session = InternalPlayerState.Session
             };
@@ -94,7 +93,7 @@ namespace pactheman_client {
                 IncomingOpCode = ExitMsg.OpCode,
                 IncomingRecord = exitMsg.EncodeAsImmutable()
             };
-            await _writer.WriteLineAsync(netMsg.Encode().ToString());
+            await _stream.WriteAsync(netMsg.Encode());
             Disconnect();
         }
 
@@ -102,29 +101,25 @@ namespace pactheman_client {
             // Were we already canceled?
             _ct.ThrowIfCancellationRequested();
 
-            Byte[] buffer = new Byte[4096];
+            Byte[] buffer = new Byte[512];
 
-            try {
-                while (true) {
-                    if (_ct.IsCancellationRequested) {
-                        _ct.ThrowIfCancellationRequested();
-                    }
-
-                    Console.WriteLine("waiting for msg...");
-                    if (await _stream.ReadAsync(buffer) == 0) {
-                        // server closed session
-                        this.Disconnect();
-                        UIState.Instance.CurrentUIState = UIStates.PreGame;
-                        UIState.Instance.CurrentScreen = new PreGameMenu();
-                        return;
-                    }
-                    var msg = NetworkMessage.Decode(buffer);
-                    BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
+            while (true) {
+                if (_ct.IsCancellationRequested) {
+                    _ct.ThrowIfCancellationRequested();
                 }
-            } catch (SocketException ex) {
-                Console.WriteLine("Lost connection to server: " + ex);
-            } finally {
-                this.Disconnect();
+
+                Console.WriteLine("waiting for msg...");
+                if (await _stream.ReadAsync(buffer) == 0) {
+                    // server closed session
+                    this.Disconnect();
+                    UIState.Instance.CurrentUIState = UIStates.PreGame;
+                    UIState.Instance.CurrentScreen = new PreGameMenu();
+                    return;
+                }
+                var msg = NetworkMessage.Decode(buffer);
+                if (msg.IncomingOpCode == null) continue;
+                Console.WriteLine($"received {msg.IncomingOpCode} {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds()}");
+                BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
             }
         }
 
@@ -206,12 +201,14 @@ namespace pactheman_client {
                     IncomingOpCode = PlayerState.OpCode,
                     IncomingRecord = InternalPlayerState.EncodeAsImmutable()
                 };
-                try {
-                    await _writer.WriteLineAsync(msg.Encode().ToString());
+
+                await _stream.WriteAsync(msg.Encode());
+                /* try {
+                    await _stream.WriteAsync(msg.Encode());
                 } catch (ObjectDisposedException) {
                     await _reconnect();
-                    await _writer.WriteLineAsync(msg.Encode().ToString());
-                }
+                    await _stream.WriteAsync(msg.Encode());
+                } */
             }
         }
     }

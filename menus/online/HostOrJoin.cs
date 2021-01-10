@@ -3,6 +3,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Gui;
 using MonoGame.Extended.Gui.Controls;
 using PacTheMan.Models;
+using System;
 
 namespace pactheman_client {
     public class HostOrJoinMenu : Screen {
@@ -16,6 +17,7 @@ namespace pactheman_client {
                 Margin = new Thickness(20, 0)
             };
             cancelBtn.Clicked += (sender, args) => {
+                Console.WriteLine("cancel btn clicked");
                 player.Disconnect();
                 UIState.Instance.CurrentUIState = UIStates.PreGame;
                 UIState.Instance.CurrentScreen = new PreGameMenu();
