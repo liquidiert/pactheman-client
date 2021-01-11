@@ -15,6 +15,7 @@ namespace pactheman_client {
             Console.WriteLine("received exit msg");
             player.Disconnect();
 
+            GameState.Instance.CurrentGameState = GameStates.MainMenu;
             UIState.Instance.CurrentUIState = UIStates.PreGame;
             UIState.Instance.CurrentScreen = new PreGameMenu();
         }

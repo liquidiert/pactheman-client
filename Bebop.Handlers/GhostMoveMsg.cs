@@ -12,7 +12,6 @@ namespace pactheman_client {
 
         [BindRecord(typeof(BebopRecord<GhostMoveMsg>))]
         public static void HandleGhostMove(object val, GhostMoveMsg msg) {
-            Console.WriteLine("received ghost move");
             foreach (var reset in msg.State.ClearTargets) {
                 if (reset.Value) {
                     (Environment.Instance.Actors[reset.Key] as Ghost).Targets = new List<Vector2>();

@@ -12,6 +12,7 @@ namespace pactheman_client {
         }
 
         public override void Move(GameTime gameTime) {
+            if (Environment.Instance.IsOnline) return;
             var delta = gameTime.GetElapsedSeconds();
             
             Vector2 updatedPosition;
