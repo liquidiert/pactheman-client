@@ -100,9 +100,6 @@ namespace pactheman_client {
 
             var player = (HumanPlayer)Actors["player"];
             var opponent = (Opponent)Actors["opponent"];
-            // remove score points for start positions
-            RemoveScorePoint(player.Position);
-            RemoveScorePoint(opponent.Position);
             
             var playerOppPair = new CollisionPair(player, opponent);
             playerOppPair.Collision += player.OnActorCollision;

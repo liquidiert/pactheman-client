@@ -30,6 +30,13 @@ namespace pactheman_client {
                     Y = msg.PlayerInitPositions.Where(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).First().Value.Y
                 };
 
+            // remove position score points
+            Environment.Instance.RemoveScorePoint(new Vector2 { X = player.Position.X, Y = player.Position.Y });
+            Environment.Instance.RemoveScorePoint(new Vector2 { 
+                X = Environment.Instance.Actors["opponent"].Position.X,
+                Y = Environment.Instance.Actors["opponent"].Position.Y
+            });
+
             UIState.Instance.CurrentUIState = UIStates.Game;
             GameState.Instance.CurrentGameState = GameStates.Game;
             UIState.Instance.CurrentScreen = new InGameMenu();

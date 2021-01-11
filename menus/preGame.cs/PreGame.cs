@@ -19,6 +19,10 @@ namespace pactheman_client {
                     };
             
             localBtn.Clicked += (sender, args) => {
+                // remove init pos score points
+                Environment.Instance.RemoveScorePoint(Environment.Instance.PlayerOne.Position);
+                Environment.Instance.RemoveScorePoint(Environment.Instance.Actors["opponent"].Position);
+
                 Environment.Instance.CurrentGameMode = GameModes.Local;
                 UIState.Instance.CurrentUIState = UIStates.Game;
                 GameState.Instance.CurrentGameState = GameStates.Game;
@@ -33,6 +37,10 @@ namespace pactheman_client {
                         Margin = new Thickness(0, 50)
                     };
             vsAIBtn.Clicked += (sender, args) => {
+                // remove init pos score points
+                Environment.Instance.RemoveScorePoint(Environment.Instance.PlayerOne.Position);
+                Environment.Instance.RemoveScorePoint(Environment.Instance.Actors["opponent"].Position);
+                
                 Environment.Instance.CurrentGameMode = GameModes.vsAI;
                 // TODO: check if ai available; otherwise error out
                 UIState.Instance.CurrentUIState = UIStates.Game;

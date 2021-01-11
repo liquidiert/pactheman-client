@@ -12,16 +12,19 @@ namespace pactheman_client {
         }
 
         public override void Move(GameTime gameTime) {
-            if (Environment.Instance.IsOnline) return;
             var delta = gameTime.GetElapsedSeconds();
-            
+
             Vector2 updatedPosition;
 
-            // TODO: add real ai movement if IsHooman is false
-            if (IsHooman) {
-                updatedPosition = keyboardMove(delta, true);
+            if (!Environment.Instance.IsOnline) {
+                // TODO: add real ai movement if IsHooman is false
+                if (IsHooman) {
+                    updatedPosition = keyboardMove(delta, true);
+                } else {
+                    updatedPosition = new Vector2();
+                }
             } else {
-                updatedPosition = new Vector2();
+                updatedPosition = Position;
             }
 
             // teleport if entering either left or right gate

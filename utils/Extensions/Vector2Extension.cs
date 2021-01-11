@@ -43,6 +43,13 @@ namespace pactheman_client {
             return Math.Sqrt((vector.X-toCompare.X)*(vector.X-toCompare.X) + (vector.Y-toCompare.Y)*(vector.Y-toCompare.Y));
         }
 
+        public static Vector2 Interpolated(this Vector2 vector, Vector2 other) {
+            return new Vector2 {
+                X = (vector.X + other.X) / 2,
+                Y = (vector.Y + other.Y) / 2
+            };
+        }
+
     }
 
 }
