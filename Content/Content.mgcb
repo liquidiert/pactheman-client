@@ -113,28 +113,16 @@
 /build:sprites/ghosts/pinky.png
 
 #begin sprites/ghosts/spriteFactoryBlinky.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/ghosts/spriteFactoryBlinky.sf
+/copy:sprites/ghosts/spriteFactoryBlinky.sf
 
 #begin sprites/ghosts/spriteFactoryClyde.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/ghosts/spriteFactoryClyde.sf
+/copy:sprites/ghosts/spriteFactoryClyde.sf
 
 #begin sprites/ghosts/spriteFactoryInky.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/ghosts/spriteFactoryInky.sf
+/copy:sprites/ghosts/spriteFactoryInky.sf
 
 #begin sprites/ghosts/spriteFactoryPinky.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/ghosts/spriteFactoryPinky.sf
+/copy:sprites/ghosts/spriteFactoryPinky.sf
 
 #begin sprites/objects/point.png
 /importer:TextureImporter
@@ -173,10 +161,7 @@
 /build:sprites/opponent/opponent.png
 
 #begin sprites/opponent/spriteFactory.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/opponent/spriteFactory.sf
+/copy:sprites/opponent/spriteFactory.sf
 
 #begin sprites/player/player_base.png
 /importer:TextureImporter
@@ -203,8 +188,5 @@
 /build:sprites/player/player.png
 
 #begin sprites/player/spriteFactory.sf
-/importer:SpriteFactoryContentImporter
-/processor:SpriteFactoryContentProcessor
-/processorParam:ContentType=MonoGame.Extended MonoGame.Extended.Animations.SpriteFactory.SpriteFactoryFileReader, MonoGame.Extended.Animations
-/build:sprites/player/spriteFactory.sf
+/copy:sprites/player/spriteFactory.sf
 

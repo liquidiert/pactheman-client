@@ -14,25 +14,13 @@
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/clyde.png</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/inky.png</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/pinky.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryBlinky.sf</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryClyde.sf</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryInky.sf</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/ghosts/spriteFactoryPinky.sf</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/objects/point.png</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/opponent_base.png</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/opponent.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/opponent/spriteFactory.sf</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/player_base.png</File>
     <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/player.png</File>
-    <File>/home/secretone/git_repos/uni/pactheman-client/Content/sprites/player/spriteFactory.sf</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
