@@ -7,15 +7,9 @@ using MonoGame.Extended.Content;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Collisions;
+using PacTheMan.Models;
 
 namespace pactheman_client {
-
-    public enum MovingStates {
-        Up,
-        Down,
-        Left,
-        Right,
-    }
 
     public abstract class Actor : IActorTarget {
 

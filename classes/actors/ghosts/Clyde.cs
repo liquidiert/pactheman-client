@@ -1,12 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Collisions;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace pactheman_client {
 

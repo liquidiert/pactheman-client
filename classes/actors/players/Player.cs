@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Input;
+using PacTheMan.Models;
 
 namespace pactheman_client {
     public class Player : Actor {
@@ -19,7 +20,7 @@ namespace pactheman_client {
         public string Lives {
             get => "<3".Multiple(_lives);
         }
-        protected MovingStates CurrentMovingState {
+        public MovingStates CurrentMovingState {
             get { return movingState; }
             set {
                 if (movingState != value) {

@@ -26,7 +26,7 @@ namespace pactheman_client {
         public HumanPlayer(ContentManager content, string name) : base(content, name, "sprites/player/spriteFactory.sf") {
             this.StatsPosition = new Vector2(-350, 50);
             this.InternalPlayerState = new PlayerState();
-            InternalPlayerState.Name = name;
+            Name = name;
         }
 
         public async Task Connect() {
@@ -43,7 +43,9 @@ namespace pactheman_client {
             _client = new TcpClient();
             await _client.ConnectAsync(address, port);
             _stream = new NonDisposableStream(_client.Client);
-            Task.Run(() => Listen(), _ct);
+
+            // start listener as seperate thread
+            new Thread(() => Listen()).Start();
             Connected = true;
         }
 
@@ -93,13 +95,13 @@ namespace pactheman_client {
                 IncomingOpCode = ExitMsg.OpCode,
                 IncomingRecord = exitMsg.EncodeAsImmutable()
             };
-            if (_client != null && _client.GetState() == TcpState.Established) {
+            if (_client?.GetState() == TcpState.Established) {
                 await _stream.WriteAsync(netMsg.Encode());
             }
             Disconnect();
         }
 
-        private async Task Listen() {
+        private async void Listen() {
             // Were we already canceled?
             _ct.ThrowIfCancellationRequested();
 
@@ -111,16 +113,20 @@ namespace pactheman_client {
                         _ct.ThrowIfCancellationRequested();
                     }
 
-                    if (await _stream.ReadAsync(buffer) == 0) {
+                    if (await _stream.ReadAsync(buffer, _ct) == 0) {
                         // server closed session
                         this.Disconnect();
-                        UIState.Instance.CurrentUIState = UIStates.PreGame;
-                        UIState.Instance.CurrentScreen = new PreGameMenu();
+                        GameState.Instance.CurrentGameState = GameStates.MainMenu;
+                        UIState.Instance.CurrentUIState = UIStates.MainMenu;
+                        UIState.Instance.CurrentScreen = UIState.Instance.MainMenu;
                         return;
                     }
+
                     var msg = NetworkMessage.Decode(buffer);
                     BebopMirror.HandleRecord(msg.IncomingRecord.ToArray(), msg.IncomingOpCode ?? 0, this);
                 }
+            } catch (OperationCanceledException) {
+                // swallow -> canceled thread
             } catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
             }
@@ -135,7 +141,7 @@ namespace pactheman_client {
                     Inky = ConfigReader.Instance.CurrentMoveBehavior("inky"),
                     Pinky = ConfigReader.Instance.CurrentMoveBehavior("pinky")
                 },
-                PlayerName = "PlayerOne"
+                PlayerName = Name
             };
             var netMsg = new NetworkMessage {
                 IncomingOpCode = JoinMsg.OpCode,
@@ -148,7 +154,7 @@ namespace pactheman_client {
         public async Task Join() {
             // send join
             var joinMsg = new JoinMsg {
-                PlayerName = "PlayerOne",
+                PlayerName = Name,
                 Session = InternalPlayerState.Session
             };
             var netMsg = new NetworkMessage {
@@ -198,14 +204,19 @@ namespace pactheman_client {
             }
 
             if (Environment.Instance.IsOnline) {
-                InternalPlayerState.ReconciliationId++;
+                InternalPlayerState.Direction = CurrentMovingState;
                 InternalPlayerState.PlayerPositions[(Guid)InternalPlayerState.Session.ClientId] = new Position { X = Position.X, Y = Position.Y };
                 var msg = new NetworkMessage {
                     IncomingOpCode = PlayerState.OpCode,
                     IncomingRecord = InternalPlayerState.EncodeAsImmutable()
                 };
 
-                await _stream.WriteAsync(msg.Encode());
+                try {
+                    await _stream.WriteAsync(msg.Encode());
+                } catch (ObjectDisposedException) {
+                    // swallow -> server sent exit
+                }
+                
             }
         }
     }

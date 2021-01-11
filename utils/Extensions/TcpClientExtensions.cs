@@ -14,7 +14,7 @@ namespace pactheman_client {
 
             var state = IPGlobalProperties.GetIPGlobalProperties()
               .GetActiveTcpConnections()
-              .SingleOrDefault(x => x.LocalEndPoint.Equals(tcpClient.Client.LocalEndPoint)
+              ?.FirstOrDefault(x => x.LocalEndPoint.Equals(tcpClient.Client.LocalEndPoint)
                                  && x.RemoteEndPoint.Equals(tcpClient.Client.RemoteEndPoint)
               );
 

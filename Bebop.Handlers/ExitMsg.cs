@@ -16,8 +16,9 @@ namespace pactheman_client {
             player.Disconnect();
 
             GameState.Instance.CurrentGameState = GameStates.MainMenu;
-            UIState.Instance.CurrentUIState = UIStates.PreGame;
-            UIState.Instance.CurrentScreen = new PreGameMenu();
+            UIState.Instance.CurrentUIState = UIStates.MainMenu;
+            UIState.Instance.CurrentScreen = UIState.Instance.MainMenu;
+            Environment.Instance.Clear();
         }
     }
 }

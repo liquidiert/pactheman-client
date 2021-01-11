@@ -14,12 +14,17 @@ namespace pactheman_client {
         public static void HandleInitStateMsg(object client, InitState msg) {
             HumanPlayer player = (HumanPlayer) client;
 
-            player.InternalPlayerState.ReconciliationId = msg.StartReconciliationId[(Guid)player.InternalPlayerState.Session.ClientId];
             player.InternalPlayerState.PlayerPositions = msg.PlayerInitPositions;
             player.InternalPlayerState.GhostPositions = msg.GhostInitPositions;
             player.InternalPlayerState.Lives = msg.PlayerInitLives;
             player.InternalPlayerState.Score = msg.PlayerInitScores;
-            // TODO: set ghost positions
+            
+            foreach (var ghost in player.InternalPlayerState.GhostPositions) {
+                Environment.Instance.Actors[ghost.Key].Position = 
+                    Environment.Instance.Actors[ghost.Key].StartPosition = 
+                        new Vector2 { X = ghost.Value.X, Y = ghost.Value.Y };
+            }
+
             player.Position = player.StartPosition = new Vector2 {
                 X = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].X,
                 Y = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].Y
@@ -41,6 +46,7 @@ namespace pactheman_client {
             UIState.Instance.CurrentUIState = UIStates.Game;
             GameState.Instance.CurrentGameState = GameStates.Game;
             UIState.Instance.CurrentScreen = new InGameMenu();
+            UIState.Instance.GuiSystem.ActiveScreen.Hide();
         }
     }
 }

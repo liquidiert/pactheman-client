@@ -3,6 +3,7 @@ using Bebop.Runtime;
 using PacTheMan.Models;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
@@ -14,7 +15,6 @@ namespace pactheman_client {
         public static void HandlePlayerStateMsg(object client, PlayerState msg) {
             HumanPlayer player = (HumanPlayer) client;
 
-            player.InternalPlayerState.ReconciliationId = msg.ReconciliationId;
             player.InternalPlayerState.PlayerPositions = msg.PlayerPositions;
             player.InternalPlayerState.GhostPositions = msg.GhostPositions;
             player.InternalPlayerState.Lives = msg.Lives;
@@ -22,14 +22,12 @@ namespace pactheman_client {
 
             var clientId = player.InternalPlayerState.Session.ClientId;
             if (msg.Session.ClientId != clientId) {
-                var oppPos = player.InternalPlayerState.PlayerPositions.First(p => p.Key != clientId).Value;
-                Console.WriteLine($"{oppPos.X} {oppPos.Y}");
+                (Environment.Instance.Actors["opponent"] as Player).CurrentMovingState = msg.Direction;
+                var oppPos = new Dictionary<Guid, BasePosition>(player.InternalPlayerState.PlayerPositions).First(p => p.Key != clientId).Value;
                 if (oppPos.X > 70 && oppPos.X < 1145) {
-                    Console.WriteLine("interp");
                     Environment.Instance.Actors["opponent"].Position =
                         Environment.Instance.Actors["opponent"].Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
                 } else {
-                    Console.WriteLine("no interp");
                     Environment.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
                 }
             }

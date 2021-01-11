@@ -23,15 +23,15 @@ namespace pactheman_client {
                 } else {
                     updatedPosition = new Vector2();
                 }
+
+                // teleport if entering either left or right gate
+                if (updatedPosition.X <= 38 || updatedPosition.X >= 1177) {
+                    Position = UpdatePosition(x: -1215, xFactor: -1);
+                } else {
+                    Position = updatedPosition;
+                }
             } else {
                 updatedPosition = Position;
-            }
-
-            // teleport if entering either left or right gate
-            if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
-                Position = UpdatePosition(x: -1216, xFactor: -1);
-            } else {
-                Position = updatedPosition;
             }
 
             if (Environment.Instance.RemoveScorePoint(Position)) {
