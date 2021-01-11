@@ -184,8 +184,8 @@ namespace pactheman_client {
             }
 
             // teleport if entering either left or right gate
-            if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
-                Position = UpdatePosition(x: -1216, xFactor: -1);
+            if (updatedPosition.X <= 38 || updatedPosition.X >= 1177) {
+                Position = UpdatePosition(x: -1215, xFactor: -1);
             } else {
                 Position = updatedPosition;
             }
@@ -205,11 +205,7 @@ namespace pactheman_client {
                     IncomingRecord = InternalPlayerState.EncodeAsImmutable()
                 };
 
-                try {
-                    await _stream.WriteAsync(msg.Encode());
-                } catch (ObjectDisposedException) {
-                    // swallow -> received exit
-                }
+                await _stream.WriteAsync(msg.Encode());
             }
         }
     }

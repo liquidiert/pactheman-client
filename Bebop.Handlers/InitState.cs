@@ -24,10 +24,11 @@ namespace pactheman_client {
                 X = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].X,
                 Y = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].Y
             };
+            var oppInitPos = msg.PlayerInitPositions.First(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).Value;
             Environment.Instance.Actors["opponent"].Position = Environment.Instance.Actors["opponent"].StartPosition = 
                 new Vector2 {
-                    X = msg.PlayerInitPositions.Where(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).First().Value.X,
-                    Y = msg.PlayerInitPositions.Where(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).First().Value.Y
+                    X = oppInitPos.X,
+                    Y = oppInitPos.Y
                 };
 
             // remove position score points

@@ -22,8 +22,16 @@ namespace pactheman_client {
 
             var clientId = player.InternalPlayerState.Session.ClientId;
             if (msg.Session.ClientId != clientId) {
-                var oppPos = player.InternalPlayerState.PlayerPositions.Where(p => p.Key != clientId).First().Value;
-                Environment.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
+                var oppPos = player.InternalPlayerState.PlayerPositions.First(p => p.Key != clientId).Value;
+                Console.WriteLine($"{oppPos.X} {oppPos.Y}");
+                if (oppPos.X > 70 && oppPos.X < 1145) {
+                    Console.WriteLine("interp");
+                    Environment.Instance.Actors["opponent"].Position =
+                        Environment.Instance.Actors["opponent"].Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
+                } else {
+                    Console.WriteLine("no interp");
+                    Environment.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
+                }
             }
         }
     }
