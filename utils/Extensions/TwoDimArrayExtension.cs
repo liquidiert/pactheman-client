@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
 
-    static class TowDimArrayExtension {
+    static class TwoDimArrayExtension {
 
         public static void Print<T>(this T[,] arr) {
             for (var h = 0; h < arr.GetLength(1); h++) {

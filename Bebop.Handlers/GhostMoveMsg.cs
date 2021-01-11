@@ -18,8 +18,10 @@ namespace pactheman_client {
                 }
             }
             foreach (var target in msg.State.Targets) {
+                var t = new Vector2(target.Value.X, target.Value.Y);
+                Console.WriteLine(t.ToString());
                 (Environment.Instance.Actors[target.Key] as Ghost)
-                    .Targets.Add(new Vector2(target.Value.X, target.Value.Y));
+                    .Targets.Add(t);
             }
         }
     }

@@ -212,9 +212,15 @@ namespace pactheman_client {
                 };
 
                 try {
+                    if (_ct.IsCancellationRequested) {
+                        _ct.ThrowIfCancellationRequested();
+                    }
+
                     await _stream.WriteAsync(msg.Encode());
                 } catch (ObjectDisposedException) {
                     // swallow -> server sent exit
+                } catch (OperationCanceledException) {
+                    // swallow -> thread canceled
                 }
                 
             }

@@ -18,9 +18,9 @@ namespace pactheman_client {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
             this.MovementSpeed = 0.5f;
-            UIState.Instance.StateChanged += (object sender, UIStateEvent args) => {
+            UIState.Instance.StateChanged += async (object sender, UIStateEvent args) => {
                 if (args.CurrentState == UIStates.Game && !Environment.Instance.IsOnline) {
-                    Task.Delay(TimeSpan.FromMilliseconds(new Random().NextDouble() * 5000))
+                    await Task.Delay(TimeSpan.FromMilliseconds(new Random().Next(5000)))
                         .ContinueWith(task => Waiting = false);
                 }
             };
@@ -37,15 +37,15 @@ namespace pactheman_client {
         protected GhostStates CurrentGhostState = GhostStates.Chase;
 
         public override void Move(GameTime t) {
-            if (Waiting) return;
             float delta = t.GetElapsedSeconds();
             if (!Environment.Instance.IsOnline) {
+                if (Waiting) return;
                 Vector2 target;
                 switch (this.CurrentGhostState) {
                     case GhostStates.Chase:
                         target = lastTarget;
                         if (Targets.IsEmpty()) Targets = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
-                        if (Position.EqualsWithTolerence(lastTarget, 5f)) {
+                        if (Position.EqualsWithTolerence(lastTarget, 32f)) {
                             target = lastTarget = (Targets.Pop() * 64).AddValue(32);
                         }
                         Velocity = target - Position;
@@ -76,6 +76,7 @@ namespace pactheman_client {
                         break;
                 }
             } else {
+                if (Targets.Count == 0) return;
                 Vector2 target = lastTarget;
                 if (Position.EqualsWithTolerence(lastTarget, 5f)) {
                     target = lastTarget = (Targets.Pop() * 64).AddValue(32);
