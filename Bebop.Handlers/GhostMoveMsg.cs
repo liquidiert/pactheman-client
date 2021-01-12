@@ -12,16 +12,13 @@ namespace pactheman_client {
 
         [BindRecord(typeof(BebopRecord<GhostMoveMsg>))]
         public static void HandleGhostMove(object val, GhostMoveMsg msg) {
-            foreach (var reset in msg.State.ClearTargets) {
-                if (reset.Value) {
-                    (Environment.Instance.Actors[reset.Key] as Ghost).Targets = new List<Vector2>();
+            foreach (var pos in msg.State.Positions) {
+                var t = new Vector2(pos.Value.X, pos.Value.Y);
+                if (pos.Key == "blinky") {
+                    Console.WriteLine(t.ToString());
                 }
-            }
-            foreach (var target in msg.State.Targets) {
-                var t = new Vector2(target.Value.X, target.Value.Y);
-                Console.WriteLine(t.ToString());
-                (Environment.Instance.Actors[target.Key] as Ghost)
-                    .Targets.Add(t);
+                Environment.Instance.Actors[pos.Key].Position = 
+                    Environment.Instance.Actors[pos.Key].Position.Interpolated(t);
             }
         }
     }

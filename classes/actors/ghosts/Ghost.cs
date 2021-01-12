@@ -17,7 +17,7 @@ namespace pactheman_client {
     class Ghost : Actor {
 
         public Ghost(ContentManager content, string spriteSheeLocation) : base(content, spriteSheeLocation) {
-            this.MovementSpeed = 0.5f;
+            this.MovementSpeed = 250f;
             UIState.Instance.StateChanged += async (object sender, UIStateEvent args) => {
                 if (args.CurrentState == UIStates.Game && !Environment.Instance.IsOnline) {
                     await Task.Delay(TimeSpan.FromMilliseconds(new Random().Next(5000)))
@@ -37,52 +37,43 @@ namespace pactheman_client {
         protected GhostStates CurrentGhostState = GhostStates.Chase;
 
         public override void Move(GameTime t) {
+            if (Environment.Instance.IsOnline) return;
             float delta = t.GetElapsedSeconds();
-            if (!Environment.Instance.IsOnline) {
-                if (Waiting) return;
-                Vector2 target;
-                switch (this.CurrentGhostState) {
-                    case GhostStates.Chase:
-                        target = lastTarget;
-                        if (Targets.IsEmpty()) Targets = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
-                        if (Position.EqualsWithTolerence(lastTarget, 32f)) {
+            if (Waiting) return;
+            Vector2 target;
+            switch (this.CurrentGhostState) {
+                case GhostStates.Chase:
+                    target = lastTarget;
+                    if (Targets.IsEmpty()) Targets = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
+                    if (Position.EqualsWithTolerence(lastTarget, 5f)) {
+                        target = lastTarget = (Targets.Pop() * 64).AddValue(32);
+                    }
+                    Velocity = target - Position;
+                    Position += Velocity.RealNormalize() * MovementSpeed * delta;
+                    break;
+                case GhostStates.Scatter:
+                    // move to lower left corner
+                    target = lastTarget;
+                    if (Position.EqualsWithTolerence(lastTarget, 5f)) {
+                        try {
                             target = lastTarget = (Targets.Pop() * 64).AddValue(32);
-                        }
-                        Velocity = target - Position;
-                        Position += Velocity.RealNormalize() * MovementSpeed * delta;
-                        break;
-                    case GhostStates.Scatter:
-                        // move to lower left corner
-                        target = lastTarget;
-                        if (Position.EqualsWithTolerence(lastTarget, 5f)) {
-                            try {
-                                target = lastTarget = (Targets.Pop() * 64).AddValue(32);
-                            } catch (ArgumentOutOfRangeException) {
-                                CurrentGhostState = GhostStates.Chase;
-                                break;
-                            }
-                        }
-                        if (scatterTicker >= SCATTER_SECONDS) {
-                            Targets = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
+                        } catch (ArgumentOutOfRangeException) {
                             CurrentGhostState = GhostStates.Chase;
-                            scatterTicker = 0;
                             break;
                         }
-                        Velocity = target - Position;
-                        Position += Velocity.RealNormalize() * MovementSpeed * delta;
-                        scatterTicker += delta;
+                    }
+                    if (scatterTicker >= SCATTER_SECONDS) {
+                        Targets = Environment.Instance.GhostMoveInstructions[Name].GetMoves();
+                        CurrentGhostState = GhostStates.Chase;
+                        scatterTicker = 0;
                         break;
-                    case GhostStates.Frightened:
-                        break;
-                }
-            } else {
-                if (Targets.Count == 0) return;
-                Vector2 target = lastTarget;
-                if (Position.EqualsWithTolerence(lastTarget, 5f)) {
-                    target = lastTarget = (Targets.Pop() * 64).AddValue(32);
-                }
-                Velocity = target - Position;
-                Position += Velocity.RealNormalize() * MovementSpeed * delta;
+                    }
+                    Velocity = target - Position;
+                    Position += Velocity.RealNormalize() * MovementSpeed * delta;
+                    scatterTicker += delta;
+                    break;
+                case GhostStates.Frightened:
+                    break;
             }
         }
         public override void Draw(SpriteBatch b) { }
