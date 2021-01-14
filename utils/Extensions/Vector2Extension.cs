@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
@@ -36,6 +37,10 @@ namespace pactheman_client {
         public static Vector2 FloorInstance(this Vector2 vector) {
             vector.Floor();
             return vector;
+        }
+
+        public static double Distance(this Vector2 vector, Vector2 toCompare) {
+            return Math.Sqrt((vector.X-toCompare.X)*(vector.X-toCompare.X) + (vector.Y-toCompare.Y)*(vector.Y-toCompare.Y));
         }
 
     }

@@ -76,6 +76,7 @@ namespace pactheman_client {
         public abstract void Draw(SpriteBatch b);
         public virtual void OnCollision(CollisionInfo collisionInfo) { }
         public abstract void Reset();
+        public abstract void Clear();
 
         public dynamic Describe() {
             return new { pos = Position, speed = MovementSpeed };

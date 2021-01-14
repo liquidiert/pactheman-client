@@ -15,6 +15,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin config.yaml
+/copy:config.yaml
+
 #begin fonts/go_0.tga
 /importer:TextureImporter
 /processor:TextureProcessor

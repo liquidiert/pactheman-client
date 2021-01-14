@@ -11,7 +11,6 @@ using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.ViewportAdapters;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace pactheman_client {
@@ -84,9 +83,9 @@ namespace pactheman_client {
             environment = Environment.Instance.Init(Content, map);
 
             // actors
-            player = new HumanPlayer(Content);
+            player = new HumanPlayer(Content, "PlayerOne");
 
-            opponent = new Opponent(Content);
+            opponent = new Opponent(Content, "PlayerTwo");
 
             pinky = new Pinky(Content, "pinky");
             blinky = new Blinky(Content, "blinky");
@@ -124,7 +123,7 @@ namespace pactheman_client {
 
                     // update collision pairs
                     foreach (var pair in GameState.Instance.CollisionPairs) {
-                        pair.Update(gameTime);
+                        pair.Update();
                     }
                     break;
                 case GameStates.GameReset:
@@ -192,40 +191,48 @@ namespace pactheman_client {
                 point.Draw(_spriteBatch);
             }
 
-            // player one stats
-            // draw name
-            _spriteBatch.DrawString(
-                Content.Load<SpriteFont>("ScoreFont"),
-                player.Name,
-                new Vector2(-350, 50),
-                Color.White
-            );
-            // draw lives
-            _spriteBatch.DrawString(
-                Content.Load<SpriteFont>("ScoreFont"),
-                $"Lives: {player.Lives}",
-                new Vector2(-350, 100),
-                Color.White
-            );
-            // draw score
-            _spriteBatch.DrawString(
-                Content.Load<SpriteFont>("ScoreFont"),
-                $"Score: {player.Score}",
-                new Vector2(-350, 150),
-                Color.White
-            );
+            // player stats
+            DrawPlayerStats(player);
+            DrawPlayerStats(opponent);
 
             // draw actors
             foreach (var actor in actors) {
                 actor.Draw(_spriteBatch);
             }
-            /* Texture2D _texture;
+            /*
+            // debug bounding box
+            Texture2D _texture;
 
             _texture = new Texture2D(GraphicsDevice, 1, 1);
             _texture.SetData(new Color[] { Color.DarkSlateGray });
             _spriteBatch.Draw(_texture, 
                 new Rectangle((int) blinky.BoundingBox.X, (int) blinky.BoundingBox.Y, (int) blinky.BoundingBox.Width, (int) blinky.BoundingBox.Height),
                 Color.White); */
+        }
+
+        private void DrawPlayerStats(Player player) {
+            // player one stats
+            // draw name
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                player.Name,
+                player.StatsPosition,
+                Color.White
+            );
+            // draw lives
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                $"Lives: {player.Lives}",
+                new Vector2(player.StatsPosition.X, 100),
+                Color.White
+            );
+            // draw score
+            _spriteBatch.DrawString(
+                Content.Load<SpriteFont>("ScoreFont"),
+                $"Score: {player.Score}",
+                new Vector2(player.StatsPosition.X, 150),
+                Color.White
+            );
         }
     }
 }

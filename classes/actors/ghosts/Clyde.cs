@@ -15,15 +15,16 @@ namespace pactheman_client {
         public Clyde(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryClyde.sf") {
             this.Sprite.Play("moving");
             this.Position = Environment.Instance.GhostStartPoints
-                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position;
+                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);
             this.StartPosition = Position;
             this.Name = name;
             this.MovesToMake = new List<Vector2>();
-            this.lastTarget = StartPosition.AddValue(32);
+            this.lastTarget = StartPosition;
         }
 
         public override void Move(GameTime gameTime) {
             if (Waiting) return;
+            base.Move(gameTime);
             float delta = gameTime.GetElapsedSeconds();
 
             Vector2 target;

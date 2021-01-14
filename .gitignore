@@ -359,3 +359,7 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp
+
+# publish folder for linux and windows
+dist/
+dist/*

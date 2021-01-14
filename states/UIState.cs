@@ -8,7 +8,12 @@ namespace pactheman_client {
         Settings,
         Game
     }
-    class UIState {
+    public class StateEvent : EventArgs {
+        public UIStates CurrentState { get; set; }
+
+        public StateEvent(UIStates currentState) => CurrentState = currentState;
+    }
+    public class UIState {
 
         public Screen PreviousScreen { get; set; }
         public Screen CurrentScreen {
@@ -21,7 +26,17 @@ namespace pactheman_client {
             }
         }
         public GuiSystem GuiSystem { get; set; }
-        public UIStates CurrentUIState { get; set; }
+        private UIStates _currentUIState { get; set; }
+        public UIStates CurrentUIState { 
+            get => _currentUIState; 
+            set {
+                _currentUIState = value;
+                if (StateChanged != null) {
+                    StateChanged.Invoke(this, new StateEvent(_currentUIState));
+                }
+            }
+        }
+        public event EventHandler<StateEvent> StateChanged; // IDEA: do more with that?
 
         private static readonly Lazy<UIState> lazy = new Lazy<UIState>(() => new UIState());
         public static UIState Instance { get => lazy.Value; }
