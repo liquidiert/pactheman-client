@@ -20,10 +20,13 @@ namespace pactheman_client {
             
             localBtn.Clicked += (sender, args) => {
                 // remove init pos score points
-                Environment.Instance.RemoveScorePoint(Environment.Instance.PlayerOne.Position);
-                Environment.Instance.RemoveScorePoint(Environment.Instance.Actors["opponent"].Position);
+                GameEnv.Instance.RemoveScorePoint(GameEnv.Instance.PlayerOne.Position);
+                GameEnv.Instance.RemoveScorePoint(GameEnv.Instance.Actors["opponent"].Position);
 
-                Environment.Instance.CurrentGameMode = GameModes.Local;
+                // add collisions
+                GameEnv.Instance.AddActorCollisions();
+
+                GameEnv.Instance.CurrentGameMode = GameModes.Local;
                 UIState.Instance.CurrentUIState = UIStates.Game;
                 GameState.Instance.CurrentGameState = GameStates.Game;
                 UIState.Instance.GuiSystem.ActiveScreen.Hide();
@@ -38,10 +41,13 @@ namespace pactheman_client {
                     };
             vsAIBtn.Clicked += (sender, args) => {
                 // remove init pos score points
-                Environment.Instance.RemoveScorePoint(Environment.Instance.PlayerOne.Position);
-                Environment.Instance.RemoveScorePoint(Environment.Instance.Actors["opponent"].Position);
+                GameEnv.Instance.RemoveScorePoint(GameEnv.Instance.PlayerOne.Position);
+                GameEnv.Instance.RemoveScorePoint(GameEnv.Instance.Actors["opponent"].Position);
+
+                // add collisions
+                GameEnv.Instance.AddActorCollisions();
                 
-                Environment.Instance.CurrentGameMode = GameModes.vsAI;
+                GameEnv.Instance.CurrentGameMode = GameModes.vsAI;
                 // TODO: check if ai available; otherwise error out
                 UIState.Instance.CurrentUIState = UIStates.Game;
                 GameState.Instance.CurrentGameState = GameStates.Game;
@@ -56,8 +62,8 @@ namespace pactheman_client {
                         Margin = new Thickness(0, 50)
                     };
             onlineBtn.Clicked += async (sender, args) => {
-                Environment.Instance.CurrentGameMode = GameModes.Online;
-                await Environment.Instance.PlayerOne.Connect();
+                GameEnv.Instance.CurrentGameMode = GameModes.Online;
+                await GameEnv.Instance.PlayerOne.Connect();
                 UIState.Instance.CurrentUIState = UIStates.HostOrJoin;
                 UIState.Instance.CurrentScreen = new HostOrJoinMenu();
             };

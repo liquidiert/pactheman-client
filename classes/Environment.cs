@@ -16,7 +16,7 @@ namespace pactheman_client {
         Online
     }
 
-    sealed class Environment {
+    sealed class GameEnv {
 
         public GameModes CurrentGameMode { get; set; }
         private TiledMapTileLayer _obstacles;
@@ -37,17 +37,24 @@ namespace pactheman_client {
             }
         }
         public HumanPlayer PlayerOne {
-            get => Environment.Instance.Actors["player"] as HumanPlayer;
+            get => GameEnv.Instance.Actors["player"] as HumanPlayer;
+        }
+        public List<Ghost> Ghosts {
+            get => GameEnv.Instance.Actors.Where(a => a.Key != "player" && a.Key != "opponent").Select(pair => pair.Value as Ghost).ToList();
         }
 
-        private static readonly Lazy<Environment> lazy = new Lazy<Environment>(() => new Environment());
-        public static Environment Instance { get => lazy.Value; }
-        private Environment() {
+        public List<Player> Players {
+            get => GameEnv.Instance.Actors.Where(a => a.Key == "player" || a.Key == "opponent").Select(pair => pair.Value as Player).ToList();
+        }
+
+        private static readonly Lazy<GameEnv> lazy = new Lazy<GameEnv>(() => new GameEnv());
+        public static GameEnv Instance { get => lazy.Value; }
+        private GameEnv() {
             var numProcs = System.Environment.ProcessorCount * 3;
             Actors = new ConcurrentDictionary<string, Actor>(numProcs, 6);
         }
 
-        public Environment Init(ContentManager content, TiledMap map) {
+        public GameEnv Init(ContentManager content, TiledMap map) {
             this._content = content;
             this._positionLayer = map.ObjectLayers.First(l => l.Name == "positions");
             this._pointLayer = map.ObjectLayers.First(l => l.Name == "points");
@@ -89,14 +96,17 @@ namespace pactheman_client {
         public bool RemoveScorePoint(Vector2 position) {
             return ScorePointPositions.RemoveWhere(p => p.Position.AddValue(32).EqualsWithTolerence(position, tolerance: 32f));
         }
-        /// <summary>
-        /// Adds collsions for walls and also for pairs of each Ghost and Player to GameState.
-        /// </summary>
-        /// <param name="actors">IMPORTANT: index 0 and 1 are reserved for player and opponent</param>
-        public void AddCollisions() {
+
+        public void AddWallCollisions() {
             foreach (var actor in Actors.Values) {
                 Walls.CreateActor(actor);
             }
+        }
+        /// <summary>
+        /// Adds collsions for pairs of each Ghost and Player to GameState.
+        /// </summary>
+        /// <param name="actors">IMPORTANT: index 0 and 1 are reserved for player and opponent</param>
+        public void AddActorCollisions() {
 
             var player = (HumanPlayer)Actors["player"];
             var opponent = (Opponent)Actors["opponent"];

@@ -10,7 +10,7 @@ namespace pactheman_client {
 
         public HostOrJoinMenu() {
 
-            var player = (HumanPlayer)Environment.Instance.Actors["player"];
+            var player = (HumanPlayer)GameEnv.Instance.Actors["player"];
 
             var cancelBtn = new Button {
                 Content ="Cancel",

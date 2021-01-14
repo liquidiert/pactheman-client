@@ -25,7 +25,7 @@ namespace pactheman_client {
         // environment
         private TiledMap map;
         private TiledMapRenderer mapRenderer;
-        private Environment environment;
+        private GameEnv GameEnv;
 
         // characters
         private HumanPlayer player;
@@ -42,8 +42,7 @@ namespace pactheman_client {
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-            // Window.ClientSizeChanged += WindowOnClientSizeChanged;
-
+            
             ContentTypeReaderManager.AddTypeCreator("Default", () => new JsonContentTypeReader<TexturePackerFile>());
         }
 
@@ -53,7 +52,7 @@ namespace pactheman_client {
 
         protected override async void OnExiting(Object sender, EventArgs args) {
             base.OnExiting(sender, args);
-            await Environment.Instance.PlayerOne.Exit();
+            await GameEnv.Instance.PlayerOne?.Exit();
         }
 
         protected override void Initialize() {
@@ -72,6 +71,7 @@ namespace pactheman_client {
             var guiRenderer = new GuiSpriteBatchRenderer(GraphicsDevice, viewportAdapter.GetScaleMatrix);
             UIState.Instance.GuiSystem = new GuiSystem(viewportAdapter, guiRenderer);
             UIState.Instance.CurrentScreen = UIState.Instance.MainMenu = _mainMenu;
+            Window.ClientSizeChanged += WindowOnClientSizeChanged;
 
             base.Initialize();
         }
@@ -83,7 +83,7 @@ namespace pactheman_client {
             map = Content.Load<TiledMap>("pactheman_map");
             mapRenderer = new TiledMapRenderer(GraphicsDevice, map);
 
-            environment = Environment.Instance.Init(Content, map);
+            GameEnv = GameEnv.Instance.Init(Content, map);
 
             // actors
             player = new HumanPlayer(Content, "PlayerOne");
@@ -95,17 +95,16 @@ namespace pactheman_client {
             inky = new Inky(Content, "inky");
             clyde = new Clyde(Content, "clyde");
 
-            environment.Actors.TryAdd("player", player);
-            environment.Actors.TryAdd("opponent", opponent);
-            environment.Actors.TryAdd(pinky.Name, pinky);
-            environment.Actors.TryAdd(blinky.Name, blinky);
-            environment.Actors.TryAdd(clyde.Name, clyde);
-            environment.Actors.TryAdd(inky.Name, inky);
+            GameEnv.Actors.TryAdd("player", player);
+            GameEnv.Actors.TryAdd("opponent", opponent);
+            GameEnv.Actors.TryAdd(pinky.Name, pinky);
+            GameEnv.Actors.TryAdd(blinky.Name, blinky);
+            GameEnv.Actors.TryAdd(clyde.Name, clyde);
+            GameEnv.Actors.TryAdd(inky.Name, inky);
 
-            environment.InitMoveInstructions();
+            GameEnv.InitMoveInstructions();
 
-            // add collisions
-            environment.AddCollisions();
+            GameEnv.AddWallCollisions();
 
             base.LoadContent();
         }
@@ -126,13 +125,13 @@ namespace pactheman_client {
                     mapRenderer.Update(gameTime);
 
                     // update actors
-                    foreach (var actor in environment.Actors.Values) {
+                    foreach (var actor in GameEnv.Actors.Values) {
                         actor.Move(gameTime);
                         actor.Sprite.Update(gameTime);
                     }
 
                     // update collision pairs
-                    foreach (var pair in Environment.Instance.CollisionPairs) {
+                    foreach (var pair in GameEnv.Instance.CollisionPairs) {
                         pair.Update();
                     }
                     break;
@@ -150,7 +149,7 @@ namespace pactheman_client {
             }
 
             UIState.Instance.GuiSystem.Update(gameTime);
-            environment.Walls.Update(gameTime);
+            GameEnv.Walls.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -166,10 +165,10 @@ namespace pactheman_client {
             switch (GameState.Instance.CurrentGameState) {
                 case GameStates.GamePaused:
                 case GameStates.Game:
-                    DrawEnvironment();
+                    DrawGameEnv();
                     break;
                 case GameStates.GameReset:
-                    DrawEnvironment();
+                    DrawGameEnv();
                     _spriteBatch.DrawString(
                         Content.Load<SpriteFont>("ScoreFont"),
                         $"{(int)GameState.Instance.RESET_COUNTER}",
@@ -193,12 +192,12 @@ namespace pactheman_client {
             base.Draw(gameTime);
         }
 
-        private void DrawEnvironment() {
+        private void DrawGameEnv() {
             // draw map
             mapRenderer.Draw(_camera.GetViewMatrix());
 
             // draw score points
-            foreach (var point in environment.ScorePointPositions) {
+            foreach (var point in GameEnv.ScorePointPositions) {
                 point.Draw(_spriteBatch);
             }
 
@@ -207,7 +206,7 @@ namespace pactheman_client {
             DrawPlayerStats(opponent);
 
             // draw actors
-            foreach (var actor in environment.Actors.Values) {
+            foreach (var actor in GameEnv.Actors.Values) {
                 actor.Draw(_spriteBatch);
             }
             /*

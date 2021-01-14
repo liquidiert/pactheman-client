@@ -40,7 +40,7 @@ namespace pactheman_client {
             if (!int.TryParse(ConfigReader.Instance.config["general"]["server_port"], out port)) {
                 Console.WriteLine("Invalid port in config");
             }
-            _client = new TcpClient();
+            _client = new TcpClient() { NoDelay = true };
             await _client.ConnectAsync(address, port);
             _stream = new NonDisposableStream(_client.Client);
 
@@ -105,7 +105,7 @@ namespace pactheman_client {
             // Were we already canceled?
             _ct.ThrowIfCancellationRequested();
 
-            Byte[] buffer = new Byte[2048];
+            Byte[] buffer = new Byte[1024];
 
             try {
                 while (true) {
@@ -196,14 +196,14 @@ namespace pactheman_client {
                 Position = updatedPosition;
             }
 
-            if (Environment.Instance.RemoveScorePoint(Position)) {
+            if (GameEnv.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
-                if (Environment.Instance.IsOnline) {
+                if (GameEnv.Instance.IsOnline) {
                     InternalPlayerState.Score[(Guid)InternalPlayerState.Session.ClientId] = _score;
                 }
             }
 
-            if (Environment.Instance.IsOnline) {
+            if (GameEnv.Instance.IsOnline) {
                 InternalPlayerState.Direction = CurrentMovingState;
                 InternalPlayerState.PlayerPositions[(Guid)InternalPlayerState.Session.ClientId] = new Position { X = Position.X, Y = Position.Y };
                 var msg = new NetworkMessage {

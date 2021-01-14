@@ -46,7 +46,7 @@ namespace pactheman_client {
 
         public Player(ContentManager content, string name, string spriteLocation) : base(content, spriteLocation) {
             this.Name = name;
-            this.Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position;
+            this.Position = GameEnv.Instance.PlayerStartPoints.Pop(new Random().Next(GameEnv.Instance.PlayerStartPoints.Count)).Position;
             this.StartPosition = Position;
             this.Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
@@ -88,7 +88,7 @@ namespace pactheman_client {
         }
         public override void Clear() {
             _lives = 3;
-            Position = Environment.Instance.PlayerStartPoints.Pop(new Random().Next(Environment.Instance.PlayerStartPoints.Count)).Position; ;
+            Position = GameEnv.Instance.PlayerStartPoints.Pop(new Random().Next(GameEnv.Instance.PlayerStartPoints.Count)).Position;
             StartPosition = Position;
             Sprite.Play(this.Position.X < 1120 ? "right" : "left");
         }
@@ -98,14 +98,18 @@ namespace pactheman_client {
         }
 
         public virtual void OnActorCollision(object sender, CollisionPairEvent args) {
-            if (!Environment.Instance.IsOnline) {
+            if (!GameEnv.Instance.IsOnline) {
                 _lives--;
                 if (_lives <= 0) {
-                    Environment.Instance.Clear();
+                    GameEnv.Instance.Clear();
                     return;
                 }
-                Environment.Instance.Reset();
+                GameEnv.Instance.Reset();
             }
+        }
+
+        public void SetLives(int lives) {
+            _lives = lives;
         }
 
     }

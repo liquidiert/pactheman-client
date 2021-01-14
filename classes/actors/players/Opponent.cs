@@ -16,7 +16,7 @@ namespace pactheman_client {
 
             Vector2 updatedPosition;
 
-            if (!Environment.Instance.IsOnline) {
+            if (!GameEnv.Instance.IsOnline) {
                 // TODO: add real ai movement if IsHooman is false
                 if (IsHooman) {
                     updatedPosition = keyboardMove(delta, true);
@@ -34,7 +34,7 @@ namespace pactheman_client {
                 updatedPosition = Position;
             }
 
-            if (Environment.Instance.RemoveScorePoint(Position)) {
+            if (GameEnv.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
             }
         }

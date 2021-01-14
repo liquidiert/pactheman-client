@@ -13,8 +13,8 @@ namespace pactheman_client {
 
         public Inky(ContentManager content, string name) : base(content, "sprites/ghosts/spriteFactoryInky.sf") {
             this.Sprite.Play("moving");
-            this.Position = Environment.Instance.GhostStartPoints
-                .Pop(new Random().Next(Environment.Instance.GhostStartPoints.Count)).Position.AddValue(32);
+            this.Position = GameEnv.Instance.GhostStartPoints
+                .Pop(new Random().Next(GameEnv.Instance.GhostStartPoints.Count)).Position.AddValue(32);
             this.StartPosition = Position;
             this.Name = name;
             this.lastTarget = StartPosition;

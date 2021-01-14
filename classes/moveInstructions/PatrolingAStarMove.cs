@@ -9,7 +9,7 @@ namespace pactheman_client {
         private Vector2 _randomPatrollingTarget {
             get {
                 var targetPos = Target.DownScaledPosition;
-                var possibleTargets = ((Tuple<Vector2, int>[,]) Environment.Instance.MapAsTiles.GetRegion(
+                var possibleTargets = ((Tuple<Vector2, int>[,]) GameEnv.Instance.MapAsTiles.GetRegion(
                     targetPos,
                     regionSize: 3))
                         .Where(t => t.Item2 == 0).Select(t => t.Item1).ToList();

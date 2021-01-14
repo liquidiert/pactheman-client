@@ -16,19 +16,18 @@ namespace pactheman_client {
             HumanPlayer player = (HumanPlayer) client;
 
             player.InternalPlayerState.PlayerPositions = msg.PlayerPositions;
-            player.InternalPlayerState.GhostPositions = msg.GhostPositions;
             player.InternalPlayerState.Lives = msg.Lives;
             player.InternalPlayerState.Score = msg.Score;
 
             var clientId = player.InternalPlayerState.Session.ClientId;
             if (msg.Session.ClientId != clientId) {
-                (Environment.Instance.Actors["opponent"] as Player).CurrentMovingState = msg.Direction;
+                (GameEnv.Instance.Actors["opponent"] as Player).CurrentMovingState = msg.Direction;
                 var oppPos = new Dictionary<Guid, BasePosition>(player.InternalPlayerState.PlayerPositions).First(p => p.Key != clientId).Value;
                 if (oppPos.X > 70 && oppPos.X < 1145) {
-                    Environment.Instance.Actors["opponent"].Position =
-                        Environment.Instance.Actors["opponent"].Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
+                    GameEnv.Instance.Actors["opponent"].Position =
+                        GameEnv.Instance.Actors["opponent"].Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
                 } else {
-                    Environment.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
+                    GameEnv.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
                 }
             }
         }

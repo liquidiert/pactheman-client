@@ -11,8 +11,8 @@ namespace pactheman_client {
         [BindRecord(typeof(BebopRecord<ErrorMsg>))]
         public static void HandleErrorMsg(object client, ErrorMsg msg) {
             HumanPlayer player = (HumanPlayer) client;
-
-            Console.WriteLine($"received error {msg.ErrorMessage}");
+            
+            Console.WriteLine($"received error {msg.ErrorMessage} {new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds()}");
             
             // TODO: handle specific errors
         }

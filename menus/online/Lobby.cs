@@ -32,7 +32,7 @@ namespace pactheman_client {
             playerList.Items.AddMany("Me", "AI");
             playerList.SelectedItem = "Me";
             playerList.SelectedIndexChanged += (sender, args) => {
-                Environment.Instance.PlayerOne.IsHooman = (string)playerList.SelectedItem == "Me";
+                GameEnv.Instance.PlayerOne.IsHooman = (string)playerList.SelectedItem == "Me";
             };
 
             // ready btn
@@ -42,7 +42,7 @@ namespace pactheman_client {
                 Margin = new Thickness(0, 50)
             };
             readyBtn.Clicked += async (sender, args) => {
-                await Environment.Instance.PlayerOne.SetReady();
+                await GameEnv.Instance.PlayerOne.SetReady();
                 playerList.IsEnabled = false;
             };
 

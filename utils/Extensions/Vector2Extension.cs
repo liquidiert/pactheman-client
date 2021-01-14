@@ -1,11 +1,17 @@
 using System;
+using PacTheMan.Models;
 using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
 
     static class Vector2Extension {
 
+        public static Position ToPosition(this Vector2 vector) {
+            return new Position { X = vector.X, Y = vector.Y };
+        }
+
         public static Vector2 RealNormalize(this Vector2 vector) {
+            if (vector == Vector2.Zero) return vector;
             vector /= vector.Length();
             vector.Round();
             return vector;

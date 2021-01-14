@@ -31,9 +31,9 @@ namespace pactheman_client {
                         Margin = new Thickness(0, 25)
                     };
             exitBtn.Clicked += async (sender, args) => {
-                Environment.Instance.Clear();
-                if (Environment.Instance.IsOnline) {
-                    await Environment.Instance.PlayerOne.Exit();
+                GameEnv.Instance.Clear();
+                if (GameEnv.Instance.IsOnline) {
+                    await GameEnv.Instance.PlayerOne.Exit();
                 }
                 UIState.Instance.CurrentUIState = UIStates.MainMenu;
                 GameState.Instance.CurrentGameState = GameStates.MainMenu;
