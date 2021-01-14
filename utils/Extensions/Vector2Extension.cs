@@ -1,11 +1,17 @@
 using System;
+using PacTheMan.Models;
 using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
 
     static class Vector2Extension {
 
+        public static Position ToPosition(this Vector2 vector) {
+            return new Position { X = vector.X, Y = vector.Y };
+        }
+
         public static Vector2 RealNormalize(this Vector2 vector) {
+            if (vector == Vector2.Zero) return vector;
             vector /= vector.Length();
             vector.Round();
             return vector;
@@ -41,6 +47,13 @@ namespace pactheman_client {
 
         public static double Distance(this Vector2 vector, Vector2 toCompare) {
             return Math.Sqrt((vector.X-toCompare.X)*(vector.X-toCompare.X) + (vector.Y-toCompare.Y)*(vector.Y-toCompare.Y));
+        }
+
+        public static Vector2 Interpolated(this Vector2 vector, Vector2 other) {
+            return new Vector2 {
+                X = (vector.X + other.X) / 2,
+                Y = (vector.Y + other.Y) / 2
+            };
         }
 
     }

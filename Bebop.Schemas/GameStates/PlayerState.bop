@@ -1,0 +1,8 @@
+[opcode(0x5)]
+struct PlayerState {
+    SessionMsg session;
+    MovingStates direction;
+    map[guid, int64] score;
+    map[guid, int64] lives;
+    map[guid, Position] playerPositions;
+}

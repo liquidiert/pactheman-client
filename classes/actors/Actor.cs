@@ -7,15 +7,9 @@ using MonoGame.Extended.Content;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Collisions;
+using PacTheMan.Models;
 
 namespace pactheman_client {
-
-    public enum MovingStates {
-        Up,
-        Down,
-        Left,
-        Right
-    }
 
     public abstract class Actor : IActorTarget {
 
@@ -44,13 +38,13 @@ namespace pactheman_client {
         /// scaled position as [Vector2]
         /// </returns>
         public Vector2 DownScaledPosition {
-            get { return new Vector2((float)Math.Floor(Position.X / 64), (float)Math.Round(Position.Y / 64)); }
+            get { return new Vector2((float)Math.Floor(Position.X / 64), (float)Math.Floor(Position.Y / 64)); }
         }
         public Vector2 UpScaledPosition {
             get { return new Vector2((float)Math.Ceiling(Position.X / 64), (float)Math.Ceiling(Position.Y / 64)); }
         }
 
-        protected MovingStates movingState;
+        protected MovingStates movingState { get; set; }
 
         public Actor(ContentManager content, string spriteSheetLocation) {
             // HACK: MonoGame.Extended somehow can't read xnb files; thus always be sure the file is present in build dir!

@@ -17,7 +17,7 @@ namespace pactheman_client {
 
         public List<Vector2> GetPath(Vector2 start, Vector2 end, int iterDepth = -3) {
 
-            var maze = Environment.Instance.MapAsTiles;
+            var maze = GameEnv.Instance.MapAsTiles;
             var startNode = new Node(null, start);
             var endNode = new Node(null, end);
 

@@ -5,7 +5,7 @@ using MonoGame.Extended.Gui.Controls;
 using System;
 
 namespace pactheman_client {
-    class MainMenu : Screen {
+    public class MainMenu : Screen {
 
         public string Name = "MainMenu";
         
@@ -19,9 +19,8 @@ namespace pactheman_client {
                     };
             
             gameStartBtn.Clicked += (sender, args) => {
-                UIState.Instance.CurrentUIState = UIStates.Game;
-                GameState.Instance.CurrentGameState = GameStates.Game;
-                UIState.Instance.GuiSystem.ActiveScreen.Hide();
+                UIState.Instance.CurrentUIState = UIStates.PreGame;
+                UIState.Instance.CurrentScreen = new PreGameMenu();
             };
 
             // settings btn

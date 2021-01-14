@@ -6,48 +6,35 @@ using MonoGame.Extended.Input;
 
 namespace pactheman_client {
     class Opponent : Player {
-        private bool _isHooman = true;
 
         public Opponent(ContentManager content, string name) : base(content, name, "sprites/opponent/spriteFactory.sf") {
             this.StatsPosition = new Vector2(1300, 50);
         }
 
         public override void Move(GameTime gameTime) {
-            // TODO: add real ai movement if _isHooman is false
             var delta = gameTime.GetElapsedSeconds();
-            var _kState = KeyboardExtended.GetState();
 
-            // TODO: use rotation instead of dedicated animations
-            Vector2 updatedPosition = Position;
-            if (_kState.IsKeyDown(Keys.Up)) { // up
-                Velocity = new Vector2(0, -1);
-                updatedPosition.Y -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Up;
-            }
-            if (_kState.IsKeyDown(Keys.Down)) { // down
-                Velocity = new Vector2(0, 1);
-                updatedPosition.Y += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Down;
-            }
-            if (_kState.IsKeyDown(Keys.Left)) { // left
-                Velocity = new Vector2(-1, 0);
-                updatedPosition.X -= MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Left;
-            }
-            if (_kState.IsKeyDown(Keys.Right)) { // right
-                Velocity = new Vector2(1, 0);
-                updatedPosition.X += MovementSpeed * delta;
-                CurrentMovingState = MovingStates.Right;
-            }
+            Vector2 updatedPosition;
 
-            // teleport if entering either left or right gate
-            if (updatedPosition.X <= 70 || updatedPosition.X >= 1145) {
-                Position = UpdatePosition(x: -1216, xFactor: -1);
+            if (!GameEnv.Instance.IsOnline) {
+                // TODO: add real ai movement if IsHooman is false
+                if (IsHooman) {
+                    updatedPosition = keyboardMove(delta, true);
+                } else {
+                    updatedPosition = new Vector2();
+                }
+
+                // teleport if entering either left or right gate
+                if (updatedPosition.X <= 38 || updatedPosition.X >= 1177) {
+                    Position = UpdatePosition(x: -1215, xFactor: -1);
+                } else {
+                    Position = updatedPosition;
+                }
             } else {
-                Position = updatedPosition;
+                updatedPosition = Position;
             }
 
-            if (Environment.Instance.RemoveScorePoint(Position)) {
+            if (GameEnv.Instance.RemoveScorePoint(Position)) {
                 _score += 10;
             }
         }

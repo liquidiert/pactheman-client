@@ -1,0 +1,6 @@
+[opcode(0x4)]
+message JoinMsg {
+    1 -> SessionMsg session;
+    2 -> GhostAlgorithms algorithms;
+    3 -> string playerName;
+}

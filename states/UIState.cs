@@ -6,12 +6,17 @@ namespace pactheman_client {
         Menu,
         MainMenu,
         Settings,
+        PreGame,
+        HostOrJoin,
+        PreLobby,
+        Lobby,
+        InGame,
         Game
     }
-    public class StateEvent : EventArgs {
+    public class UIStateEvent : EventArgs {
         public UIStates CurrentState { get; set; }
 
-        public StateEvent(UIStates currentState) => CurrentState = currentState;
+        public UIStateEvent(UIStates currentState) => CurrentState = currentState;
     }
     public class UIState {
 
@@ -25,18 +30,17 @@ namespace pactheman_client {
                 GuiSystem.ActiveScreen = value;
             }
         }
+        public Screen MainMenu { get; set; }
         public GuiSystem GuiSystem { get; set; }
         private UIStates _currentUIState { get; set; }
         public UIStates CurrentUIState { 
             get => _currentUIState; 
             set {
                 _currentUIState = value;
-                if (StateChanged != null) {
-                    StateChanged.Invoke(this, new StateEvent(_currentUIState));
-                }
+                StateChanged?.Invoke(this, new UIStateEvent(_currentUIState));
             }
         }
-        public event EventHandler<StateEvent> StateChanged; // IDEA: do more with that?
+        public event EventHandler<UIStateEvent> StateChanged; // IDEA: do more with that?
 
         private static readonly Lazy<UIState> lazy = new Lazy<UIState>(() => new UIState());
         public static UIState Instance { get => lazy.Value; }

@@ -1,0 +1,4 @@
+[opcode(0x6)]
+struct GhostMoveMsg {
+    map[string, Position] ghostPositions;
+}

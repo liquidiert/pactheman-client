@@ -20,7 +20,7 @@ namespace pactheman_client {
         }
 
         public void OnCollision(CollisionInfo collisionInfo) {
-            Console.WriteLine(collisionInfo.Other.BoundingBox.Position == Environment.Instance.Actors[0].Position.ToPoint());
+            
         }
 
         public void Draw(SpriteBatch batch) {
