@@ -11,7 +11,7 @@ namespace pactheman_client {
 
     class GameState {
         public GameStates CurrentGameState { get; set; }
-        public float RESET_COUNTER = 4;
+        public float RESET_COUNTER = 4f;
 
         private static readonly Lazy<GameState> lazy = new Lazy<GameState>(() => new GameState());
         public static GameState Instance { get => lazy.Value; }
