@@ -17,7 +17,7 @@ namespace pactheman_client {
 
             player.InternalPlayerState.PlayerPositions = msg.PlayerPositions;
             player.InternalPlayerState.Lives = msg.Lives;
-            player.InternalPlayerState.Score = msg.Score;
+            player.InternalPlayerState.Scores = msg.Scores;
 
             var clientId = player.InternalPlayerState.Session.ClientId;
             if (msg.Session.ClientId != clientId) {

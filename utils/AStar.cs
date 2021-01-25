@@ -60,6 +60,7 @@ namespace pactheman_client {
                         || nodePosition.Y > (maze.GetLength(1) - 1) || nodePosition.Y <= 0)
                         continue;
 
+                    // skip every point that is not "walkable"
                     if (maze[(int) nodePosition.X, (int) nodePosition.Y] != 0) continue;
 
                     var newNode = new Node(currentNode, nodePosition);

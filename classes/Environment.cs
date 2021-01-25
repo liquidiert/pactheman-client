@@ -70,7 +70,7 @@ namespace pactheman_client {
             this._obstacles = map.GetLayer<TiledMapTileLayer>("ground");
 
             // get tile map
-            this.MapAsTiles = new int[this._obstacles.Width + 1, this._obstacles.Height + 1];
+            this.MapAsTiles = new int[this._obstacles.Width, this._obstacles.Height];
             for (var h = 0; h < this._obstacles.Height; h++) {
                 for (var w = 0; w < this._obstacles.Width; w++) {
                     TiledMapTile? tile = null;
