@@ -12,11 +12,8 @@ namespace pactheman_client {
     public class Player : Actor {
 
         public bool IsHooman = true;
-        protected int _score = 0;
+        public int Score = 0;
         protected int _lives = 3;
-        public int Score {
-            get => _score;
-        }
         public string Lives {
             get => "<3".Multiple(_lives);
         }

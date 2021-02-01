@@ -196,11 +196,8 @@ namespace pactheman_client {
                 Position = updatedPosition;
             }
 
-            if (GameEnv.Instance.RemoveScorePoint(Position)) {
-                _score += 10;
-                if (GameEnv.Instance.IsOnline) {
-                    InternalPlayerState.Scores[(Guid)InternalPlayerState.Session.ClientId] = _score;
-                }
+            if (!GameEnv.Instance.IsOnline && GameEnv.Instance.RemoveScorePoint(Position)) {
+                Score += 10;
             }
 
             if (GameEnv.Instance.IsOnline) {

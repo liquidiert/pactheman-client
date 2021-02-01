@@ -30,13 +30,14 @@ namespace pactheman_client {
                 } else {
                     Position = updatedPosition;
                 }
+
+                if (GameEnv.Instance.RemoveScorePoint(Position)) {
+                    Score += 10;
+                }
             } else {
                 updatedPosition = Position;
             }
 
-            if (GameEnv.Instance.RemoveScorePoint(Position)) {
-                _score += 10;
-            }
         }
     }
 }

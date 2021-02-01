@@ -17,7 +17,9 @@ namespace pactheman_client {
             player.InternalPlayerState.PlayerPositions = msg.PlayerInitPositions;
             player.InternalPlayerState.Lives = msg.PlayerInitLives;
             player.InternalPlayerState.Scores = msg.PlayerInitScores;
-            
+            player.InternalPlayerState.ScorePositions = msg.ScorePointInitPositions;
+            GameEnv.Instance.ScorePointPositions = msg.ScorePointInitPositions.Select(p => new ScorePoint((p as Position).ToVec2())).ToList();
+
             foreach (var ghost in msg.GhostInitPositions) {
                 (GameEnv.Instance.Actors[ghost.Key] as Ghost).LastTarget = GameEnv.Instance.Actors[ghost.Key].Position = 
                     GameEnv.Instance.Actors[ghost.Key].StartPosition = 
@@ -28,9 +30,6 @@ namespace pactheman_client {
             var oppInitPos = msg.PlayerInitPositions.First(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).Value;
             GameEnv.Instance.Actors["opponent"].Position = GameEnv.Instance.Actors["opponent"].StartPosition = (oppInitPos as Position).ToVec2();
 
-            // remove position score points
-            GameEnv.Instance.RemoveScorePoint(player.Position);
-            GameEnv.Instance.RemoveScorePoint(GameEnv.Instance.Actors["opponent"].Position);
 
             UIState.Instance.CurrentUIState = UIStates.Game;
             GameState.Instance.CurrentGameState = GameStates.Game;
