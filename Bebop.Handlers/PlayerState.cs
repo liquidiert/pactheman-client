@@ -17,17 +17,22 @@ namespace pactheman_client {
 
             player.InternalPlayerState.PlayerPositions = msg.PlayerPositions;
             player.InternalPlayerState.Lives = msg.Lives;
-            player.InternalPlayerState.Score = msg.Score;
+            player.InternalPlayerState.Scores = msg.Scores;
+            player.Score = (int)player.InternalPlayerState.Scores[(Guid)player.InternalPlayerState.Session.ClientId];
+            player.InternalPlayerState.ScorePositions = msg.ScorePositions;
+            GameEnv.Instance.ScorePointPositions = msg.ScorePositions.Select(p => new ScorePoint((p as Position).ToVec2())).ToList();
 
             var clientId = player.InternalPlayerState.Session.ClientId;
             if (msg.Session.ClientId != clientId) {
-                (GameEnv.Instance.Actors["opponent"] as Player).CurrentMovingState = msg.Direction;
+                var opp = (Player)GameEnv.Instance.Actors["opponent"];
+                opp.Score = (int)player.InternalPlayerState.Scores[(Guid)msg.Session.ClientId];
+                opp.CurrentMovingState = msg.Direction;
                 var oppPos = new Dictionary<Guid, BasePosition>(player.InternalPlayerState.PlayerPositions).First(p => p.Key != clientId).Value;
                 if (oppPos.X > 70 && oppPos.X < 1145) {
-                    GameEnv.Instance.Actors["opponent"].Position =
-                        GameEnv.Instance.Actors["opponent"].Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
+                    opp.Position =
+                        opp.Position.Interpolated(new Vector2 { X = oppPos.X, Y = oppPos.Y });
                 } else {
-                    GameEnv.Instance.Actors["opponent"].Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
+                    opp.Position = new Vector2 { X = oppPos.X, Y = oppPos.Y };
                 }
             }
         }

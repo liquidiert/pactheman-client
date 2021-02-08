@@ -211,6 +211,8 @@ namespace PacTheMan.Models {
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public System.Collections.Generic.Dictionary<System.Guid, BasePosition> PlayerInitPositions { get; set; }
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
+    public BasePosition[] ScorePointInitPositions { get; set; }
+    [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public System.Collections.Generic.Dictionary<System.Guid, long> PlayerInitScores { get; set; }
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public System.Collections.Generic.Dictionary<System.Guid, long> PlayerInitLives { get; set; }
@@ -222,7 +224,7 @@ namespace PacTheMan.Models {
       if (ReferenceEquals(this, other)) {
         return true;
       }
-      return (GhostInitPositions is null ? other.GhostInitPositions is null : other.GhostInitPositions is not null && GhostInitPositions.SequenceEqual(other.GhostInitPositions)) && (PlayerInitPositions is null ? other.PlayerInitPositions is null : other.PlayerInitPositions is not null && PlayerInitPositions.SequenceEqual(other.PlayerInitPositions)) && (PlayerInitScores is null ? other.PlayerInitScores is null : other.PlayerInitScores is not null && PlayerInitScores.SequenceEqual(other.PlayerInitScores)) && (PlayerInitLives is null ? other.PlayerInitLives is null : other.PlayerInitLives is not null && PlayerInitLives.SequenceEqual(other.PlayerInitLives));
+      return (GhostInitPositions is null ? other.GhostInitPositions is null : other.GhostInitPositions is not null && GhostInitPositions.SequenceEqual(other.GhostInitPositions)) && (PlayerInitPositions is null ? other.PlayerInitPositions is null : other.PlayerInitPositions is not null && PlayerInitPositions.SequenceEqual(other.PlayerInitPositions)) && (ScorePointInitPositions is null ? other.ScorePointInitPositions is null : other.ScorePointInitPositions is not null && ScorePointInitPositions.SequenceEqual(other.ScorePointInitPositions)) && (PlayerInitScores is null ? other.PlayerInitScores is null : other.PlayerInitScores is not null && PlayerInitScores.SequenceEqual(other.PlayerInitScores)) && (PlayerInitLives is null ? other.PlayerInitLives is null : other.PlayerInitLives is not null && PlayerInitLives.SequenceEqual(other.PlayerInitLives));
     }
 
     public override bool Equals(object obj) {
@@ -242,6 +244,7 @@ namespace PacTheMan.Models {
       int hash = 1;
       hash ^= GhostInitPositions.GetHashCode();
       hash ^= PlayerInitPositions.GetHashCode();
+      hash ^= ScorePointInitPositions.GetHashCode();
       hash ^= PlayerInitScores.GetHashCode();
       hash ^= PlayerInitLives.GetHashCode();
       return hash;
@@ -295,6 +298,13 @@ namespace PacTheMan.Models {
       foreach (var kv0 in record.PlayerInitPositions) {
         writer.WriteGuid(kv0.Key);
         PacTheMan.Models.Position.EncodeInto(kv0.Value, ref writer);
+      }
+      {
+        var length0 = unchecked((uint)record.ScorePointInitPositions.Length);
+        writer.WriteUInt32(length0);
+        for (var i0 = 0; i0 < length0; i0++) {
+          PacTheMan.Models.Position.EncodeInto(record.ScorePointInitPositions[i0], ref writer);
+        }
       }
       writer.WriteUInt32(unchecked((uint)record.PlayerInitScores.Count));
       foreach (var kv0 in record.PlayerInitScores) {
@@ -396,16 +406,14 @@ namespace PacTheMan.Models {
           field1.Add(k0, v0);
         }
       }
-      System.Collections.Generic.Dictionary<System.Guid, long> field2;
+      BasePosition[] field2;
       {
         var length0 = unchecked((int)reader.ReadUInt32());
-        field2 = new System.Collections.Generic.Dictionary<System.Guid, long>(length0);
+        field2 = new BasePosition[length0];
         for (var i0 = 0; i0 < length0; i0++) {
-          System.Guid k0;
-          long v0;
-          k0 = reader.ReadGuid();
-          v0 = reader.ReadInt64();
-          field2.Add(k0, v0);
+          BasePosition x0;
+          x0 = PacTheMan.Models.Position.DecodeFrom(ref reader);
+          field2[i0] = x0;
         }
       }
       System.Collections.Generic.Dictionary<System.Guid, long> field3;
@@ -420,11 +428,24 @@ namespace PacTheMan.Models {
           field3.Add(k0, v0);
         }
       }
+      System.Collections.Generic.Dictionary<System.Guid, long> field4;
+      {
+        var length0 = unchecked((int)reader.ReadUInt32());
+        field4 = new System.Collections.Generic.Dictionary<System.Guid, long>(length0);
+        for (var i0 = 0; i0 < length0; i0++) {
+          System.Guid k0;
+          long v0;
+          k0 = reader.ReadGuid();
+          v0 = reader.ReadInt64();
+          field4.Add(k0, v0);
+        }
+      }
       return new InitState {
         GhostInitPositions = field0,
         PlayerInitPositions = field1,
-        PlayerInitScores = field2,
-        PlayerInitLives = field3,
+        ScorePointInitPositions = field2,
+        PlayerInitScores = field3,
+        PlayerInitLives = field4,
       };
     }
 
@@ -454,16 +475,14 @@ namespace PacTheMan.Models {
           field1.Add(k0, v0);
         }
       }
-      System.Collections.Generic.Dictionary<System.Guid, long> field2;
+      BasePosition[] field2;
       {
         var length0 = unchecked((int)reader.ReadUInt32());
-        field2 = new System.Collections.Generic.Dictionary<System.Guid, long>(length0);
+        field2 = new BasePosition[length0];
         for (var i0 = 0; i0 < length0; i0++) {
-          System.Guid k0;
-          long v0;
-          k0 = reader.ReadGuid();
-          v0 = reader.ReadInt64();
-          field2.Add(k0, v0);
+          BasePosition x0;
+          x0 = PacTheMan.Models.Position.DecodeFrom(ref reader);
+          field2[i0] = x0;
         }
       }
       System.Collections.Generic.Dictionary<System.Guid, long> field3;
@@ -478,11 +497,24 @@ namespace PacTheMan.Models {
           field3.Add(k0, v0);
         }
       }
+      System.Collections.Generic.Dictionary<System.Guid, long> field4;
+      {
+        var length0 = unchecked((int)reader.ReadUInt32());
+        field4 = new System.Collections.Generic.Dictionary<System.Guid, long>(length0);
+        for (var i0 = 0; i0 < length0; i0++) {
+          System.Guid k0;
+          long v0;
+          k0 = reader.ReadGuid();
+          v0 = reader.ReadInt64();
+          field4.Add(k0, v0);
+        }
+      }
       return new T {
         GhostInitPositions = field0,
         PlayerInitPositions = field1,
-        PlayerInitScores = field2,
-        PlayerInitLives = field3,
+        ScorePointInitPositions = field2,
+        PlayerInitScores = field3,
+        PlayerInitLives = field4,
       };
     }
   }
@@ -495,11 +527,13 @@ namespace PacTheMan.Models {
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public MovingStates Direction { get; set; }
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
-    public System.Collections.Generic.Dictionary<System.Guid, long> Score { get; set; }
+    public System.Collections.Generic.Dictionary<System.Guid, long> Scores { get; set; }
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public System.Collections.Generic.Dictionary<System.Guid, long> Lives { get; set; }
     [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
     public System.Collections.Generic.Dictionary<System.Guid, BasePosition> PlayerPositions { get; set; }
+    [System.Diagnostics.CodeAnalysis.NotNull, System.Diagnostics.CodeAnalysis.DisallowNull]
+    public BasePosition[] ScorePositions { get; set; }
 
     public bool Equals(BasePlayerState other) {
       if (ReferenceEquals(null, other)) {
@@ -508,7 +542,7 @@ namespace PacTheMan.Models {
       if (ReferenceEquals(this, other)) {
         return true;
       }
-      return Session == other.Session && Direction == other.Direction && (Score is null ? other.Score is null : other.Score is not null && Score.SequenceEqual(other.Score)) && (Lives is null ? other.Lives is null : other.Lives is not null && Lives.SequenceEqual(other.Lives)) && (PlayerPositions is null ? other.PlayerPositions is null : other.PlayerPositions is not null && PlayerPositions.SequenceEqual(other.PlayerPositions));
+      return Session == other.Session && Direction == other.Direction && (Scores is null ? other.Scores is null : other.Scores is not null && Scores.SequenceEqual(other.Scores)) && (Lives is null ? other.Lives is null : other.Lives is not null && Lives.SequenceEqual(other.Lives)) && (PlayerPositions is null ? other.PlayerPositions is null : other.PlayerPositions is not null && PlayerPositions.SequenceEqual(other.PlayerPositions)) && (ScorePositions is null ? other.ScorePositions is null : other.ScorePositions is not null && ScorePositions.SequenceEqual(other.ScorePositions));
     }
 
     public override bool Equals(object obj) {
@@ -528,9 +562,10 @@ namespace PacTheMan.Models {
       int hash = 1;
       hash ^= Session.GetHashCode();
       hash ^= Direction.GetHashCode();
-      hash ^= Score.GetHashCode();
+      hash ^= Scores.GetHashCode();
       hash ^= Lives.GetHashCode();
       hash ^= PlayerPositions.GetHashCode();
+      hash ^= ScorePositions.GetHashCode();
       return hash;
     }
 
@@ -575,8 +610,8 @@ namespace PacTheMan.Models {
     internal static void EncodeInto(BasePlayerState record, ref BebopWriter writer) {
       PacTheMan.Models.SessionMsg.EncodeInto(record.Session, ref writer);
       writer.WriteEnum<MovingStates>(record.Direction);
-      writer.WriteUInt32(unchecked((uint)record.Score.Count));
-      foreach (var kv0 in record.Score) {
+      writer.WriteUInt32(unchecked((uint)record.Scores.Count));
+      foreach (var kv0 in record.Scores) {
         writer.WriteGuid(kv0.Key);
         writer.WriteInt64(kv0.Value);
       }
@@ -589,6 +624,13 @@ namespace PacTheMan.Models {
       foreach (var kv0 in record.PlayerPositions) {
         writer.WriteGuid(kv0.Key);
         PacTheMan.Models.Position.EncodeInto(kv0.Value, ref writer);
+      }
+      {
+        var length0 = unchecked((uint)record.ScorePositions.Length);
+        writer.WriteUInt32(length0);
+        for (var i0 = 0; i0 < length0; i0++) {
+          PacTheMan.Models.Position.EncodeInto(record.ScorePositions[i0], ref writer);
+        }
       }
     }
 
@@ -696,12 +738,23 @@ namespace PacTheMan.Models {
           field4.Add(k0, v0);
         }
       }
+      BasePosition[] field5;
+      {
+        var length0 = unchecked((int)reader.ReadUInt32());
+        field5 = new BasePosition[length0];
+        for (var i0 = 0; i0 < length0; i0++) {
+          BasePosition x0;
+          x0 = PacTheMan.Models.Position.DecodeFrom(ref reader);
+          field5[i0] = x0;
+        }
+      }
       return new PlayerState {
         Session = field0,
         Direction = field1,
-        Score = field2,
+        Scores = field2,
         Lives = field3,
         PlayerPositions = field4,
+        ScorePositions = field5,
       };
     }
 
@@ -747,12 +800,23 @@ namespace PacTheMan.Models {
           field4.Add(k0, v0);
         }
       }
+      BasePosition[] field5;
+      {
+        var length0 = unchecked((int)reader.ReadUInt32());
+        field5 = new BasePosition[length0];
+        for (var i0 = 0; i0 < length0; i0++) {
+          BasePosition x0;
+          x0 = PacTheMan.Models.Position.DecodeFrom(ref reader);
+          field5[i0] = x0;
+        }
+      }
       return new T {
         Session = field0,
         Direction = field1,
-        Score = field2,
+        Scores = field2,
         Lives = field3,
         PlayerPositions = field4,
+        ScorePositions = field5,
       };
     }
   }

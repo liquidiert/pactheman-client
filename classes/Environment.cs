@@ -30,7 +30,7 @@ namespace pactheman_client {
         public Dictionary<String, MoveInstruction> GhostMoveInstructions = new Dictionary<string, MoveInstruction>();
         private TiledMapObjectLayer _positionLayer;
         private TiledMapObjectLayer _pointLayer;
-        private ContentManager _content;
+        public ContentManager Content;
         public Boolean IsOnline {
             get {
                 return CurrentGameMode == GameModes.Online;
@@ -55,7 +55,7 @@ namespace pactheman_client {
         }
 
         public GameEnv Init(ContentManager content, TiledMap map) {
-            this._content = content;
+            this.Content = content;
             this._positionLayer = map.ObjectLayers.First(l => l.Name == "positions");
             this._pointLayer = map.ObjectLayers.First(l => l.Name == "points");
 
@@ -64,13 +64,13 @@ namespace pactheman_client {
             this.GhostStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
 
             // get point positions
-            this.ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(content, p.Position)).ToList();
+            this.ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(p.Position)).ToList();
 
             // get obstacles
             this._obstacles = map.GetLayer<TiledMapTileLayer>("ground");
 
             // get tile map
-            this.MapAsTiles = new int[this._obstacles.Width + 1, this._obstacles.Height + 1];
+            this.MapAsTiles = new int[this._obstacles.Width, this._obstacles.Height];
             for (var h = 0; h < this._obstacles.Height; h++) {
                 for (var w = 0; w < this._obstacles.Width; w++) {
                     TiledMapTile? tile = null;
@@ -144,7 +144,7 @@ namespace pactheman_client {
             GameState.Instance.CurrentGameState = GameStates.MainMenu;
             UIState.Instance.CurrentUIState = UIStates.MainMenu;
             UIState.Instance.GuiSystem.ActiveScreen.Show();
-            ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(_content, p.Position)).ToList();
+            ScorePointPositions = _pointLayer.Objects.Select(p => new ScorePoint(p.Position)).ToList();
             PlayerStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "player_start").ToList();
             GhostStartPoints = _positionLayer.Objects.Where(obj => obj.Type.ToString() == "ghost_start").ToList();
             foreach (var actor in Actors.Values) {

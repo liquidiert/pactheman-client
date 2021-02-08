@@ -44,6 +44,7 @@ namespace pactheman_client {
             readyBtn.Clicked += async (sender, args) => {
                 await GameEnv.Instance.PlayerOne.SetReady();
                 playerList.IsEnabled = false;
+                readyBtn.IsEnabled = false;
             };
 
             return new StackPanel {

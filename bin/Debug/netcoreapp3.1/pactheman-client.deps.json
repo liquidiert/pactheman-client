@@ -18,8 +18,8 @@
           "MonoGame.Framework.DesktopGL": "3.8.0.1641",
           "Newtonsoft.Json": "12.0.3",
           "YamlDotNet": "8.1.2",
-          "bebop": "2.0.3",
-          "bebop-tools": "2.0.3"
+          "bebop": "2.0.5",
+          "bebop-tools": "2.0.5"
         },
         "runtime": {
           "pactheman-client.dll": {}
@@ -33,18 +33,18 @@
           }
         }
       },
-      "bebop/2.0.3": {
+      "bebop/2.0.5": {
         "dependencies": {
           "IsExternalInit": "1.0.0"
         },
         "runtime": {
           "lib/netcoreapp3.1/Bebop.dll": {
-            "assemblyVersion": "2.0.3.0",
-            "fileVersion": "2.0.3.0"
+            "assemblyVersion": "2.0.5.0",
+            "fileVersion": "2.0.5.0"
           }
         }
       },
-      "bebop-tools/2.0.3": {},
+      "bebop-tools/2.0.5": {},
       "IsExternalInit/1.0.0": {},
       "MonoGame.Content.Builder.Task/3.8.0.1641": {},
       "MonoGame.Extended/3.8.0": {
@@ -204,19 +204,19 @@
       "path": "autofac/5.2.0",
       "hashPath": "autofac.5.2.0.nupkg.sha512"
     },
-    "bebop/2.0.3": {
+    "bebop/2.0.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-pXiS+32L0Lqv+2Ze/eNEf0pihlLw5T3UUvx7rToEMD1gagZmOabxQ5YWKQ3UZNXZAmXbrCyAlfB9NKqnxqe7PQ==",
-      "path": "bebop/2.0.3",
-      "hashPath": "bebop.2.0.3.nupkg.sha512"
+      "sha512": "sha512-c/NT+Tq4aR8+PRHii6LigGeE/914MC/WUyv6eju7voLSQ2fR8dOYuFBrOXr39HqEfEXbpthSNhfk4UrIGxBGRA==",
+      "path": "bebop/2.0.5",
+      "hashPath": "bebop.2.0.5.nupkg.sha512"
     },
-    "bebop-tools/2.0.3": {
+    "bebop-tools/2.0.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-sol5eQYQEGWnPcM7ho4NDrDs6VEoVnSlF/BhJMXMjXIHuz/uGLts4F35CpmKfzasotPjPTKzQXso6wjJqOZ9Hg==",
-      "path": "bebop-tools/2.0.3",
-      "hashPath": "bebop-tools.2.0.3.nupkg.sha512"
+      "sha512": "sha512-pkBJyHjfbRaSZgpHBfgz0vhXhNbdZJcWbX7Dk3n1lGpjcEG01XODfVZ+vgrp4BnsoJbJfakoZq8C5vUHrGOvpQ==",
+      "path": "bebop-tools/2.0.5",
+      "hashPath": "bebop-tools.2.0.5.nupkg.sha512"
     },
     "IsExternalInit/1.0.0": {
       "type": "package",

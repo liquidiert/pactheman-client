@@ -28,6 +28,7 @@ namespace pactheman_client {
                 Margin = new Thickness(20, 0)
             };
             hostBtn.Clicked += async (sender, args) => {
+                GameEnv.Instance.ScorePointPositions.Clear();
                 await player.Host();
             };
 
@@ -37,6 +38,7 @@ namespace pactheman_client {
                 Margin = new Thickness(20, 0)
             };
             joinBtn.Clicked += async (sender, args) => {
+                GameEnv.Instance.ScorePointPositions.Clear();
                 await player.Join();
             };
 

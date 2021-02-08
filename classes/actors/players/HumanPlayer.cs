@@ -105,7 +105,7 @@ namespace pactheman_client {
             // Were we already canceled?
             _ct.ThrowIfCancellationRequested();
 
-            Byte[] buffer = new Byte[1024];
+            Byte[] buffer = new Byte[2048];
 
             try {
                 while (true) {
@@ -196,16 +196,13 @@ namespace pactheman_client {
                 Position = updatedPosition;
             }
 
-            if (GameEnv.Instance.RemoveScorePoint(Position)) {
-                _score += 10;
-                if (GameEnv.Instance.IsOnline) {
-                    InternalPlayerState.Score[(Guid)InternalPlayerState.Session.ClientId] = _score;
-                }
+            if (!GameEnv.Instance.IsOnline && GameEnv.Instance.RemoveScorePoint(Position)) {
+                Score += 10;
             }
 
             if (GameEnv.Instance.IsOnline) {
                 InternalPlayerState.Direction = CurrentMovingState;
-                InternalPlayerState.PlayerPositions[(Guid)InternalPlayerState.Session.ClientId] = new Position { X = Position.X, Y = Position.Y };
+                InternalPlayerState.PlayerPositions[(Guid)InternalPlayerState.Session.ClientId] = Position.ToPosition();
                 var msg = new NetworkMessage {
                     IncomingOpCode = PlayerState.OpCode,
                     IncomingRecord = InternalPlayerState.EncodeAsImmutable()

@@ -1,8 +1,20 @@
 using System;
+using System.Collections.Generic;
 using PacTheMan.Models;
 using Microsoft.Xna.Framework;
 
 namespace pactheman_client {
+
+    public class VectorEqualityComparator : IEqualityComparer<Vector2> {
+        public bool Equals(Vector2 vec1, Vector2 vec2) {
+            return vec1.X == vec2.X && vec1.Y == vec2.Y;
+        }
+
+        public int GetHashCode(Vector2 vec) {
+            int code = (int)vec.X ^ (int)vec.Y;
+            return code.GetHashCode();
+        }
+    }
 
     static class Vector2Extension {
 
@@ -46,7 +58,7 @@ namespace pactheman_client {
         }
 
         public static double Distance(this Vector2 vector, Vector2 toCompare) {
-            return Math.Sqrt((vector.X-toCompare.X)*(vector.X-toCompare.X) + (vector.Y-toCompare.Y)*(vector.Y-toCompare.Y));
+            return Math.Sqrt((vector.X - toCompare.X) * (vector.X - toCompare.X) + (vector.Y - toCompare.Y) * (vector.Y - toCompare.Y));
         }
 
         public static Vector2 Interpolated(this Vector2 vector, Vector2 other) {

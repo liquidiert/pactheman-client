@@ -16,31 +16,20 @@ namespace pactheman_client {
 
             player.InternalPlayerState.PlayerPositions = msg.PlayerInitPositions;
             player.InternalPlayerState.Lives = msg.PlayerInitLives;
-            player.InternalPlayerState.Score = msg.PlayerInitScores;
-            
+            player.InternalPlayerState.Scores = msg.PlayerInitScores;
+            player.InternalPlayerState.ScorePositions = msg.ScorePointInitPositions;
+            GameEnv.Instance.ScorePointPositions = msg.ScorePointInitPositions.Select(p => new ScorePoint((p as Position).ToVec2())).ToList();
+
             foreach (var ghost in msg.GhostInitPositions) {
                 (GameEnv.Instance.Actors[ghost.Key] as Ghost).LastTarget = GameEnv.Instance.Actors[ghost.Key].Position = 
                     GameEnv.Instance.Actors[ghost.Key].StartPosition = 
                         new Vector2 { X = ghost.Value.X, Y = ghost.Value.Y };
             }
 
-            player.Position = player.StartPosition = new Vector2 {
-                X = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].X,
-                Y = msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId].Y
-            };
+            player.Position = player.StartPosition = (msg.PlayerInitPositions[(Guid)player.InternalPlayerState.Session.ClientId] as Position).ToVec2();
             var oppInitPos = msg.PlayerInitPositions.First(p => p.Key != (Guid)player.InternalPlayerState.Session.ClientId).Value;
-            GameEnv.Instance.Actors["opponent"].Position = GameEnv.Instance.Actors["opponent"].StartPosition = 
-                new Vector2 {
-                    X = oppInitPos.X,
-                    Y = oppInitPos.Y
-                };
+            GameEnv.Instance.Actors["opponent"].Position = GameEnv.Instance.Actors["opponent"].StartPosition = (oppInitPos as Position).ToVec2();
 
-            // remove position score points
-            GameEnv.Instance.RemoveScorePoint(new Vector2 { X = player.Position.X, Y = player.Position.Y });
-            GameEnv.Instance.RemoveScorePoint(new Vector2 { 
-                X = GameEnv.Instance.Actors["opponent"].Position.X,
-                Y = GameEnv.Instance.Actors["opponent"].Position.Y
-            });
 
             UIState.Instance.CurrentUIState = UIStates.Game;
             GameState.Instance.CurrentGameState = GameStates.Game;
