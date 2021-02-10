@@ -17,22 +17,22 @@ namespace pactheman_client {
         public string Lives {
             get => "<3".Multiple(_lives);
         }
-        public MovingStates CurrentMovingState {
+        public MovingState CurrentMovingState {
             get { return movingState; }
             set {
                 if (movingState != value) {
                     movingState = value;
                     switch (movingState) {
-                        case MovingStates.Up:
+                        case MovingState.Up:
                             Sprite.Play("up");
                             break;
-                        case MovingStates.Down:
+                        case MovingState.Down:
                             Sprite.Play("down");
                             break;
-                        case MovingStates.Left:
+                        case MovingState.Left:
                             Sprite.Play("left");
                             break;
-                        case MovingStates.Right:
+                        case MovingState.Right:
                             Sprite.Play("right");
                             break;
                     }
@@ -56,22 +56,22 @@ namespace pactheman_client {
             if (useArrows ? _kState.IsKeyDown(Keys.Up) : _kState.IsKeyDown(Keys.W)) { // up
                 Velocity = new Vector2(0, -MovementSpeed * delta);
                 updatedPosition += Velocity;
-                CurrentMovingState = MovingStates.Up;
+                CurrentMovingState = MovingState.Up;
             }
             if (useArrows ? _kState.IsKeyDown(Keys.Down) : _kState.IsKeyDown(Keys.S)) { // down
                 Velocity = new Vector2(0, MovementSpeed * delta);
                 updatedPosition += Velocity;
-                CurrentMovingState = MovingStates.Down;
+                CurrentMovingState = MovingState.Down;
             }
             if (useArrows ? _kState.IsKeyDown(Keys.Left) : _kState.IsKeyDown(Keys.A)) { // left
                 Velocity = new Vector2(-MovementSpeed * delta, 0);
                 updatedPosition += Velocity;
-                CurrentMovingState = MovingStates.Left;
+                CurrentMovingState = MovingState.Left;
             }
             if (useArrows ? _kState.IsKeyDown(Keys.Right) : _kState.IsKeyDown(Keys.D)) { // right
                 Velocity = new Vector2(MovementSpeed * delta, 0);
                 updatedPosition += Velocity;
-                CurrentMovingState = MovingStates.Right;
+                CurrentMovingState = MovingState.Right;
             }
             Velocity = Vector2.Zero;
             return updatedPosition;
